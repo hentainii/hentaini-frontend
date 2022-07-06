@@ -19,7 +19,7 @@
             class="white--text align-end"
             height="50vh"
             width="auto"
-            :src="`${$config.COVER_ENDPOINT}${serie.images.cover.path}`"
+            :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
           >
             <v-card-title>{{ serie.title }}</v-card-title>
           </v-img>
@@ -87,7 +87,7 @@
                     </template>
                     <span>Edit Episode</span>
                   </v-tooltip>
-                  <DeleteModalDeleteEpisode :episodenumber="episode.episode_number" :episodeid="episode.id" :serieid="$route.params.id" />
+                  <!-- <DeleteModalDeleteEpisode :episodenumber="episode.episode_number" :episodeid="episode.id" :serieid="$route.params.id" /> -->
                 </td>
               </tr>
             </tbody>
@@ -127,8 +127,8 @@ export default {
   },
   methods: {
     async getSerie () {
-      const qs = require('qs')
-      const query = qs.stringify({
+      await this.$store.dispatch('series/getSerie', {
+        serieId: this.$route.params.id,
         populate: [
           'genreList',
           'status',
@@ -138,39 +138,8 @@ export default {
           'serie_type',
           'episodes'
         ]
-      },
-      {
-        encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${this.$route.params.id}?${query}`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = []
-          res.push(input)
-          const loop = res.map((res) => {
-            res.data.attributes.id = res.data.id
-            res.data.attributes.status.data.attributes.id = res.data.attributes.status.data.id
-            res.data.attributes.status = res.data.attributes.status.data.attributes
-            res.data.attributes.language.data.attributes.id = res.data.attributes.language.data.id
-            res.data.attributes.language = res.data.attributes.language.data.attributes
-            res.data.attributes.serie_type.data.attributes.id = res.data.attributes.serie_type.data.id
-            res.data.attributes.serie_type = res.data.attributes.serie_type.data.attributes
-            res.data.attributes.images.cover = res.data.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'cover')[0].attributes
-            res.data.attributes.images.screenshot = res.data.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'screenshot')[0].attributes
-            res.data.attributes.episodes = res.data.attributes.episodes.data.map((episodes) => {
-              episodes.attributes.id = episodes.id
-              return episodes.attributes
-            })
-            res.data.attributes.genreList = res.data.attributes.genreList.data.map((genre) => {
-              genre.attributes.id = genre.id
-              return genre.attributes
-            })
-            return {
-              ...res.data.attributes
-            }
-          })
-          this.serie = loop[0]
-        })
+      this.serie = { ...this.$store.state.series.currentSerie }
     }
   }
 }

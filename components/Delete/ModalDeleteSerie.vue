@@ -57,8 +57,8 @@
 export default {
   props: {
     serieid: {
-      type: String,
-      default: ''
+      type: Number,
+      default: -1
     },
     title: {
       type: String,
@@ -69,27 +69,27 @@ export default {
     modal: false
   }),
   methods: {
-    deleteSerie (serieid) {
-      this.$apollo.mutate({
-        mutation: gql`mutation ($id: ID){
-          deleteSerie(id: $id){
-            success
-            errors{
-              path
-              message
-            }
-          }
-        }`,
-        variables: {
-          id: this.serieid
-        }
-      }).then((input) => {
-        this.$router.replace({ path: '/panel/serie', query: { deleted: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
-    }
+    // deleteSerie (serieid) {
+    //   this.$apollo.mutate({
+    //     mutation: gql`mutation ($id: ID){
+    //       deleteSerie(id: $id){
+    //         success
+    //         errors{
+    //           path
+    //           message
+    //         }
+    //       }
+    //     }`,
+    //     variables: {
+    //       id: this.serieid
+    //     }
+    //   }).then((input) => {
+    //     this.$router.replace({ path: '/panel/serie', query: { deleted: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
+    //   }).catch((error) => {
+    //     // eslint-disable-next-line no-console
+    //     console.error(error)
+    //   })
+    // }
   }
 }
 </script>

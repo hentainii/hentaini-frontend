@@ -155,7 +155,6 @@ export default {
     currentCounter: 0,
     episode: null,
     serie: null,
-    players: null,
     languageList: null,
     hasCustomScreenshot: false,
     customScreenshot: [],
@@ -163,62 +162,32 @@ export default {
     screenshotPreview: '',
     CDN: process.env.CDN_URI
   }),
+  computed: {
+    players () {
+      return this.$store.state.players.players
+    }
+  },
   async mounted () {
     await this.getPlayers()
     await this.getEpisode()
   },
   methods: {
     async getEpisode () {
-      const qs = require('qs')
-      const query = qs.stringify({
+      await this.$store.dispatch('episodes/getEpisode', {
+        episodeId: this.$route.params.episode,
+        token: this.$store.state.auth.token,
         populate: [
           'serie',
           'serie.language',
           'image'
         ]
-      },
-      {
-        encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes/${this.$route.params.episode}?${query}`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = []
-          res.push(input)
-          const loop = res.map((res) => {
-            res.data.attributes.id = res.data.id
-            res.data.attributes.serie.data.attributes.id = res.data.attributes.serie.data.id
-            res.data.attributes.serie = res.data.attributes.serie.data.attributes
-            res.data.attributes.serie.language.data.attributes.id = res.data.attributes.serie.language.data.id
-            res.data.attributes.serie.language = res.data.attributes.serie.language.data.attributes
-            res.data.attributes.image.data.attributes.id = res.data.attributes.image.data.id
-            this.screenshot = res.data.attributes.image.data.attributes.path
-            res.data.attributes.image = res.data.attributes.image.data.attributes.id
-            res.data.attributes.players = JSON.parse(res.data.attributes.players)
-            res.data.attributes.downloads = JSON.parse(res.data.attributes.downloads)
-            delete res.data.attributes.createdAt
-            delete res.data.attributes.updatedAt
-            delete res.data.attributes.publishedAt
-            return {
-              ...res.data.attributes
-            }
-          })
-          this.episode = loop[0]
-          this.episode.serie = loop[0].serie.id
-        })
+      this.episode = this.$store.state.episodes.currentEpisode
     },
     async getPlayers () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}players`)
-        .then(res => res.json())
-        .then((input) => {
-          const players = input.data.map((res) => {
-            res.attributes.id = res.id
-            return {
-              ...res.attributes
-            }
-          })
-          this.players = players
-        })
+      await this.$store.dispatch('players/getPlayers', {
+        token: this.$store.state.auth.token
+      })
     },
     async editEpisode () {
       this.episode.players = JSON.stringify(this.episode.players)

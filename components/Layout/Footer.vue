@@ -1,5 +1,11 @@
 <template>
-  <v-footer padless absolute>
+  <v-footer
+    app
+    inset
+    absolute
+    style="font-size:11px;"
+    class="text-center justify-center"
+  >
     <v-col
       class="text-center"
       cols="12"

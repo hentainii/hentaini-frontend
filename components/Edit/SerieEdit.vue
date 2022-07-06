@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="serie">
+  <v-container v-if="serieData">
     <v-row>
       <v-col cols="6">
         <v-card
@@ -10,7 +10,7 @@
           </v-card-title>
           <v-container>
             <v-text-field
-              v-model="serie.id"
+              v-model="serieData.id"
               label="Serie ID"
               readonly
               disabled
@@ -19,19 +19,19 @@
               rounded
             />
             <v-text-field
-              v-model="serie.title"
+              v-model="serieData.title"
               label="Serie Name"
               required
               outlined
             />
             <v-text-field
-              v-model="serie.title_english"
+              v-model="serieData.title_english"
               label="Serie English Name"
               required
               outlined
             />
             <v-textarea
-              v-model="serie.synopsis"
+              v-model="serieData.synopsis"
               name="synopsis"
               label="Synopsis"
               value="Todo comenzo con el que tenia el peinado follador..."
@@ -39,7 +39,7 @@
               outlined
             />
             <v-autocomplete
-              v-model="serie.genreList"
+              v-model="serieData.genreList"
               :items="genreList"
               label="Hentai Genres"
               item-text="name"
@@ -52,7 +52,7 @@
               :return-object="true"
             />
             <v-select
-              v-model="serie.language"
+              v-model="serieData.language"
               :items="languageList"
               item-text="name"
               item-value="id"
@@ -60,7 +60,7 @@
               label="Language"
             />
             <v-select
-              v-model="serie.serie_type"
+              v-model="serieData.serie_type"
               :items="serie_typeList"
               outlined
               label="Serie Type"
@@ -69,7 +69,7 @@
               return-object
             />
             <v-select
-              v-model="serie.status"
+              v-model="serieData.status"
               :items="statusList"
               outlined
               label="Status"
@@ -78,7 +78,7 @@
               return-object
             />
             <v-switch
-              v-model="serie.censorship"
+              v-model="serieData.censorship"
               label="Censorship"
             />
           </v-container>
@@ -104,16 +104,16 @@
             >
               <template #activator="{ on }">
                 <v-text-field
-                  v-model="serie.next_episode"
+                  v-model="serieData.next_episode"
                   label="Next episode on"
                   prepend-icon="mdi-calendar"
                   readonly
                   v-on="on"
                 />
               </template>
-              <v-date-picker v-model="serie.next_episode" />
+              <v-date-picker v-model="serieData.next_episode" />
             </v-menu>
-            <v-btn class="mr-4 blue darken-4" large @click.once="editSerie">
+            <v-btn class="mr-4 blue darken-4" large :loading="loading" @click.once="editSerie">
               submit
             </v-btn>
           </v-container>
@@ -144,14 +144,25 @@ export default {
   name: 'EditSerie',
 
   data: () => ({
-    serie: null,
+    serieData: null,
     coverPreview: '',
     screenshotPreview: '',
-    genreList: [],
-    statusList: [],
-    languageList: [],
-    serie_typeList: []
+    loading: false
   }),
+  computed: {
+    genreList () {
+      return this.$store.state.genres.genres
+    },
+    serie_typeList () {
+      return this.$store.state.serietypes.serieTypes
+    },
+    languageList () {
+      return this.$store.state.language.languageList
+    },
+    statusList () {
+      return this.$store.state.statuses.statuses
+    }
+  },
   mounted () {
     this.getGenres()
     this.getSerie_Types()
@@ -161,115 +172,44 @@ export default {
   },
   methods: {
     async getSerie () {
-      const qs = require('qs')
-      const query = qs.stringify({
+      await this.$store.dispatch('series/getSerie', {
+        serieId: this.$route.params.id,
         populate: [
           'genreList',
           'status',
           'language',
           'serie_type'
         ]
-      },
-      {
-        encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${this.$route.params.id}?${query}`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = []
-          res.push(input)
-          const loop = res.map((res) => {
-            res.data.attributes.id = res.data.id
-            res.data.attributes.status.data.attributes.id = res.data.attributes.status.data.id
-            res.data.attributes.status = res.data.attributes.status.data.attributes
-            res.data.attributes.language.data.attributes.id = res.data.attributes.language.data.id
-            res.data.attributes.language = res.data.attributes.language.data.attributes
-            res.data.attributes.serie_type.data.attributes.id = res.data.attributes.serie_type.data.id
-            res.data.attributes.serie_type = res.data.attributes.serie_type.data.attributes
-            res.data.attributes.genreList = res.data.attributes.genreList.data.map((genre) => {
-              genre.attributes.id = genre.id
-              return genre.attributes
-            })
-            return {
-              ...res.data.attributes
-            }
-          })
-          this.serie = loop[0]
-        })
+      this.serieData = { ...this.$store.state.series.currentSerie }
     },
     async editSerie () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${this.serie.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
-        },
-        body: JSON.stringify({
-          data: this.serie
-        })
-      }).then((input) => {
-        if (input.status === 200) {
-          this.snack = true
-          this.snackColor = 'info'
-          this.snackText = 'Serie edited successfully!'
-          this.$router.replace('/panel/serie')
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
+      this.loading = true
+      await this.$store.dispatch('series/editSerie', {
+        serieData: this.serieData,
+        token: this.$store.state.auth.token
       })
+      this.loading = false
     },
     async getGenres () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}genres`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((genre) => {
-            genre.attributes.id = genre.id
-            return {
-              ...genre.attributes
-            }
-          })
-          this.genreList = res
-        })
+      await this.$store.dispatch('genres/getGenres', {
+        token: this.$store.state.auth.token
+      })
     },
     async getSerie_Types () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}serie-types`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((serietype) => {
-            serietype.attributes.id = serietype.id
-            return {
-              ...serietype.attributes
-            }
-          })
-          this.serie_typeList = res
-        })
+      await this.$store.dispatch('serietypes/getSerieTypes', {
+        token: this.$store.state.auth.token
+      })
     },
     async getLanguageList () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}languages`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((language) => {
-            language.attributes.id = language.id
-            return {
-              ...language.attributes
-            }
-          })
-          this.languageList = res
-        })
+      await this.$store.dispatch('language/getLanguages', {
+        token: this.$store.state.auth.token
+      })
     },
     async getStatuses () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}statuses`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((status) => {
-            status.attributes.id = status.id
-            return {
-              ...status.attributes
-            }
-          })
-          this.statusList = res
-        })
+      await this.$store.dispatch('statuses/getStatuses', {
+        token: this.$store.state.auth.token
+      })
     }
   }
 }

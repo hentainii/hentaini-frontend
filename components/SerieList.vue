@@ -43,22 +43,22 @@
                 eager
                 cancel-text="Cancelar"
                 save-text="Guardar"
-                @save="save(item.id, item.status)"
+                @save="saveStatus(item.id, item.status)"
                 @cancel="cancel"
-                @close="close"
               >
                 <v-chip small label :class="getColorPill(item.status.name)">
                   {{ item.status.name }}
                 </v-chip>
                 <template #input>
                   <v-select
-                    v-model="item.status"
-                    :items="statusItems"
+                    :value="item.status"
+                    :items="statuses"
                     item-text="name"
                     item-value="name"
                     single-line
                     dense
                     :return-object="true"
+                    @change="updateStatus(item.id, $event)"
                   />
                 </template>
               </v-edit-dialog>
@@ -124,7 +124,7 @@
                 </template>
                 <span>Edit Serie</span>
               </v-tooltip>
-              <DeleteModalDeleteSerie :title="item.title" :serieid="item.id" />
+              <!-- <DeleteModalDeleteSerie :title="item.title" :serieid="item.id" /> -->
             </template>
           </v-data-table>
         </client-only>
@@ -161,12 +161,10 @@ export default {
   name: 'SerieList',
   data: () => ({
     search: '',
-    series: null,
     alertBox: false,
     createdMessage: '',
     alertBoxColor: '',
     page: 0,
-    statusItems: null,
     itemsPerPage: 50,
     pageCount: 1,
     headers: [
@@ -190,6 +188,14 @@ export default {
     snackColor: '',
     snackText: ''
   }),
+  computed: {
+    series () {
+      return this.$store.state.series.panelSerieList
+    },
+    statuses () {
+      return this.$store.state.statuses.statuses
+    }
+  },
   async mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
@@ -211,47 +217,36 @@ export default {
   },
   methods: {
     async getSeries () {
-      const qs = require('qs')
-      const query = qs.stringify({
-        populate: [
-          'status',
-          'episodes'
-        ],
-        sort: ['createdAt:desc'],
+      await this.$store.dispatch('series/getPanelSerieList', {
+        token: this.$store.state.auth.token,
         pagination: this.pagination
-      },
-      {
-        encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((serie) => {
-            serie.attributes.id = serie.id
-            serie.attributes.status = serie.attributes.status.data.attributes
-            serie.attributes.episodes = serie.attributes.episodes.data.map((episode) => {
-              episode.attributes.id = episode.id
-              return episode.attributes
-            })
-            return {
-              ...serie.attributes
-            }
-          })
-          this.pagination = input.meta.pagination
-          this.series = res
-        })
     },
     async getStatuses () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}statuses`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((status) => {
-            return {
-              name: status.attributes.name
-            }
-          })
-          this.statusItems = res
-        })
+      await this.$store.dispatch('statuses/getStatuses', {
+        token: this.$store.state.auth.token
+      })
+    },
+    setFeatured (serieId, index) {
+      this.$store.dispatch('series/setFeatured', {
+        index,
+        serieId,
+        token: this.$store.state.auth.token,
+        featured: !this.series[index].featured
+      })
+    },
+    async saveStatus (serieId, newStatus) {
+      await this.$store.dispatch('series/saveStatus', {
+        serieId,
+        status: newStatus.name,
+        token: this.$store.state.auth.token
+      })
+    },
+    async updateStatus (serieId, status) {
+      await this.$store.dispatch('series/updateStatus', {
+        serieId,
+        status
+      })
     },
     getColorPill (status) {
       if (status === 'Airing') {
@@ -260,62 +255,10 @@ export default {
         return 'red darken-4'
       }
     },
-    async setFeatured (serieId, index) {
-      this.series[index].featured = !this.series[index].featured
-
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${serieId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
-        },
-        body: JSON.stringify({
-          data: {
-            featured: this.series[index].featured
-          }
-        })
-      }).then((input) => {
-        if (input.status === 200) {
-          this.snack = true
-          this.snackColor = 'info'
-          this.snackText = 'Featured changed successfully!'
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
-    },
-    async save (serieId, newStatus) {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${serieId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
-        },
-        body: JSON.stringify({
-          data: {
-            status: newStatus.name === 'Airing' ? 1 : 2
-          }
-        })
-      }).then((input) => {
-        if (input.status === 200) {
-          this.snack = true
-          this.snackColor = 'info'
-          this.snackText = 'Status changed successfully!'
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
-    },
     cancel () {
       this.snack = true
       this.snackColor = 'error'
       this.snackText = 'Operation cancelled.'
-    },
-    close () {
-      // eslint-disable-next-line no-console
-      console.log('Info closed')
     }
   }
 }

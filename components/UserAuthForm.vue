@@ -102,7 +102,7 @@ export default {
           Promise.resolve(input.json())
             .then((res) => {
               const auth = {
-                accessToken: res.jwt,
+                token: res.jwt,
                 username: res.user.username,
                 level: res.user.level
               }
