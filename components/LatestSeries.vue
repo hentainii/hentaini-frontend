@@ -24,7 +24,7 @@
           :genres="serie.genres"
           :status="serie.status.name"
           :url="serie.h_id"
-          :screenshot="`${$config.COVER_ENDPOINT}${serie.images.cover.path}`"
+          :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
         />
       </v-col>
     </v-row>
@@ -61,17 +61,12 @@ export default {
       })
       await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((serie) => {
-            serie.attributes.genres = JSON.parse(serie.attributes.genres)
-            serie.attributes.images.cover = serie.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'cover')[0].attributes
-            serie.attributes.images.screenshot = serie.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'screenshot')[0].attributes
-            serie.attributes.status = serie.attributes.status.data.attributes
-            return {
-              ...serie.attributes
-            }
+        .then((series) => {
+          series.data.map((serie) => {
+            serie.genres = JSON.parse(serie.genres)
+            return serie
           })
-          this.series = res
+          this.series = series.data
         })
     }
   }

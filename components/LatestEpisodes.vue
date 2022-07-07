@@ -68,16 +68,8 @@ export default {
       })
       await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?${query}`)
         .then(res => res.json())
-        .then((res) => {
-          console.log(res)
-          const episodes = res.data.map((episode) => {
-            episode.attributes.serie = episode.attributes.serie.data.attributes
-            episode.attributes.image = episode.attributes.image.data.attributes
-            return {
-              ...episode.attributes
-            }
-          })
-          this.episodes = episodes
+        .then((episodes) => {
+          this.episodes = episodes.data
         })
     }
     // createEpisodeAd () {

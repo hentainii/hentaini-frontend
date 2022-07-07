@@ -1,24 +1,24 @@
 export const state = () => {
   return {
-    players: []
+    rrss: []
   }
 }
 export const mutations = {
-  getPlayers (state, players) {
-    state.players = players.data
+  getRrss (state, rrss) {
+    state.rrss = rrss.data
   }
 }
 export const actions = {
-  async getPlayers ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}players`, {
+  async getRrss ({ commit }, payload) {
+    await fetch(`${process.env.API_STRAPI_ENDPOINT}rrsses`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`
       }
     })
       .then(res => res.json())
-      .then((players) => {
-        commit('getPlayers', players)
+      .then((rrss) => {
+        commit('getRrss', rrss)
       })
   }
 }

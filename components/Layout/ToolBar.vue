@@ -3,6 +3,7 @@
     <v-app-bar
       app
       dark
+      dense
       style="background: #424242;"
       flat
     >
@@ -31,6 +32,8 @@
         >
           <v-btn
             href="/"
+            text
+            class="mr-2"
           >
             <v-icon
               class="toolbar-items"

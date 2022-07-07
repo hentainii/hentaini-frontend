@@ -4,8 +4,8 @@
       v-if="genres"
       style="border-bottom: 1px solid rgb(84 84 84);padding-bottom: 10px;padding-top: 5px;"
     >
-      <v-chip v-for="tag in genres" :key="tag.attributes.url" :href="`/explore?genre=${tag.url}`">
-        {{ tag.attributes.name }}
+      <v-chip v-for="tag in genres" :key="tag.url" :href="`/explore?genre=${tag.url}`">
+        {{ tag.name }}
       </v-chip>
     </v-chip-group>
   </v-container>
@@ -14,18 +14,20 @@
 export default {
   name: 'TagCloud',
   data: () => ({
-    genres: [],
     h: 'e'
   }),
+  computed: {
+    genres () {
+      return this.$store.state.genres.genres
+    }
+  },
   mounted () {
     this.getTags()
   },
   methods: {
     async getTags () {
-      await this.$strapi.find('genres', {
-        _limit: 20
-      }).then((res) => {
-        this.genres = res.data
+      await this.$store.dispatch('genres/getGenres', {
+        token: this.$store.state.auth.token
       })
     }
   }

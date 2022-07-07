@@ -179,11 +179,7 @@ export default {
     },
     cover: [],
     background_cover: [],
-    genreList: [],
     categories: [],
-    statusList: [],
-    languageList: [],
-    serie_typeList: [],
     genreError: false,
     coverPreview: '',
     screenshotPreview: '',
@@ -192,6 +188,20 @@ export default {
     alertType: '',
     isSubmitting: false
   }),
+  computed: {
+    genreList () {
+      return this.$store.state.genres.genres
+    },
+    serie_typeList () {
+      return this.$store.state.serietypes.serieTypes
+    },
+    languageList () {
+      return this.$store.state.language.languageList
+    },
+    statusList () {
+      return this.$store.state.statuses.statuses
+    }
+  },
   mounted () {
     this.getGenres()
     this.getSerie_Types()
@@ -221,7 +231,7 @@ export default {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
+          Authorization: `Bearer ${this.$store.state.auth.token}`
         },
         body: JSON.stringify({
           data: this.serie
@@ -253,7 +263,7 @@ export default {
       await fetch(`${process.env.API_STRAPI_ENDPOINT}upload`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
+          Authorization: `Bearer ${this.$store.state.auth.token}`
         },
         body: formData
       }).then((input) => {
@@ -275,7 +285,7 @@ export default {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
+          Authorization: `Bearer ${this.$store.state.auth.token}`
         },
         body: JSON.stringify({
           data: {
@@ -287,56 +297,24 @@ export default {
       })
     },
     async getGenres () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}genres`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((genre) => {
-            genre.attributes.id = genre.id
-            return {
-              ...genre.attributes
-            }
-          })
-          this.genreList = res
-        })
+      await this.$store.dispatch('genres/getGenres', {
+        token: this.$store.state.auth.token
+      })
     },
     async getSerie_Types () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}serie-types`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((serietype) => {
-            serietype.attributes.id = serietype.id
-            return {
-              ...serietype.attributes
-            }
-          })
-          this.serie_typeList = res
-        })
+      await this.$store.dispatch('serietypes/getSerieTypes', {
+        token: this.$store.state.auth.token
+      })
     },
     async getLanguageList () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}languages`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((language) => {
-            language.attributes.id = language.id
-            return {
-              ...language.attributes
-            }
-          })
-          this.languageList = res
-        })
+      await this.$store.dispatch('language/getLanguages', {
+        token: this.$store.state.auth.token
+      })
     },
     async getStatuses () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}statuses`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((status) => {
-            status.attributes.id = status.id
-            return {
-              ...status.attributes
-            }
-          })
-          this.statusList = res
-        })
+      await this.$store.dispatch('statuses/getStatuses', {
+        token: this.$store.state.auth.token
+      })
     },
     coverSelected (e) {
       this.cover.blob = this.$refs.cover.$refs.input.files[0]

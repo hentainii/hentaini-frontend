@@ -59,7 +59,7 @@
             </v-row>
             <v-row>
               <v-img
-                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.screenshot.path}`"
+                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
               />
             </v-row>
           </v-container>
@@ -184,7 +184,6 @@ export default {
       downloads: []
     },
     serie: null,
-    players: null,
     languageList: null,
     CDN: process.env.CDN_URI,
     currentCounter: 0,
@@ -195,8 +194,12 @@ export default {
     errorMessage: '',
     isSubmitting: false
   }),
+  computed: {
+    players () {
+      return this.$store.state.players.players
+    }
+  },
   async mounted () {
-    this.episode.serie = parseInt(this.$route.params.id)
     await this.getPlayers()
     await this.getSerie()
   },
@@ -205,70 +208,28 @@ export default {
       this.isSubmitting = !this.isSubmitting
       this.episode.players = JSON.stringify(this.episode.players)
       this.episode.downloads = JSON.stringify(this.episode.downloads)
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
-        },
-        body: JSON.stringify({
-          data: this.episode
-        })
-      }).then((input) => {
-        if (input.status === 200) {
-          this.$router.push({ path: `/panel/serie/${this.serie.id}/episodes`, query: { created: true } })
-        } else {
-          throw new Error('Error creating serie')
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
+      this.episode.serie = this.serie.id
+      this.episode.image = this.serie.images.find(image => image.image_type.name === 'screenshot').id
+      await this.$store.dispatch('episodes/createEpisode', {
+        episode: this.episode,
+        token: this.$store.state.auth.token
       })
     },
     async getSerie () {
-      const qs = require('qs')
-      const query = qs.stringify({
+      await this.$store.dispatch('series/getSerie', {
+        serieId: this.$route.params.id,
         populate: [
           'language',
           'images',
           'images.image_type'
         ]
-      },
-      {
-        encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${this.$route.params.id}?${query}`)
-        .then(res => res.json())
-        .then((input) => {
-          const res = []
-          res.push(input)
-          const loop = res.map((res) => {
-            res.data.attributes.id = res.data.id
-            res.data.attributes.language.data.attributes.id = res.data.attributes.language.data.id
-            res.data.attributes.language = res.data.attributes.language.data.attributes
-            res.data.attributes.images.cover = res.data.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'cover')[0].attributes
-            res.data.attributes.images.screenshot = res.data.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'screenshot')[0].attributes
-            res.data.attributes.images.screenshot.id = res.data.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'screenshot')[0].id
-            this.episode.image = res.data.attributes.images.screenshot.id
-            return {
-              ...res.data.attributes
-            }
-          })
-          this.serie = loop[0]
-        })
+      this.serie = { ...this.$store.state.series.currentSerie }
     },
     async getPlayers () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}players`)
-        .then(res => res.json())
-        .then((input) => {
-          const players = input.data.map((res) => {
-            res.attributes.id = res.id
-            return {
-              ...res.attributes
-            }
-          })
-          this.players = players
-        })
+      await this.$store.dispatch('players/getPlayers', {
+        token: this.$store.state.auth.token
+      })
     },
     createPlayerUrl (player, code, index) {
       const playername = player

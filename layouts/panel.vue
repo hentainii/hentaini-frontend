@@ -2,7 +2,6 @@
   <v-app dark>
     <LayoutToolBar header="Hentaini Panel" />
     <nuxt />
-    <LayoutFooter />
   </v-app>
 </template>
 

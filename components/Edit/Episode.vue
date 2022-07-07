@@ -10,7 +10,8 @@
           </v-card-title>
           <v-container>
             <v-text-field
-              v-model="episode.serie"
+              v-model="episode.serie.id"
+              disabled
               label="Episode From"
               readonly
               required
@@ -52,7 +53,7 @@
             </v-row>
             <v-row>
               <v-img
-                :src="`${$config.SCREENSHOT_ENDPOINT}${screenshot}`"
+                :src="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
               />
             </v-row>
           </v-container>
@@ -181,35 +182,23 @@ export default {
           'serie.language',
           'image'
         ]
+      }).then((episode) => {
+        episode.data.players = JSON.parse(episode.data.players)
+        episode.data.downloads = JSON.parse(episode.data.downloads)
+        this.episode = episode.data
       })
-      this.episode = this.$store.state.episodes.currentEpisode
     },
     async getPlayers () {
       await this.$store.dispatch('players/getPlayers', {
         token: this.$store.state.auth.token
       })
     },
-    async editEpisode () {
+    editEpisode () {
       this.episode.players = JSON.stringify(this.episode.players)
       this.episode.downloads = JSON.stringify(this.episode.downloads)
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes/${this.$route.params.episode}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.accessToken}`
-        },
-        body: JSON.stringify({
-          data: this.episode
-        })
-      }).then((input) => {
-        if (input.status === 200) {
-          this.$router.push({ path: `/panel/serie/${this.episode.serie}/episodes`, query: { edited: true } })
-        } else {
-          throw new Error('Error creating serie')
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
+      this.$store.dispatch('episodes/editEpisode', {
+        episode: this.episode,
+        token: this.$store.state.auth.token
       })
     },
     screenshotSelected () {
@@ -227,21 +216,21 @@ export default {
       }
     },
     addPlayerSlot () {
-      this.playerList.push({
+      this.episode.players.push({
         name: '',
-        url: ''
+        code: ''
       })
     },
     addDownloadSlot () {
-      this.downloadList.push({
+      this.episode.downloads.push({
         url: ''
       })
     },
     removePlayerSlot (slot) {
-      this.playerList.splice(slot, 1)
+      this.episode.players.splice(slot, 1)
     },
     removeDownloadSlot (slot) {
-      this.downloadList.splice(slot, 1)
+      this.episode.downloads.splice(slot, 1)
     }
   }
 }

@@ -37,22 +37,22 @@
         <li v-if="rrss" class="mr-2">
           <v-tooltip
             v-for="rs in rrss"
-            :key="rs.attributes.name"
+            :key="rs.name"
             bottom
           >
             <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 large
-                :href="rs.attributes.url"
+                :href="rs.url"
                 target="_blank"
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-icon>mdi-{{ rs.attributes.name.toLowerCase() }}</v-icon>
+                <v-icon>mdi-{{ rs.name.toLowerCase() }}</v-icon>
               </v-btn>
             </template>
-            <span>{{ $t('menu.rrss') }} {{ rs.attributes.name }}</span>
+            <span>{{ $t('menu.rrss') }} {{ rs.name }}</span>
           </v-tooltip>
         </li>
       </ul>
@@ -221,7 +221,6 @@ export default {
   name: 'Header',
   data () {
     return {
-      rrss: null,
       nav: false,
       search: '',
       focus: false,
@@ -235,6 +234,9 @@ export default {
   computed: {
     availableLocales () {
       return this.$i18n.locales.filter(i => i.code !== this.$i18n.locale)
+    },
+    rrss () {
+      return this.$store.state.rrss.rrss
     }
   },
   mounted () {
@@ -242,10 +244,8 @@ export default {
   },
   methods: {
     async getRrss () {
-      await this.$strapi.find('rrsses', {
-        _sort: 'created_at:desc'
-      }).then((res) => {
-        this.rrss = res.data
+      await this.$store.dispatch('rrss/getRrss', {
+        token: this.$store.state.auth.token
       })
     },
     logout () {

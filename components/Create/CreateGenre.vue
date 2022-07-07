@@ -34,6 +34,7 @@
           <v-col>
             <v-card
               tile
+              style="height:80vh;overflow-y:scroll;"
             >
               <v-card-title class="blue darken-3">
                 Available Genres
@@ -47,7 +48,7 @@
                   :key="genre.id"
                 >
                   <v-list-item-content>
-                    <v-list-item-title>{{ genre.text }}</v-list-item-title>
+                    <v-list-item-title>{{ genre.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -66,68 +67,40 @@ export default {
   data: () => ({
     text: '',
     hint: '',
-    genres: [],
     createdMessage: '',
     alertBox: false,
     alertBoxColor: '',
     isSubmitting: false
   }),
-  created () {
+  computed: {
+    genres () {
+      return this.$store.state.genres.genres
+    }
+  },
+  mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
       this.alertBoxColor = 'blue darken-4'
       this.createdMessage = 'Genre Created Successfully.'
     }
-    this.$apollo.query({
-      query: `query ($limit: Int){
-        Genres(limit: $limit){
-          text
-          url
-        }
-      }`,
-      variables: {
-        limit: 1000
-      }
-    }).then((input) => {
-      this.genres = input.data.Genres
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    })
+    this.getGenres()
   },
   methods: {
-    createGenre () {
-      this.isSubmitting = !this.isSubmitting
-      this.$apollo.mutate({
-        mutation: gql`mutation ($input: GenreInput){
-          createGenre(input: $input){
-            success
-            errors{
-              path
-              message
-            }
-          }
-        }`,
-        variables: {
-          input: {
-            text: this.text,
-            value: this.text,
-            url: this.text
-          }
-        }
-      }).then((input) => {
-        if (input.data.createGenre.success) {
-          this.$router.push({ path: '/panel/genre/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
-        } else {
-          this.alertBox = true
-          this.alertBoxColor = 'red darken-4'
-          this.createdMessage = input.data.createGenre.errors[0].message
-          this.isSubmitting = false
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
+    async getGenres () {
+      await this.$store.dispatch('genres/getGenres', {
+        token: this.$store.state.auth.token
       })
+    },
+    async createGenre () {
+      this.isSubmitting = !this.isSubmitting
+      await this.$store.dispatch('genres/createGenre', {
+        token: this.$store.state.auth.token,
+        genre: {
+          name: this.text,
+          url: encodeURIComponent(this.text.toLowerCase()).replaceAll('%20', '-')
+        }
+      })
+      this.isSubmitting = !this.isSubmitting
     }
   }
 }
