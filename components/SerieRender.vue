@@ -2,7 +2,7 @@
   <div v-if="serie">
     <v-container fluid class="m0 pa-0">
       <v-img
-        :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.screenshot.path}`"
+        :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(image => image.image_type.name === 'screenshot').path}`"
         alt=""
         aspect-ratio="16/9"
         style="position: absolute; top: 0; left: 0; width: 100%; height:100vh;filter:blur(10px);"
@@ -25,7 +25,7 @@
           <v-row>
             <v-col cols="12">
               <v-img
-                :src="`${$config.COVER_ENDPOINT}${serie.images.cover.path}`"
+                :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
                 style="max-height:415px;border-radius:10px;"
               />
             </v-col>
@@ -73,21 +73,21 @@
           lg="10"
         >
           <v-row class="px-4 py-5">
-            <h1 style="border-bottom: 2px solid blue;">
+            <h1>
               {{ serie.title }}
             </h1>
           </v-row>
           <v-row v-if="serie.title_english" class="px-4 py-5">
-            {{ serie.title_english }}
+            English: {{ serie.title_english }}
           </v-row>
           <v-row class="px-4 pb-2">
             <v-alert
               dense
               text
-              :color="status === 'Airing' ? 'success' : 'red accent-2'"
-              :icon="status === 'Airing' ? 'mdi-play' : 'mdi-information'"
+              :color="serie.status.name === 'Airing' ? 'success' : 'red accent-2'"
+              :icon="serie.status.name === 'Airing' ? 'mdi-play' : 'mdi-information'"
             >
-              <strong>{{ status }}</strong>
+              <strong>{{ serie.status.name }}</strong>
             </v-alert>
           </v-row>
           <v-row class="px-4">
@@ -103,7 +103,7 @@
           <v-row class="px-4">
             <span class="mt-2">{{ $t('serie.genres') }}</span>
             <v-chip
-              v-for="(genre, index) in genres"
+              v-for="(genre, index) in JSON.parse(serie.genres)"
               :key="index"
               :href="`/g/${genre.url}`"
               color="blue darken-3 ml-2 mt-2"
@@ -113,21 +113,16 @@
               <v-icon left>
                 mdi-play
               </v-icon>
-              {{ genre.text }}
+              {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
           <v-row class="mt-10 mb-5">
-            <SerieEpisodeList :serie="serie" :episodes="episodes" />
+            <SerieEpisodeList :serie="serie" :episodes="serie.episodes" />
           </v-row>
         </v-col>
       </v-row>
       <v-row>
         <ExploreCluster />
-      </v-row>
-      <v-row class="mt-10">
-        <v-col>
-          <LayoutComments />
-        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -136,6 +131,7 @@
 export default {
   data () {
     return {
+      serie: null,
       breadcrumb: [
         {
           text: 'Home',
@@ -146,13 +142,7 @@ export default {
           text: 'Series',
           disabled: true
         }
-      ],
-      serie: null,
-      episodes: null,
-      status: null,
-      genres: null,
-      cover: null,
-      screenshot: null
+      ]
     }
   },
   async mounted () {
@@ -163,9 +153,7 @@ export default {
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
-          h_id: {
-            $eq: this.$route.params.serie
-          }
+          h_id: this.$route.params.serie
         },
         populate: [
           'images',
@@ -179,25 +167,9 @@ export default {
       })
       await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
-        .then((series) => {
-          const resSerie = series.data.map((serie) => {
-            serie.attributes.genres = JSON.parse(serie.attributes.genres)
-            serie.attributes.images.cover = serie.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'cover')[0].attributes
-            serie.attributes.images.screenshot = serie.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'screenshot')[0].attributes
-            return {
-              ...serie
-            }
-          })
-          this.serie = resSerie[0].attributes
-          this.genres = resSerie[0].attributes.genres
-          this.status = resSerie[0].attributes.status.data.attributes.name
-          const episodes = resSerie[0].attributes.episodes.data.map((episode) => {
-            return {
-              ...episode.attributes
-            }
-          })
-          this.episodes = episodes
-          this.breadcrumb[1].text = this.serie.title
+        .then((serie) => {
+          this.serie = serie.data[0]
+          this.breadcrumb[1].text = serie.data[0].title
         })
     }
   }

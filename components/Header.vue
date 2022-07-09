@@ -10,7 +10,9 @@
         @click="nav = !nav"
       />
       <v-toolbar-title>
-        <a href="/"><LayoutLogo /></a>
+        <nuxt-link to="/">
+          <LayoutLogo />
+        </nuxt-link>
       </v-toolbar-title>
       <ul class="d-none d-md-flex d-lg-flex">
         <li class="mr-2">

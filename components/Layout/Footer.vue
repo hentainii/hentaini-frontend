@@ -4,7 +4,7 @@
     inset
     absolute
     style="font-size:11px;"
-    class="text-center justify-center"
+    class="text-center justify-center transparent"
   >
     <v-col
       class="text-center"

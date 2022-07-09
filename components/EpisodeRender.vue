@@ -20,7 +20,7 @@
               class="d-flex"
             >
               <h1 class="align-self-center text-h5 text-md-h4 text-lg-h4 font-weight-black">
-                {{ serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
+                {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
               </h1>
             </v-col>
             <v-col
@@ -35,19 +35,19 @@
                 class="float-right"
               >
                 <v-btn
-                  v-if="episodeCount[0] !== episode.episode_number"
-                  :href="`/h/${episode.serie.data.attributes.h_id}/${episode.episode_number-1}`"
+                  v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
+                  :href="`/h/${episode.serie.h_id}/${episode.episode_number - 1}`"
                 >
                   <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
                 <v-btn
-                  :href="`/h/${episode.serie.data.attributes.h_id}`"
+                  :href="`/h/${episode.serie.h_id}`"
                 >
                   <v-icon>mdi-view-list</v-icon>
                 </v-btn>
                 <v-btn
-                  v-if="episodeCount.slice(-1)[0] !== episode.episode_number"
-                  :href="`/h/${episode.serie.data.attributes.h_id}/${episode.episode_number+1}`"
+                  v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
+                  :href="`/h/${episode.serie.h_id}/${episode.episode_number + 1}`"
                 >
                   <v-icon>mdi-arrow-right</v-icon>
                 </v-btn>
@@ -58,12 +58,17 @@
             <v-col>
               <VideoElement :src="currentUrl" />
               <v-sheet
-                class="mx-auto"
+                class="mx-auto transparent"
                 max-width="100%"
               >
-                <v-slide-group show-arrows center-active mandatory>
+                <v-slide-group
+                  show-arrows
+                  center-active
+                  mandatory
+                  class="py-2"
+                >
                   <v-slide-item
-                    v-for="player in episode.players"
+                    v-for="player in JSON.parse(episode.players)"
                     :key="player.name"
                     v-slot:="{ active, toggle }"
                   >
@@ -99,6 +104,9 @@
                     v-on="on"
                     @click="genDownloadName"
                   >
+                    <v-icon class="mr-2">
+                      mdi-download
+                    </v-icon>
                     {{ $t('episode.download_text') }}
                   </v-btn>
                 </template>
@@ -150,7 +158,7 @@
                 height="auto"
                 :src="'https://picsum.photos/640/480'"
               />
-              <v-card-title>{{ serie.title }}</v-card-title>
+              <v-card-title>{{ episode.serie.title }}</v-card-title>
               <v-card-text>
                 <v-row
                   align="center"
@@ -180,7 +188,7 @@
                     outlined
                     rounded
                   >
-                    {{ status.name }}
+                    {{ episode.serie.status.name }}
                     <v-icon right>
                       mdi-youtube-tv
                     </v-icon>
@@ -196,7 +204,7 @@
                     {{ $t('episode.add_favorite') }}
                   </v-btn>
                 </div>
-                <div>{{ episode.serie.data.attributes.synopsis }}</div>
+                <div>{{ episode.serie.synopsis }}</div>
               </v-card-text>
               <v-divider class="mx-4" />
               <v-card-text>
@@ -205,11 +213,11 @@
                   column
                 >
                   <v-chip
-                    v-for="genre in genres"
-                    :key="genre.text"
+                    v-for="genre in JSON.parse(episode.serie.genres)"
+                    :key="genre.text ? genre.text : genre"
                     :href="`/explore?genre=${genre.url}`"
                   >
-                    {{ genre.text }}
+                    {{ genre.text ? genre.text : genre.name }}
                   </v-chip>
                 </v-chip-group>
               </v-card-text>
@@ -226,17 +234,19 @@
                 <div v-show="show">
                   <v-divider />
                   <v-list shaped>
-                    <v-subheader>Episodes for {{ serie.title }}</v-subheader>
+                    <v-subheader>Episodes for {{ episode.serie.title }}</v-subheader>
                     <v-list-item-group color="primary">
                       <v-list-item
-                        v-for="episode_item in episodes"
-                        :key="episode_item.attributes.episode_number"
+                        v-for="episode_item in episode.serie.episodes"
+                        :key="episode_item.episode_number"
                       >
                         <v-list-item-icon>
-                          <span background-color="blue darken-4">{{ episode_item.attributes.episode_number }}</span>
+                          <span background-color="blue darken-4">{{ episode_item.episode_number }}</span>
                         </v-list-item-icon>
                         <v-list-item-content>
-                          <a :href="`/h/${serie.h_id}/${episode_item.attributes.episode_number}`"><v-list-item-title v-text="serie.title" /></a>
+                          <nuxt-link :to="`/h/${episode.serie.h_id}/${episode_item.episode_number}`">
+                            <v-list-item-title v-text="episode.serie.title" />
+                          </nuxt-link>
                         </v-list-item-content>
                       </v-list-item>
                     </v-list-item-group>
@@ -272,10 +282,6 @@ export default {
     return {
       CDN: process.env.CDN_URI,
       episode: null,
-      episodes: null,
-      serie: null,
-      status: null,
-      genres: null,
       downloadsName: [],
       areDownloadLinksGenerated: false,
       currentUrl: '',
@@ -334,29 +340,8 @@ export default {
       })
       await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?${query}`)
         .then(res => res.json())
-        .then((input) => {
-          const res = input.data.map((episode) => {
-            episode.attributes.downloads = JSON.parse(episode.attributes.downloads)
-            episode.attributes.players = JSON.parse(episode.attributes.players)
-            episode.attributes.serie.data.attributes.genres = JSON.parse(episode.attributes.serie.data.attributes.genres)
-            return {
-              ...episode
-            }
-          })
-          const resEpisode = res[0].attributes
-          const resSerie = res[0].attributes.serie.data.attributes
-          const resStatus = res[0].attributes.serie.data.attributes.status.data.attributes
-          const resGenres = res[0].attributes.serie.data.attributes.genres
-          const resEpisodes = res[0].attributes.serie.data.attributes.episodes.data
-          this.episode = resEpisode
-          this.serie = resSerie
-          this.status = resStatus
-          this.genres = resGenres
-          this.episodes = resEpisodes
-          for (let i = 0; i < resEpisode.serie.data.attributes.episodes.data.length; i++) {
-            this.episodeCount.push(resEpisode.serie.data.attributes.episodes.data[i].attributes.episode_number)
-          }
-          this.nextEpisodeUrl = resEpisode.episode_number
+        .then((episode) => {
+          this.episode = episode.data[0]
         })
     },
     changeCurrentUrl (currentUrl) {
@@ -369,8 +354,8 @@ export default {
     },
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
-      this.breadcrumb[1].text = this.episode.serie.data.attributes.title
-      this.breadcrumb[1].href = `/h/${this.episode.serie.data.attributes.h_id}`
+      this.breadcrumb[1].text = this.episode.serie.title
+      this.breadcrumb[1].href = `/h/${this.episode.serie.h_id}`
     },
     genDownloadName () {
       if (!this.areDownloadLinksGenerated) {

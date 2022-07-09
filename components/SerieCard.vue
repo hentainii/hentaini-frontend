@@ -1,5 +1,5 @@
 <template>
-  <a :href="`/h/${url}`">
+  <nuxt-link :to="`/h/${url}`">
     <v-hover v-slot:default="{ hover }">
       <v-card
         class="mx-auto"
@@ -49,7 +49,7 @@
         </v-img>
       </v-card>
     </v-hover>
-  </a>
+  </nuxt-link>
 </template>
 
 <script>

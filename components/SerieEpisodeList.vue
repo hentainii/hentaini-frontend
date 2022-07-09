@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
-    <a
+    <nuxt-link
       v-for="(episode, index) in episodes"
       :key="index"
-      :href="`/h/${serie.h_id}/${episode.episode_number}`"
+      :to="`/h/${serie.h_id}/${episode.episode_number}`"
     >
       <v-row
         class="episode"
@@ -15,7 +15,7 @@
           {{ serie.title }} episode {{ episode.episode_number }}
         </h3>
       </v-row>
-    </a>
+    </nuxt-link>
   </v-container>
 </template>
 <script>

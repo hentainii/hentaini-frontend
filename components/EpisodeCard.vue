@@ -1,5 +1,5 @@
 <template>
-  <a v-if="!isAd" :href="'/h/' + hid + '/' + episodeNumber">
+  <nuxt-link v-if="!isAd" :to="'/h/' + hid + '/' + episodeNumber">
     <v-card
       class="mx-auto"
       flat
@@ -48,10 +48,10 @@
         {{ $moment(created).fromNow() }}
       </v-card-text>
     </v-card>
-  </a>
-  <a
+  </nuxt-link>
+  <nuxt-link
     v-else
-    :href="url"
+    :to="url"
   >
     <v-card
       class="mx-auto"
@@ -69,7 +69,7 @@
         {{ title }}
       </v-card-title>
     </v-card>
-  </a>
+  </nuxt-link>
 </template>
 
 <script>

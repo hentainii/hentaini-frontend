@@ -13,7 +13,7 @@
       :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(
         image => image.image_type.name === 'screenshot'
       ).path}`"
-      :href="`h/${serie.h_id}`"
+      :to="`h/${serie.h_id}`"
       gradient="to top right, rgba(0,0,0,.8), rgba(0,0,0,.2)"
     >
       <v-row align="end" class="lightbox white--text pa-2 fill-height">
@@ -33,7 +33,7 @@
               <v-chip
                 v-for="genre in serie.genres"
                 :key="genre.name"
-                :href="`/explore?genre=${genre.url}`"
+                :to="`/explore?genre=${genre.url}`"
               >
                 {{ genre.name ? genre.name : genre.text }}
               </v-chip>

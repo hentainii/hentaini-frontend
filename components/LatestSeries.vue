@@ -3,7 +3,9 @@
     <v-row>
       <v-col>
         <h5>
-          <a href="/explore">{{ $t('landpage.latest_series_little') }}</a>
+          <nuxt-link to="/explore">
+            {{ $t('landpage.latest_series_little') }}
+          </nuxt-link>
         </h5>
         <h1>{{ $t('landpage.latest_series') }}</h1>
       </v-col>
