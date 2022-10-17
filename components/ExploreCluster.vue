@@ -39,13 +39,7 @@ export default {
         .then(res => res.json())
         .then((categories) => {
           console.log(categories)
-          const resCategories = categories.data.map((category) => {
-            category.attributes.image = category.attributes.image.data.attributes
-            return {
-              ...category.attributes
-            }
-          })
-          this.categories = resCategories
+          this.categories = categories.data
         })
     }
   }

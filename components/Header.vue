@@ -22,20 +22,6 @@
             </nuxt-link>
           </v-btn>
         </li>
-        <li class="mr-2">
-          <v-btn text large>
-            <nuxt-link to="/explore?filter=airing" style="color:white">
-              {{ $t('menu.airing') }}
-            </nuxt-link>
-          </v-btn>
-        </li>
-        <li class="mr-2">
-          <v-btn text large>
-            <nuxt-link to="/" style="color:white">
-              {{ $t('menu.suggestions') }}
-            </nuxt-link>
-          </v-btn>
-        </li>
         <li v-if="rrss" class="mr-2">
           <v-tooltip
             v-for="rs in rrss"

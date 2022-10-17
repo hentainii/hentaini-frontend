@@ -20,7 +20,7 @@
       <v-col
         v-for="(episode) in episodes"
         :key="episode._id"
-        cols="12"
+        cols="6"
         lg="3"
         md="4"
         sm="6"

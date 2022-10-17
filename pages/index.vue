@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header />
-    <Carousel />
+    <Carousel v-if="$store.state.isDesktop" />
     <TagCloud />
     <LatestSeries />
     <v-container><v-divider /></v-container>
@@ -15,7 +15,8 @@ export default {
   name: 'Index',
   data () {
     return {
-      title: 'hentaini | its hentai, thats all.'
+      title: 'hentaini | its hentai, thats all.',
+      isDesktop: false
     }
   },
   head () {
@@ -41,6 +42,21 @@ export default {
         { hid: 'og:image', property: 'og:image', content: 'https://hentaini.com/hentaini.jpg' },
         { hid: 'author', name: 'author', content: 'hentaini' }
       ]
+    }
+  },
+  mounted () {
+    window.addEventListener('resize', this.isDesktopScreen)
+    this.isDesktopScreen()
+  },
+  methods: {
+    isDesktopScreen () {
+      const res = document.body.clientWidth
+      if (res < 960) {
+        this.isDesktop = false
+      } else {
+        this.isDesktop = true
+      }
+      this.$store.commit('isDesktop', this.isDesktop)
     }
   }
 }

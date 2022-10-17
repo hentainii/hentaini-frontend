@@ -25,9 +25,9 @@ export default {
   ],
 
   publicRuntimeConfig: {
-    COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/cdn/cover/',
-    SCREENSHOT_ENDPOINT: process.env.CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/cdn/screenshot/',
-    CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/cdn/'
+    COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
+    SCREENSHOT_ENDPOINT: process.env.CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/uploads/',
+    CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/uploads/'
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components

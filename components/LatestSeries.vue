@@ -14,11 +14,11 @@
       <v-col
         v-for="(serie) in series"
         :key="serie._id"
-        cols="6"
+        cols="4"
         lg="2"
         md="4"
-        sm="6"
-        xs="6"
+        sm="4"
+        xs="4"
       >
         <SerieCard
           :title="serie.title"

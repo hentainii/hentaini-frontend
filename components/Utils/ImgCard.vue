@@ -5,7 +5,7 @@
     class="pa-0"
   >
     <v-hover v-slot="{ hover }">
-      <a :href="data.url">
+      <nuxt-link :to="`${$route.path}${data.url}`">
         <v-img
           :src="`${$config.CDN_ENDPOINT}${data.image.path}`"
           class="align-end justify-center text-center"
@@ -20,7 +20,7 @@
           </h3>
           <p>{{ data.description }}</p>
         </v-img>
-      </a>
+      </nuxt-link>
     </v-hover>
   </v-col>
 </template>

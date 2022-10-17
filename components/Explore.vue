@@ -116,7 +116,7 @@
                     <v-list-item
                       v-for="genre in genres"
                       :key="genre.name"
-                      :href="`/explore?genre=${genre.url}`"
+                      :to="`/explore?genre=${genre.url}`"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-folder-search-outline</v-icon>
@@ -150,7 +150,7 @@
               <v-row>
                 <v-col
                   v-for="serie in series"
-                  :key="serie._id"
+                  :key="serie.id"
                   cols="4"
                   lg="3"
                   md="4"
@@ -282,19 +282,14 @@ export default {
         .then(res => res.json())
         .then((series) => {
           const resSerie = series.data.map((serie) => {
-            serie.attributes.genres = JSON.parse(serie.attributes.genres)
-            const status = serie.attributes.status.data.attributes
-            serie.attributes.images = serie.attributes.images.data.filter(image => image.attributes.image_type.data.attributes.name === 'cover')[0].attributes
+            serie.genres = JSON.parse(serie.genres)
+            serie.images = serie.images.filter(image => image.image_type.name === 'cover')[0]
             this.pagination = series.meta.pagination
             return {
-              ...serie,
-              status
+              ...serie
             }
           })
-          this.series = resSerie.map((serie) => {
-            const data = serie.attributes
-            return data
-          })
+          this.series = resSerie
         })
     },
     async getGenres () {
@@ -314,10 +309,7 @@ export default {
       await fetch(`${process.env.API_STRAPI_ENDPOINT}genres?${query}`)
         .then(res => res.json())
         .then((genres) => {
-          const resGenres = genres.data.map((genre) => {
-            return genre.attributes
-          })
-          this.genres = resGenres
+          this.genres = genres.data
         })
     },
     selectFilter (filter) {
