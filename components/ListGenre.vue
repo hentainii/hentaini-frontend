@@ -26,8 +26,8 @@
                   v-for="order in Orders"
                   :key="order.id"
                   :href="`/genres/${actualGenre}?sort=${order.url}`"
-                  active-class="blue darken-3 white--text"
-                  hover="blue darken-4 white--text"
+                  active-class="primary white--text"
+                  hover="primary white--text"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-filter</v-icon>

@@ -1,7 +1,7 @@
 <template>
-  <v-container v-if="episode" fluid>
+  <v-container v-if="episode">
     <v-row>
-      <v-col cols="12" xl="8" lg="7" md="12" sm="12">
+      <v-col cols="12" xl="8" lg="6" md="12" sm="12">
         <v-container>
           <v-row class="d-none d-md-flex d-lg-flex d-xl-flex">
             <v-col style="padding-top:0">
@@ -19,7 +19,7 @@
               xs="12"
               class="d-flex"
             >
-              <h1 class="align-self-center text-h5 text-md-h4 text-lg-h4 font-weight-black">
+              <h1 class="align-self-center text-h6 text-md-h5 text-lg-h5 font-weight-black">
                 {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
               </h1>
             </v-col>
@@ -36,18 +36,18 @@
               >
                 <v-btn
                   v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
-                  :href="`/h/${episode.serie.h_id}/${episode.episode_number - 1}`"
+                  :to="`/h/${episode.serie.h_id}/${episode.episode_number - 1}`"
                 >
                   <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
                 <v-btn
-                  :href="`/h/${episode.serie.h_id}`"
+                  :to="`/h/${episode.serie.h_id}`"
                 >
                   <v-icon>mdi-view-list</v-icon>
                 </v-btn>
                 <v-btn
                   v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
-                  :href="`/h/${episode.serie.h_id}/${episode.episode_number + 1}`"
+                  :to="`/h/${episode.serie.h_id}/${episode.episode_number + 1}`"
                 >
                   <v-icon>mdi-arrow-right</v-icon>
                 </v-btn>
@@ -75,7 +75,7 @@
                     <v-btn
                       class="mx-2"
                       :input-value="active"
-                      active-class="blue darken-4 white--text"
+                      active-class="primary white--text"
                       depressed
                       rounded
                       @click="toggle"
@@ -96,7 +96,8 @@
               >
                 <template #activator="{ on, attrs }">
                   <v-btn
-                    color="blue darken-4"
+                    color="primary"
+                    class="mr-2"
                     dark
                     elevation="0"
                     rounded
@@ -113,7 +114,7 @@
 
                 <v-card>
                   <v-card-title
-                    class="headline blue darken-2"
+                    class="headline primary"
                     primary-title
                   >
                     Download Episode {{ episode.episode_number }}
@@ -124,7 +125,7 @@
                       v-for="link in downloadsName"
                       :key="link.name"
                       :href="link.url.url"
-                      color="blue darken-4 mr-2"
+                      color="primary mr-2"
                       class="p-3"
                     >
                       {{ link.name }}
@@ -132,17 +133,26 @@
                   </v-card-text>
                 </v-card>
               </v-dialog>
+              <v-btn
+                color="deep-purple accent-1"
+                rounded
+                outlined
+              >
+                <v-icon left>
+                  mdi-heart
+                </v-icon>
+                {{ $t('episode.add_favorite') }}
+              </v-btn>
             </v-col>
           </v-row>
-          <v-divider class="mt-4" />
-          <Comments />
         </v-container>
       </v-col>
-      <v-col cols="12" xl="4" lg="5" md="12" sm="12">
+      <v-col cols="12" xl="4" lg="6" md="12" sm="12">
         <v-container>
           <v-row>
             <v-card
-              class="mx-auto transparent"
+              style="z-index:1000;position:relative;"
+              class="mx-auto black rounded-xl elevation-0"
               width="100%"
               elevation="0"
               tile
@@ -154,74 +164,26 @@
                   src="/img/animation1.gif"
                 />
               </a> -->
-              <v-img
-                height="auto"
-                :src="'https://picsum.photos/640/480'"
-              />
-              <v-card-title>{{ episode.serie.title }}</v-card-title>
               <v-card-text>
-                <v-row
-                  align="center"
-                  class="mx-0"
-                >
-                  <v-rating
-                    v-model="rating"
-                    length="5"
-                    empty-icon="mdi-heart-outline"
-                    full-icon="mdi-heart"
-                    half-icon="mdi-heart-half-full"
-                    half-increments
-                    hover
-                    medium
-                    :dense="false"
-                    color="blue darken-3"
-                    background-color="blue"
-                  />
-                  <span class="font-weight-bold">
-                    {{ rating }}
-                  </span>
-                </v-row>
-                <div class="my-4 subtitle-1">
-                  <v-btn
-                    class=""
-                    color="primary"
-                    outlined
-                    rounded
-                  >
-                    {{ episode.serie.status.name }}
-                    <v-icon right>
-                      mdi-youtube-tv
-                    </v-icon>
-                  </v-btn>
-                  <v-btn
-                    color="pink darken-1"
-                    rounded
-                    outlined
-                  >
-                    <v-icon left>
-                      mdi-heart
-                    </v-icon>
-                    {{ $t('episode.add_favorite') }}
-                  </v-btn>
-                </div>
                 <div>{{ episode.serie.synopsis }}</div>
               </v-card-text>
               <v-divider class="mx-4" />
               <v-card-text>
                 <v-chip-group
-                  active-class="blue darken-3"
+                  active-class="primary"
                   column
                 >
                   <v-chip
                     v-for="genre in JSON.parse(episode.serie.genres)"
                     :key="genre.text ? genre.text : genre"
                     :href="`/explore?genre=${genre.url}`"
+                    class="rounded-lg grey darken-4"
                   >
                     {{ genre.text ? genre.text : genre.name }}
                   </v-chip>
                 </v-chip-group>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="px-2 ml-2">
                 {{ $t('episode.show_episodes') }}
                 <v-btn
                   icon
@@ -233,19 +195,15 @@
               <v-expand-transition>
                 <div v-show="show">
                   <v-divider />
-                  <v-list shaped>
-                    <v-subheader>Episodes for {{ episode.serie.title }}</v-subheader>
+                  <v-list nav>
                     <v-list-item-group color="primary">
                       <v-list-item
                         v-for="episode_item in episode.serie.episodes"
                         :key="episode_item.episode_number"
                       >
-                        <v-list-item-icon>
-                          <span background-color="blue darken-4">{{ episode_item.episode_number }}</span>
-                        </v-list-item-icon>
                         <v-list-item-content>
-                          <nuxt-link :to="`/h/${episode.serie.h_id}/${episode_item.episode_number}`">
-                            <v-list-item-title v-text="episode.serie.title" />
+                          <nuxt-link :to="`/h/${episode.serie.h_id}/${episode_item.episode_number}`" class="d-flex">
+                            <v-list-item-title v-text="episode.serie.title + ' episode ' + episode_item.episode_number" />
                           </nuxt-link>
                         </v-list-item-content>
                       </v-list-item>
@@ -261,6 +219,10 @@
                 />
               </a> -->
             </v-card>
+          </v-row>
+          <v-divider />
+          <v-row class="mt-5">
+            <Comments />
           </v-row>
         </v-container>
       </v-col>
@@ -291,10 +253,11 @@ export default {
         {
           text: 'Hentaini',
           disabled: false,
-          href: '/'
+          to: '/'
         },
         {
           text: 'Serie',
+          to: '/',
           disabled: false
         },
         {
@@ -356,6 +319,7 @@ export default {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
       this.breadcrumb[1].text = this.episode.serie.title
       this.breadcrumb[1].href = `/h/${this.episode.serie.h_id}`
+      this.breadcrumb[1].disabled = false
     },
     genDownloadName () {
       if (!this.areDownloadLinksGenerated) {

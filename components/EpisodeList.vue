@@ -110,7 +110,7 @@ export default {
   async mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Episode Created Successfully.'
     }
     if (this.$route.query.edited) {

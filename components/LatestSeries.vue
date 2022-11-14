@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <h5>
+        <h5 class="text--primary">
           <nuxt-link to="/explore">
             {{ $t('landpage.latest_series_little') }}
           </nuxt-link>

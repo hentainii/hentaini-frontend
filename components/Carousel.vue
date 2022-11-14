@@ -20,20 +20,22 @@
         <v-col class="mb-10">
           <v-container>
             <v-chip
-              color="blue darken-2 white--text"
+              color="primary white--text"
+              class="rounded-lg"
             >
               {{ serie.status.name }}
             </v-chip>
             <h1>{{ serie.title }}</h1>
             <p>{{ serie.synopsis }}</p>
             <v-chip-group
-              active-class="blue darken-3"
+              active-class="primary"
               column
             >
               <v-chip
                 v-for="genre in serie.genres"
                 :key="genre.name"
                 :to="`/explore?genre=${genre.url}`"
+                class="rounded-lg grey darken-4"
               >
                 {{ genre.name ? genre.name : genre.text }}
               </v-chip>

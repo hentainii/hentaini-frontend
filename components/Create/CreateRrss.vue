@@ -25,7 +25,7 @@
               required
             />
             <v-btn
-              class="mr-4 blue darken-4"
+              class="mr-4 primary"
               :loading="isSubmitting"
               :disabled="isSubmitting"
               @click="createRrss"
@@ -39,7 +39,7 @@
             <v-card
               tile
             >
-              <v-card-title class="blue darken-3">
+              <v-card-title class="primary">
                 Social Networks
               </v-card-title>
               <v-data-table
@@ -48,7 +48,7 @@
                 sort-by="calories"
                 class="elevation-1"
               >
-                <template v-slot:item.actions="{ item }">
+                <template v-slot:actions="{ item }">
                   <v-dialog v-model="dialogEdit" max-width="500px" :retain-focus="false">
                     <v-card>
                       <v-card-title>
@@ -128,7 +128,7 @@ export default {
   created () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Ciudad creada correctamente.'
     }
     this.$apollo.query({
@@ -163,37 +163,37 @@ export default {
       this.dialogEdit = false
     },
     createRrss () {
-      this.isSubmitting = !this.isSubmitting
-      this.$apollo.mutate({
-        mutation: gql`mutation ($input: inputCreateRrss){
-          createRrss(input: $input){
-            success
-            errors{
-              path
-              message
-            }
-          }
-        }`,
-        variables: {
-          input: {
-            name: this.name,
-            url: this.url,
-            active: true
-          }
-        }
-      }).then((input) => {
-        if (input.data.createRrss.success) {
-          window.location.reload(true)
-        } else {
-          this.alertBox = true
-          this.alertBoxColor = 'red darken-4'
-          this.createdMessage = input.data.createRrss.errors[0].message
-          this.isSubmitting = false
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
+      // this.isSubmitting = !this.isSubmitting
+      // this.$apollo.mutate({
+      //   mutation: gql`mutation ($input: inputCreateRrss){
+      //     createRrss(input: $input){
+      //       success
+      //       errors{
+      //         path
+      //         message
+      //       }
+      //     }
+      //   }`,
+      //   variables: {
+      //     input: {
+      //       name: this.name,
+      //       url: this.url,
+      //       active: true
+      //     }
+      //   }
+      // }).then((input) => {
+      //   if (input.data.createRrss.success) {
+      //     window.location.reload(true)
+      //   } else {
+      //     this.alertBox = true
+      //     this.alertBoxColor = 'red darken-4'
+      //     this.createdMessage = input.data.createRrss.errors[0].message
+      //     this.isSubmitting = false
+      //   }
+      // }).catch((error) => {
+      //   // eslint-disable-next-line no-console
+      //   console.error(error)
+      // })
     }
   }
 }

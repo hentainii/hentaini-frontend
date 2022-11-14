@@ -40,7 +40,7 @@
               @change="screenshotSelected"
             />
             <v-btn
-              class="mr-4 blue darken-4"
+              class="mr-4 primary"
               large
               @click="editEpisode"
             >
@@ -106,7 +106,7 @@
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </TemplatePlayerInput>
-            <v-btn class="mr-4 blue darken-4" large @click="addPlayerSlot">
+            <v-btn class="mr-4 primary" large @click="addPlayerSlot">
               Add Player
             </v-btn>
           </v-container>
@@ -139,7 +139,7 @@
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </TemplateDownloadInput>
-            <v-btn class="mr-4 blue darken-4" large @click="addDownloadSlot">
+            <v-btn class="mr-4 primary" large @click="addDownloadSlot">
               Add Download
             </v-btn>
           </v-container>

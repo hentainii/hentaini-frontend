@@ -49,7 +49,7 @@
               outlined
               @change="screenshotSelected"
             />
-            <v-btn class="mr-4 blue darken-4" large @click="createEpisode">
+            <v-btn class="mr-4 primary" large @click="createEpisode">
               submit
             </v-btn>
           </v-container>
@@ -113,7 +113,7 @@
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </TemplatePlayerInput>
-            <v-btn class="mr-4 blue darken-4" large @click="addPlayerSlot">
+            <v-btn class="mr-4 primary" large @click="addPlayerSlot">
               Add Player
             </v-btn>
             <v-btn class="mr-4 green darken-4" large @click="playerListModel">
@@ -153,7 +153,7 @@
               </v-btn>
             </TemplateDownloadInput>
             <v-btn
-              class="mr-4 blue darken-4"
+              class="mr-4 primary"
               :loading="isSubmitting"
               :disabled="isSubmitting"
               large

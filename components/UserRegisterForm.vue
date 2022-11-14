@@ -59,7 +59,7 @@
       <p class="text-center">
         Log into your account and navigate for your favorite Hentai
       </p>
-      <v-btn block tile text class="blue darken-4" href="/login">
+      <v-btn block tile text class="primary" href="/login">
         Login
       </v-btn>
     </v-card-text>

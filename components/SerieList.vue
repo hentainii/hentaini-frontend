@@ -69,7 +69,7 @@
                 <template #activator="{ on, attrs }">
                   <v-btn
                     v-bind="attrs"
-                    :class="{ 'blue darken-4': item.featured }"
+                    :class="{ 'primary': item.featured }"
                     v-on="on"
                     @click="setFeatured(item.id, series.map(function(x) {return x.id; }).indexOf(item.id))"
                   >
@@ -199,7 +199,7 @@ export default {
   async mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Serie Created Successfully.'
     }
     if (this.$route.query.edited) {
@@ -250,7 +250,7 @@ export default {
     },
     getColorPill (status) {
       if (status === 'Airing') {
-        return 'blue darken-4'
+        return 'primary'
       } else {
         return 'red darken-4'
       }

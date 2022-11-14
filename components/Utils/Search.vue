@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <v-row style="position:relative">
+    <v-row style="position:relative" class="justify-center mx-auto">
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
+        class="rounded-xl elevation-0"
         :label="$t('menu.search_bar_text')"
         solo
         filled

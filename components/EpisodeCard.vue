@@ -1,53 +1,48 @@
 <template>
   <nuxt-link v-if="!isAd" :to="'/h/' + hid + '/' + episodeNumber">
-    <v-card
-      class="mx-auto"
-      flat
-      tile
-      color="#111"
-    >
-      <v-hover v-slot:default="{ hover }">
-        <v-img
-          class="white--text"
-          style="position:relative"
-          :aspect-ratio="16/9"
-          :src="screenshot"
+    <v-hover v-slot:default="{ hover }">
+      <v-img
+        class="white--text rounded-xl lift-image"
+        style="position:relative"
+        :aspect-ratio="16/9"
+        :src="screenshot"
+      >
+        <div
+          :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'"
+        />
+        <div
+          :class="hover ? 'play-button play-hover' : 'play-button'"
+          style="position:absolute;top:50%;left:50%; transform: translate(-50%, -50%)"
         >
-          <div
-            :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'"
-          />
-          <div
-            :class="hover ? 'play-button play-hover' : 'play-button'"
-            style="position:absolute;top:50%;left:50%; transform: translate(-50%, -50%)"
+          <v-icon style="font-size:4rem">
+            mdi-play
+          </v-icon>
+        </div>
+        <v-card-text
+          class="align-self-end text--primary"
+          style="position:absolute;bottom:0"
+        >
+          <v-chip
+            color="primary"
+            text-color="white"
+            small
           >
-            <v-icon style="font-size:4rem">
+            <v-icon left>
               mdi-play
             </v-icon>
-          </div>
-          <v-card-text
-            class="align-self-end text--primary"
-            style="position:absolute;bottom:0"
-          >
-            <v-chip
-              color="blue darken-3"
-              text-color="white"
-              small
-            >
-              <v-icon left>
-                mdi-play
-              </v-icon>
-              Episode: {{ episodeNumber }}
-            </v-chip>
-          </v-card-text>
-        </v-img>
-      </v-hover>
-      <v-card-title class="pb-0 pt-2 pl-0" style="font-size:1rem">
+            Episode: {{ episodeNumber }}
+          </v-chip>
+        </v-card-text>
+      </v-img>
+    </v-hover>
+    <v-card-title class="pb-0 pt-2 pl-2" style="overflow:hidden;white-space:nowrap;">
+      <p style="text-overflow:ellipsis;font-size:1rem;" class="pa-0 ma-0 white--text text-weight-bold">
         {{ title }}
-      </v-card-title>
-      <v-card-text class="py-0 pl-0 grey--text darken-3">
-        {{ $moment(created).fromNow() }}
-      </v-card-text>
-    </v-card>
+      </p>
+    </v-card-title>
+    <v-card-text class="py-0 pl-2 grey--text darken-3">
+      {{ $moment(created).fromNow() }}
+    </v-card-text>
   </nuxt-link>
   <nuxt-link
     v-else
@@ -135,5 +130,14 @@ export default {
 }
 .gradient:not(.gradient-hover){
   opacity: 0;
+}
+
+.lift-image {
+    transition: all  0.2s;
+}
+.lift-image:hover {
+    transform: translate(2px, -2px);
+    box-shadow: #4527A0 -4px 4px 0px 1px;
+    transition: all  0.2s;
 }
 </style>

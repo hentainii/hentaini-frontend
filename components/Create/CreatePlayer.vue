@@ -35,7 +35,7 @@
                 required
               />
               <v-btn
-                class="mr-4 blue darken-4"
+                class="mr-4 primary"
                 :loading="isSubmitting"
                 :disabled="isSubmitting"
                 @click="createPlayer"
@@ -48,7 +48,7 @@
             <v-card
               tile
             >
-              <v-card-title class="blue darken-3">
+              <v-card-title class="primary">
                 Available Players
               </v-card-title>
               <v-list
@@ -92,7 +92,7 @@ export default {
   created () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Player Created Successfully.'
     }
     this.$apollo.query({
@@ -115,43 +115,43 @@ export default {
   },
   methods: {
     createPlayer () {
-      this.isSubmitting = !this.isSubmitting
-      if (!this.name || !this.short_name || !this.player_code) {
-        this.alertBox = true
-        this.alertBoxColor = 'red darken-4'
-        this.createdMessage = 'You Must fill al the Fields'
-        this.isSubmitting = false
-      }
-      this.$apollo.mutate({
-        mutation: gql`mutation ($input: PlayerInput){
-          createPlayer(input: $input){
-            success
-            errors{
-              path
-              message
-            }
-          }
-        }`,
-        variables: {
-          input: {
-            name: this.name,
-            short_name: this.short_name,
-            player_code: this.player_code
-          }
-        }
-      }).then((input) => {
-        if (input.data.createPlayer.success) {
-          this.$router.push({ path: '/panel/player/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
-        } else {
-          this.alertBox = true
-          this.alertBoxColor = 'red darken-4'
-          this.createdMessage = input.data.createPlayer.errors[0].message
-          this.isSubmitting = false
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
+      // this.isSubmitting = !this.isSubmitting
+      // if (!this.name || !this.short_name || !this.player_code) {
+      //   this.alertBox = true
+      //   this.alertBoxColor = 'red darken-4'
+      //   this.createdMessage = 'You Must fill al the Fields'
+      //   this.isSubmitting = false
+      // }
+      // this.$apollo.mutate({
+      //   mutation: gql`mutation ($input: PlayerInput){
+      //     createPlayer(input: $input){
+      //       success
+      //       errors{
+      //         path
+      //         message
+      //       }
+      //     }
+      //   }`,
+      //   variables: {
+      //     input: {
+      //       name: this.name,
+      //       short_name: this.short_name,
+      //       player_code: this.player_code
+      //     }
+      //   }
+      // }).then((input) => {
+      //   if (input.data.createPlayer.success) {
+      //     this.$router.push({ path: '/panel/player/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
+      //   } else {
+      //     this.alertBox = true
+      //     this.alertBoxColor = 'red darken-4'
+      //     this.createdMessage = input.data.createPlayer.errors[0].message
+      //     this.isSubmitting = false
+      //   }
+      // }).catch((error) => {
+      //   // eslint-disable-next-line no-console
+      //   console.error(error)
+      // })
     }
   }
 }

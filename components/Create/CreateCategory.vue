@@ -22,7 +22,7 @@
                 required
               />
               <v-btn
-                class="mr-4 blue darken-4"
+                class="mr-4 primary"
                 :loading="isSubmitting"
                 :disabled="isSubmitting"
                 @click="createCategory"
@@ -35,7 +35,7 @@
             <v-card
               tile
             >
-              <v-card-title class="blue darken-3">
+              <v-card-title class="primary">
                 Available Categories
               </v-card-title>
               <v-list
@@ -75,7 +75,7 @@ export default {
   created () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Category Created Successfully.'
     }
     this.$apollo.query({
@@ -97,35 +97,35 @@ export default {
   },
   methods: {
     createCategory () {
-      this.isSubmitting = !this.isSubmitting
-      this.$apollo.mutate({
-        mutation: gql`mutation ($input: CategoryInput){
-          createCategory(input: $input){
-            success
-            errors{
-              path
-              message
-            }
-          }
-        }`,
-        variables: {
-          input: {
-            name: this.name
-          }
-        }
-      }).then((input) => {
-        if (input.data.createCategory.success) {
-          this.$router.push({ path: '/panel/category/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
-        } else {
-          this.alertBox = true
-          this.alertBoxColor = 'red darken-4'
-          this.createdMessage = input.data.createCategory.errors[0].message
-          this.isSubmitting = false
-        }
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      })
+      // this.isSubmitting = !this.isSubmitting
+      // this.$apollo.mutate({
+      //   mutation: gql`mutation ($input: CategoryInput){
+      //     createCategory(input: $input){
+      //       success
+      //       errors{
+      //         path
+      //         message
+      //       }
+      //     }
+      //   }`,
+      //   variables: {
+      //     input: {
+      //       name: this.name
+      //     }
+      //   }
+      // }).then((input) => {
+      //   if (input.data.createCategory.success) {
+      //     this.$router.push({ path: '/panel/category/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
+      //   } else {
+      //     this.alertBox = true
+      //     this.alertBoxColor = 'red darken-4'
+      //     this.createdMessage = input.data.createCategory.errors[0].message
+      //     this.isSubmitting = false
+      //   }
+      // }).catch((error) => {
+      //   // eslint-disable-next-line no-console
+      //   console.error(error)
+      // })
     }
   }
 }

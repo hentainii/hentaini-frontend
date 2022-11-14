@@ -2,9 +2,7 @@
   <nuxt-link :to="`/h/${url}`">
     <v-hover v-slot:default="{ hover }">
       <v-card
-        class="mx-auto"
-        flat
-        tile
+        class="mx-auto elevation-4 rounded-xl"
       >
         <v-img
           :aspect-ratio="9/14"
@@ -33,10 +31,10 @@
                   <v-chip
                     v-for="genre in genres"
                     :key="genre.text"
-                    color="blue darken-3"
+                    color="primary"
                     text-color="white"
                     small
-                    class="mx-auto my-2"
+                    class="mx-auto my-2 rounded-lg"
                     :href="`/explore?genre=${genre.url}`"
                     style="font-size:0.7rem"
                   >

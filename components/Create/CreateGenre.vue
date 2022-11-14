@@ -22,7 +22,7 @@
                 required
               />
               <v-btn
-                class="mr-4 blue darken-4"
+                class="mr-4 primary"
                 :loading="isSubmitting"
                 :disabled="isSubmitting"
                 @click="createGenre"
@@ -36,7 +36,7 @@
               tile
               style="height:80vh;overflow-y:scroll;"
             >
-              <v-card-title class="blue darken-3">
+              <v-card-title class="primary">
                 Available Genres
               </v-card-title>
               <v-list
@@ -80,7 +80,7 @@ export default {
   mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
-      this.alertBoxColor = 'blue darken-4'
+      this.alertBoxColor = 'primary'
       this.createdMessage = 'Genre Created Successfully.'
     }
     this.getGenres()

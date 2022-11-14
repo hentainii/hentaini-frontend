@@ -6,7 +6,7 @@
     <v-alert
       v-if="firstTime"
       type="info"
-      class="blue darken-4"
+      class="primary"
       tile
     >
       Welcome to Hentaini. Now you can log into your account.
@@ -40,7 +40,7 @@
       </form>
     </v-card-text>
     <v-card-text>
-      <v-btn rounded text block class="my-2 blue darken-4" @click.enter="login">
+      <v-btn rounded text block class="my-2 primary" @click.enter="login">
         Login
       </v-btn>
       <v-btn block rounded text class="gray darken-4" href="/">

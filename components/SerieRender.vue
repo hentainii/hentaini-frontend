@@ -57,11 +57,14 @@
             <v-col cols="12">
               <v-btn
                 block
-                color="blue darken-2"
+                color="primary"
+                class="elevation-0 rounded-xl"
                 href="/login"
               >
-                <v-icon>mdi-account</v-icon>
-                Login to save
+                <v-icon class="mr-2">
+                  mdi-heart
+                </v-icon>
+                {{ $t('serie.loginToSave') }}
               </v-btn>
             </v-col>
           </v-row>
@@ -95,7 +98,7 @@
               border="left"
               colored-border
               text
-              color="blue accent-4"
+              color="primary"
             >
               <strong>{{ $t('serie.synopsis') }}</strong> {{ serie.synopsis }}
             </v-alert>
@@ -106,7 +109,7 @@
               v-for="(genre, index) in JSON.parse(serie.genres)"
               :key="index"
               :href="`/g/${genre.url}`"
-              color="blue darken-3 ml-2 mt-2"
+              color="primary ml-2 mt-2"
               text-color="white"
               small
             >

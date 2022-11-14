@@ -33,7 +33,8 @@ export default {
   },
   serie: {
     synopsis: 'Sinopsis: ',
-    genres: 'Géneros '
+    genres: 'Géneros ',
+    loginToSave: 'Guardar'
   },
   explore: {
     title: '¿Ella no te ama? Explora nuestro catálogo.',

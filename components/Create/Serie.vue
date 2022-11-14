@@ -127,7 +127,7 @@
               <v-date-picker v-model="serie.next_episode" />
             </v-menu>
             <v-btn
-              class="mr-4 blue darken-4"
+              class="mr-4 primary"
               :loading="isSubmitting"
               :disabled="isSubmitting"
               large

@@ -33,7 +33,8 @@ export default {
   },
   serie: {
     synopsis: 'Synopsis: ',
-    genres: 'Genres '
+    genres: 'Genres ',
+    loginToSave: 'Save'
   },
   explore: {
     title: 'Explore our catalog.',
