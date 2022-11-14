@@ -55,7 +55,7 @@
     <v-navigation-drawer
       v-model="nav"
       app
-      dark
+      color="black"
       floating
       mobile-breakpoint="991"
       width="260"
@@ -86,7 +86,7 @@
           </v-list-item>
 
           <v-divider />
-          <v-list>
+          <v-list nav>
             <v-list-item-group>
               <v-list-item
                 v-for="link in navs"

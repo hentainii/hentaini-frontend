@@ -55,8 +55,17 @@ export const actions = {
       })
   },
   async getPanelSerieList ({ commit }, payload) {
+    let filters = {}
+    if (payload.search !== '') {
+      filters = {
+        title: {
+          $contains: payload.search
+        }
+      }
+    }
     const qs = require('qs')
     const query = qs.stringify({
+      filters,
       populate: [
         'status',
         'episodes'

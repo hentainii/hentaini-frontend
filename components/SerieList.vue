@@ -21,6 +21,7 @@
             single-line
             hide-details
             class="white--text"
+            @keyup.enter="getSeries"
           />
         </v-card-title>
         <client-only>
@@ -28,7 +29,6 @@
             :headers="headers"
             :items="series"
             :page.sync="page"
-            :search="search"
             :items-per-page="itemsPerPage"
             hide-default-footer
             class="elevation-1"
@@ -196,6 +196,17 @@ export default {
       return this.$store.state.statuses.statuses
     }
   },
+  watch: {
+    '$store.state.series.panelSerieListPagination' (val) {
+      Object.assign(this.pagination, val)
+    },
+    'pagination.page': {
+      handler () {
+        this.getSeries()
+      },
+      deep: false
+    }
+  },
   async mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
@@ -218,6 +229,7 @@ export default {
   methods: {
     async getSeries () {
       await this.$store.dispatch('series/getPanelSerieList', {
+        search: this.search,
         token: this.$store.state.auth.token,
         pagination: this.pagination
       })

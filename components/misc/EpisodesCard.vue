@@ -3,7 +3,7 @@
     class="mx-auto"
   >
     <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+      :src="$config.SCREENSHOT_ENDPOINT + serieImage"
       height="200px"
     />
 
@@ -31,18 +31,27 @@
 export default {
   data () {
     return {
-      episodecount: null
+      episodecount: null,
+      serieImage: null
     }
   },
   mounted () {
     this.getEpisodeCount()
+    this.getLastSerie()
   },
   methods: {
     async getEpisodeCount () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes`)
+      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?sort=createdAt:desc`)
         .then(res => res.json())
         .then((res) => {
           this.episodecount = res.meta.pagination.total
+        })
+    },
+    async getLastSerie () {
+      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?sort=createdAt:desc&populate[0]=images&populate[1]=images.image_type`)
+        .then(res => res.json())
+        .then((res) => {
+          this.serieImage = res.data[1].images.find(image => image.image_type.name === 'screenshot').path
         })
     }
   }

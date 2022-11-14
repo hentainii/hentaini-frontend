@@ -13,6 +13,11 @@ export default {
   data () {
     return {
     }
+  },
+  head () {
+    return {
+      title: 'Create Serie | Hentaini'
+    }
   }
 }
 </script>

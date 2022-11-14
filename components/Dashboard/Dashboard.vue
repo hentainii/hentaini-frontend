@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="6">
-        <MiscUsersCard />
+        <MiscSeriesCard />
       </v-col>
       <v-col cols="6">
         <MiscEpisodesCard />
@@ -10,10 +10,7 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <MiscSeriesCard />
-      </v-col>
-      <v-col cols="6">
-        <MiscEpisodesCard />
+        <MiscUsersCard />
       </v-col>
     </v-row>
   </v-container>
@@ -21,7 +18,11 @@
 
 <script>
 export default {
-
+  head () {
+    return {
+      title: 'Dashboard | Hentaini'
+    }
+  }
 }
 </script>
 
