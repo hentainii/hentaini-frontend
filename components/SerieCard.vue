@@ -85,7 +85,7 @@ export default {
   },
   data () {
     return {
-      CDN: this.$config.CDN_URI
+      CDN: process.env.CDN_URI
     }
   }
 }

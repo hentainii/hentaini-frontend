@@ -62,7 +62,7 @@ export default {
       search: '',
       searchResult: [],
       focus: false,
-      CDN: this.$config.CDN_URI
+      CDN: process.env.CDN_URI
     }
   },
   watch: {

@@ -53,7 +53,7 @@ export default {
     return {
       featuredSeries: [],
       model: 0,
-      CDN: this.$config.CDN_URI
+      CDN: process.env.CDN_URI
     }
   },
   mounted () {
