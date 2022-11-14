@@ -35,7 +35,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}categories?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}categories?${query}`)
         .then(res => res.json())
         .then((categories) => {
           console.log(categories)

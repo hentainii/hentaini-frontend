@@ -19,7 +19,7 @@ export const actions = {
     {
       encodeValuesOnly: true
     })
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}genres?${query}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres?${query}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`
@@ -31,7 +31,7 @@ export const actions = {
       })
   },
   async createGenre ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}genres`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

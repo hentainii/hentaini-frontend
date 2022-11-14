@@ -10,7 +10,7 @@ export const mutations = {
 }
 export const actions = {
   async getStatuses ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}statuses`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}statuses`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`

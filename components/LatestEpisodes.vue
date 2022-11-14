@@ -68,7 +68,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
         .then(res => res.json())
         .then((episodes) => {
           this.episodes = episodes.data

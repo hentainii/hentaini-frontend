@@ -10,7 +10,7 @@ export const mutations = {
 }
 export const actions = {
   async getPlayers ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}players?sort=createdAt:desc`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}players?sort=createdAt:desc`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`
@@ -22,7 +22,7 @@ export const actions = {
       })
   },
   createPlayer ({ commit }, payload) {
-    fetch(`${process.env.API_STRAPI_ENDPOINT}players`, {
+    fetch(`${this.$config.API_STRAPI_ENDPOINT}players`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -88,7 +88,7 @@ export default {
       this.password = ''
     },
     async login () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}auth/local`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

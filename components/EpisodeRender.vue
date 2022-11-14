@@ -242,7 +242,7 @@ export default {
   },
   data () {
     return {
-      CDN: process.env.CDN_URI,
+      CDN: this.$config.CDN_URI,
       episode: null,
       downloadsName: [],
       areDownloadLinksGenerated: false,
@@ -301,7 +301,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
         .then(res => res.json())
         .then((episode) => {
           this.episode = episode.data[0]

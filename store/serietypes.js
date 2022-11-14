@@ -10,7 +10,7 @@ export const mutations = {
 }
 export const actions = {
   async getSerieTypes ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}serie-types`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}serie-types`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`

@@ -161,7 +161,7 @@ export default {
     customScreenshot: [],
     screenshot: '',
     screenshotPreview: '',
-    CDN: process.env.CDN_URI
+    CDN: this.$config.CDN_URI
   }),
   computed: {
     players () {

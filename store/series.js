@@ -22,7 +22,7 @@ export const mutations = {
 }
 export const actions = {
   async editSerie ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${payload.serieData.id}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieData.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const actions = {
     {
       encodeValuesOnly: true
     })
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${payload.serieId}?${query}`)
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}?${query}`)
       .then(res => res.json())
       .then((serie) => {
         commit('getSerie', serie.data)
@@ -76,7 +76,7 @@ export const actions = {
     {
       encodeValuesOnly: true
     })
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`
@@ -93,7 +93,7 @@ export const actions = {
       })
   },
   setFeatured ({ commit }, payload) {
-    fetch(`${process.env.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
+    fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export const actions = {
     })
   },
   async saveStatus ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

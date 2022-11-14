@@ -168,7 +168,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then((serie) => {
           this.serie = serie.data[0]

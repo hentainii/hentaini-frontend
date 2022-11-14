@@ -12,7 +12,7 @@ export const mutations = {
 export const actions = {
   updatePassword ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      fetch(`${process.env.API_STRAPI_ENDPOINT}auth/change-password/${payload.id}`, {
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/change-password/${payload.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const actions = {
     {
       encodeValuesOnly: true
     })
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}users?${query}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}users?${query}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

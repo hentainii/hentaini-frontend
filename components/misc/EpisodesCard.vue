@@ -41,14 +41,14 @@ export default {
   },
   methods: {
     async getEpisodeCount () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes?sort=createdAt:desc`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?sort=createdAt:desc`)
         .then(res => res.json())
         .then((res) => {
           this.episodecount = res.meta.pagination.total
         })
     },
     async getLastSerie () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?sort=createdAt:desc&populate[0]=images&populate[1]=images.image_type`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?sort=createdAt:desc&populate[0]=images&populate[1]=images.image_type`)
         .then(res => res.json())
         .then((res) => {
           this.serieImage = res.data[1].images.find(image => image.image_type.name === 'screenshot').path

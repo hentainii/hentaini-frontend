@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     async getUserCount () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}users`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}users`)
         .then(res => res.json())
         .then((res) => {
           this.usercount = res.length

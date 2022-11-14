@@ -24,7 +24,7 @@ export const actions = {
       encodeValuesOnly: true
     })
     return new Promise((resolve, reject) => {
-      fetch(`${process.env.API_STRAPI_ENDPOINT}episodes/${payload.episodeId}?${query}`, {
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${payload.episodeId}?${query}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${payload.token}`
@@ -37,7 +37,7 @@ export const actions = {
     })
   },
   async editEpisode ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes/${payload.episode.id}`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${payload.episode.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const actions = {
     })
   },
   async createEpisode ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}episodes`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

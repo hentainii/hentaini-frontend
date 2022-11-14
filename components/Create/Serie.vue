@@ -227,7 +227,7 @@ export default {
         this.isSubmitting = false
       }
 
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ export default {
     async uploadImageToStrapi (imageBlob, imageName, imageType, serieId) {
       const formData = new FormData()
       formData.append('files', imageBlob, `${imageName}_${imageType}`)
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}upload`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.$store.state.auth.token}`
@@ -281,7 +281,7 @@ export default {
       })
     },
     async createImageComponent (image, imageType, serieId) {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}images`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

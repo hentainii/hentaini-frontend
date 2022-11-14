@@ -53,7 +53,7 @@ export default {
     return {
       featuredSeries: [],
       model: 0,
-      CDN: process.env.CDN_URI
+      CDN: this.$config.CDN_URI
     }
   },
   mounted () {
@@ -76,7 +76,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then((series) => {
           series.data.map((serie) => {

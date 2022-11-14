@@ -62,7 +62,7 @@ export default {
       search: '',
       searchResult: [],
       focus: false,
-      CDN: process.env.CDN_URI
+      CDN: this.$config.CDN_URI
     }
   },
   watch: {
@@ -70,7 +70,7 @@ export default {
     search: function (searchQuery) {
       if (searchQuery.length > 2) {
         const query = `filters[title][$containsi]=${searchQuery}`
-        fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
+        fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
           .then(res => res.json())
           .then((seach) => {
             this.searchResult = seach.data

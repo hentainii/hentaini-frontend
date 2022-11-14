@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     async getSeriesCount () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?sort=createdAt:desc&populate[0]=images&populate[1]=images.image_type`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?sort=createdAt:desc&populate[0]=images&populate[1]=images.image_type`)
         .then(res => res.json())
         .then((res) => {
           this.serieImage = res.data[0].images.find(image => image.image_type.name === 'screenshot').path

@@ -278,7 +278,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}series?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then((series) => {
           const resSerie = series.data.map((serie) => {
@@ -306,7 +306,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}genres?${query}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres?${query}`)
         .then(res => res.json())
         .then((genres) => {
           this.genres = genres.data

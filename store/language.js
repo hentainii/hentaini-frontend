@@ -10,7 +10,7 @@ export const mutations = {
 }
 export const actions = {
   async getLanguages ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}languages`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}languages`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`

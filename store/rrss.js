@@ -10,7 +10,7 @@ export const mutations = {
 }
 export const actions = {
   async getRrss ({ commit }, payload) {
-    await fetch(`${process.env.API_STRAPI_ENDPOINT}rrsses`, {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}rrsses`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${payload.token}`

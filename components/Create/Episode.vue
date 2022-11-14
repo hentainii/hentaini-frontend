@@ -185,7 +185,7 @@ export default {
     },
     serie: null,
     languageList: null,
-    CDN: process.env.CDN_URI,
+    CDN: this.$config.CDN_URI,
     currentCounter: 0,
     sendNotification: false,
     screenshotPreview: '',

@@ -110,7 +110,7 @@ export default {
       this.checkbox = false
     },
     async createUser () {
-      await fetch(`${process.env.API_STRAPI_ENDPOINT}auth/local/register`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/local/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
