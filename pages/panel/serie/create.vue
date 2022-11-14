@@ -1,9 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <CreateSerie />
-    </v-main>
-  </v-app>
+  <CreateSerie />
 </template>
 
 <script>

@@ -1,9 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <SerieList />
-    </v-main>
-  </v-app>
+  <SerieList />
 </template>
 
 <script>

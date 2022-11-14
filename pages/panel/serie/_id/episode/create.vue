@@ -1,9 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <CreateEpisode />
-    </v-main>
-  </v-app>
+  <CreateEpisode />
 </template>
 
 <script>

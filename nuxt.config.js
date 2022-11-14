@@ -1,6 +1,9 @@
 import colors from 'vuetify/es5/util/colors'
 require('dotenv').config()
 export default {
+  server: {
+    port: 3001 // default: 3000
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - hni',
@@ -27,7 +30,8 @@ export default {
   publicRuntimeConfig: {
     COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
     SCREENSHOT_ENDPOINT: process.env.CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/uploads/',
-    CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/uploads/'
+    CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/uploads/',
+    API_STRAPI_ENDPOINT: process.env.API_STRAPI_ENDPOINT || 'http://localhost:1337/'
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components

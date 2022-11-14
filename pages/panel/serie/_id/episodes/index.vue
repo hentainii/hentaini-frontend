@@ -1,9 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <EpisodeList />
-    </v-main>
-  </v-app>
+  <EpisodeList />
 </template>
 
 <script>

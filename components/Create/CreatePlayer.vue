@@ -83,75 +83,40 @@ export default {
     short_name: '',
     player_code: '',
     hint: '',
-    players: [],
     createdMessage: '',
     alertBox: false,
     alertBoxColor: '',
     isSubmitting: false
   }),
-  created () {
-    if (this.$route.query.created) {
-      this.alertBox = true
-      this.alertBoxColor = 'primary'
-      this.createdMessage = 'Player Created Successfully.'
+  computed: {
+    players () {
+      return this.$store.state.players.players
     }
-    this.$apollo.query({
-      query: `query ($limit: Int){
-        Players(limit: $limit){
-          name
-          short_name
-          player_code
-        }
-      }`,
-      variables: {
-        limit: 100
-      }
-    }).then((input) => {
-      this.players = input.data.Players
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    })
+  },
+  mounted () {
+    this.getPlayers()
   },
   methods: {
-    createPlayer () {
-      // this.isSubmitting = !this.isSubmitting
-      // if (!this.name || !this.short_name || !this.player_code) {
-      //   this.alertBox = true
-      //   this.alertBoxColor = 'red darken-4'
-      //   this.createdMessage = 'You Must fill al the Fields'
-      //   this.isSubmitting = false
-      // }
-      // this.$apollo.mutate({
-      //   mutation: gql`mutation ($input: PlayerInput){
-      //     createPlayer(input: $input){
-      //       success
-      //       errors{
-      //         path
-      //         message
-      //       }
-      //     }
-      //   }`,
-      //   variables: {
-      //     input: {
-      //       name: this.name,
-      //       short_name: this.short_name,
-      //       player_code: this.player_code
-      //     }
-      //   }
-      // }).then((input) => {
-      //   if (input.data.createPlayer.success) {
-      //     this.$router.push({ path: '/panel/player/create', query: { created: true } }, () => { window.location.reload(true) }, () => { window.location.reload(true) })
-      //   } else {
-      //     this.alertBox = true
-      //     this.alertBoxColor = 'red darken-4'
-      //     this.createdMessage = input.data.createPlayer.errors[0].message
-      //     this.isSubmitting = false
-      //   }
-      // }).catch((error) => {
-      //   // eslint-disable-next-line no-console
-      //   console.error(error)
-      // })
+    async getPlayers () {
+      await this.$store.dispatch('players/getPlayers', {
+        token: this.$store.state.auth.token
+      })
+    },
+    async createPlayer () {
+      this.isSubmitting = !this.isSubmitting
+      await this.$store.dispatch('players/createPlayer', {
+        token: this.$store.state.auth.token,
+        player: {
+          name: this.name,
+          short_name: this.short_name,
+          player_code: this.player_code
+        }
+      })
+      this.name = ''
+      this.short_name = ''
+      this.player_code = ''
+      this.isSubmitting = !this.isSubmitting
+      this.getPlayers()
     }
   }
 }

@@ -1,9 +1,5 @@
 <template>
-  <v-app>
-    <v-main>
-      <EditSerieEdit />
-    </v-main>
-  </v-app>
+  <EditSerieEdit />
 </template>
 
 <script>

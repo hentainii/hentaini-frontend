@@ -1,7 +1,9 @@
 <template>
   <v-app dark>
     <LayoutToolBar header="Hentaini Panel" />
-    <nuxt />
+    <v-main>
+      <nuxt />
+    </v-main>
   </v-app>
 </template>
 
