@@ -39,6 +39,7 @@
           :screenshot="episode.isAd ? episode.screenshot : `${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.path : null}`"
           :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.placeholder : null}`"
           :created="episode.createdAt"
+          :url="episode.url"
           :isAd="episode.isAd"
         />
       </v-col>
@@ -92,7 +93,7 @@ export default {
         created_at: `${new Date()}`,
         episode_number: 1,
         screenshot: `img/${Math.floor(Math.random() * 2)}.gif`,
-        urlName: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
+        url: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
         serie: {
           title: 'Tentacle Fantasy'
         },
@@ -106,7 +107,7 @@ export default {
         created_at: `${new Date()}`,
         episode_number: 1,
         screenshot: `img/psh${Math.floor(Math.random() * 5)}.gif`,
-        urlName: 'https://tm-offers.gamingadult.com/?offer=2565&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
+        url: 'https://tm-offers.gamingadult.com/?offer=2565&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
         serie: {
           title: 'Pornstar Harem RPG'
         },
