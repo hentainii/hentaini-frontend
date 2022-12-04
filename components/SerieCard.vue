@@ -7,6 +7,7 @@
         <v-img
           :aspect-ratio="9/14"
           :src="screenshot"
+          :lazy-src="placeholder ? placeholder : screenshot"
         >
           <v-expand-transition>
             <div
@@ -27,7 +28,21 @@
                     {{ synopsis.substr(0,200) + '...' }}
                   </v-card-text>
                 </v-row>
-                <v-row>
+                <v-row v-if="componentgenres.length > 0">
+                  <v-chip
+                    v-for="genre in componentgenres"
+                    :key="genre.url"
+                    color="primary"
+                    text-color="white"
+                    small
+                    class="mx-auto my-2 rounded-lg"
+                    :href="`/explore?genre=${genre.url}`"
+                    style="font-size:0.7rem"
+                  >
+                    {{ genre.name }}
+                  </v-chip>
+                </v-row>
+                <v-row v-else>
                   <v-chip
                     v-for="genre in genres"
                     :key="genre.text"
@@ -70,6 +85,14 @@ export default {
         }
       ]
     },
+    componentgenres: {
+      type: Array,
+      default: () => [
+        {
+          name: ''
+        }
+      ]
+    },
     status: {
       type: String,
       default: 'No Status'
@@ -79,6 +102,10 @@ export default {
       default: ''
     },
     screenshot: {
+      type: String,
+      default: ''
+    },
+    placeholder: {
       type: String,
       default: ''
     }

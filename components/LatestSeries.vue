@@ -24,9 +24,11 @@
           :title="serie.title"
           :synopsis="serie.synopsis"
           :genres="serie.genres"
+          :componentgenres="serie.genreList"
           :status="serie.status.name"
           :url="serie.h_id"
           :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+          :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder}`"
         />
       </v-col>
     </v-row>
@@ -51,7 +53,8 @@ export default {
         populate: [
           'status',
           'images',
-          'images.image_type'
+          'images.image_type',
+          'genreList'
         ],
         sort: ['createdAt:desc'],
         pagination: {

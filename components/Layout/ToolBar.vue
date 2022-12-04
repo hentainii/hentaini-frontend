@@ -59,51 +59,45 @@
       floating
       mobile-breakpoint="991"
       width="260"
-      absolute
     >
-      <v-img
-        src="/img/nav-bg.jpgold"
-        height="100%"
+      <v-layout
+        class=""
+        tag="v-list"
+        column
       >
-        <v-layout
-          class=""
-          tag="v-list"
-          column
-        >
-          <v-list-item class="px-2">
-            <v-list-item-avatar>
-              <v-img src="/img/user_default.jpg" />
-            </v-list-item-avatar>
-          </v-list-item>
+        <v-list-item class="px-2">
+          <v-list-item-avatar>
+            <v-img src="/img/user_default.jpg" />
+          </v-list-item-avatar>
+        </v-list-item>
 
-          <v-list-item link>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                {{ $store.state.auth.username }}
-              </v-list-item-title>
-              <v-list-item-subtitle>Back to home</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+        <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title class="title">
+              {{ $store.state.auth.username }}
+            </v-list-item-title>
+            <v-list-item-subtitle>Back to home</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
 
-          <v-divider />
-          <v-list nav>
-            <v-list-item-group>
-              <v-list-item
-                v-for="link in navs"
-                :key="link.id"
-                :to="link.url"
-              >
-                <v-list-item-icon>
-                  <v-icon v-text="link.icon" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="link.name" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-layout>
-      </v-img>
+        <v-divider />
+        <v-list nav>
+          <v-list-item-group>
+            <v-list-item
+              v-for="link in navs"
+              :key="link.id"
+              :to="link.url"
+            >
+              <v-list-item-icon>
+                <v-icon v-text="link.icon" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="link.name" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-layout>
     </v-navigation-drawer>
   </nav>
 </template>

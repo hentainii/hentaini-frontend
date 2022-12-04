@@ -181,6 +181,7 @@ export default {
     background_cover: [],
     categories: [],
     genreError: false,
+    error: false,
     coverPreview: '',
     screenshotPreview: '',
     alert: false,
@@ -216,15 +217,19 @@ export default {
         this.background_cover
       ]
       this.isSubmitting = !this.isSubmitting
-      if (this.cover.image < 1 || this.background_cover.image < 1) {
-        this.error = true
-        this.errorMessage = 'You must define an cover and screenshot image.'
+      if (!this.coverPreview || !this.screenshotPreview) {
+        this.alert = true
+        this.alertMessage = 'You must define an cover and screenshot image.'
+        this.alertType = 'error'
         this.isSubmitting = false
+        return
       }
       if (this.serie.genreList.length < 1) {
-        this.genreError = true
-        this.errorMessage = 'You must select one or more genres.'
+        this.alert = true
+        this.alertMessage = 'You must select one or more genres.'
+        this.alertType = 'error'
         this.isSubmitting = false
+        return
       }
 
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}series`, {
@@ -289,7 +294,8 @@ export default {
         },
         body: JSON.stringify({
           data: {
-            path: image.hash,
+            path: `${image.hash}${image.ext}`,
+            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
             image_type: imageType === 'cover' ? 1 : 2,
             series: serieId
           }
@@ -317,6 +323,7 @@ export default {
       })
     },
     coverSelected (e) {
+      this.alert = false
       this.cover.blob = this.$refs.cover.$refs.input.files[0]
       this.cover.type = 'cover'
       if (this.cover !== undefined) {
@@ -324,6 +331,7 @@ export default {
       }
     },
     background_coverSelected (e) {
+      this.alert = false
       this.background_cover.blob = this.$refs.background_cover.$refs.input.files[0]
       this.background_cover.type = 'screenshot'
       this.screenshotPreview = URL.createObjectURL(this.$refs.background_cover.$refs.input.files[0])

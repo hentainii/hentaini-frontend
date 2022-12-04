@@ -103,7 +103,23 @@
               <strong>{{ $t('serie.synopsis') }}</strong> {{ serie.synopsis }}
             </v-alert>
           </v-row>
-          <v-row class="px-4">
+          <v-row v-if="serie.genreList.length > 0" class="px-4">
+            <span class="mt-2">{{ $t('serie.genres') }}</span>
+            <v-chip
+              v-for="(genre, index) in serie.genreList"
+              :key="index"
+              :href="`/g/${genre.url}`"
+              color="primary ml-2 mt-2"
+              text-color="white"
+              small
+            >
+              <v-icon left>
+                mdi-play
+              </v-icon>
+              {{ genre.name }}
+            </v-chip>
+          </v-row>
+          <v-row v-else class="px-4">
             <span class="mt-2">{{ $t('serie.genres') }}</span>
             <v-chip
               v-for="(genre, index) in JSON.parse(serie.genres)"
@@ -119,8 +135,11 @@
               {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
-          <v-row class="mt-10 mb-5">
+          <v-row v-if="serie.episodes.length > 0" class="mt-10 mb-5">
             <SerieEpisodeList :serie="serie" :episodes="serie.episodes" />
+          </v-row>
+          <v-row v-else class="mt-10 mb-5 px-4">
+            <h4>{{ $t('serie.noEpísodes') }}</h4>
           </v-row>
         </v-col>
       </v-row>
@@ -162,7 +181,8 @@ export default {
           'images',
           'images.image_type',
           'status',
-          'episodes'
+          'episodes',
+          'genreList'
         ]
       },
       {

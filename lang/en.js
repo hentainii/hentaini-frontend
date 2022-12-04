@@ -34,7 +34,8 @@ export default {
   serie: {
     synopsis: 'Synopsis: ',
     genres: 'Genres ',
-    loginToSave: 'Save'
+    loginToSave: 'Save',
+    noEpísodes: 'No episodes yet'
   },
   explore: {
     title: 'Explore our catalog.',
