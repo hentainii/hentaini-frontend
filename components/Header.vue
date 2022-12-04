@@ -10,14 +10,14 @@
         @click="nav = !nav"
       />
       <v-toolbar-title>
-        <nuxt-link to="/">
+        <nuxt-link :to="localePath('/')">
           <LayoutLogo />
         </nuxt-link>
       </v-toolbar-title>
       <ul class="d-none d-md-flex d-lg-flex">
         <li class="mr-2">
           <v-btn text large>
-            <nuxt-link to="/explore" style="color:white">
+            <nuxt-link :to="localePath('/explore')" style="color:white">
               {{ $t('menu.explore') }}
             </nuxt-link>
           </v-btn>

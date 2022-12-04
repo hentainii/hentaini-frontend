@@ -36,18 +36,18 @@
               >
                 <v-btn
                   v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
-                  :to="`/h/${episode.serie.h_id}/${episode.episode_number - 1}`"
+                  :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number - 1}`)"
                 >
                   <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
                 <v-btn
-                  :to="`/h/${episode.serie.h_id}`"
+                  :to="localePath(`/h/${episode.serie.h_id}`)"
                 >
                   <v-icon>mdi-view-list</v-icon>
                 </v-btn>
                 <v-btn
                   v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
-                  :to="`/h/${episode.serie.h_id}/${episode.episode_number + 1}`"
+                  :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number + 1}`)"
                 >
                   <v-icon>mdi-arrow-right</v-icon>
                 </v-btn>
@@ -176,7 +176,7 @@
                   <v-chip
                     v-for="genre in JSON.parse(episode.serie.genres)"
                     :key="genre.text ? genre.text : genre"
-                    :href="`/explore?genre=${genre.url}`"
+                    :to="localePath(`/explore?genre=${genre.url}`)"
                     class="rounded-lg grey darken-4"
                   >
                     {{ genre.text ? genre.text : genre.name }}
@@ -202,7 +202,7 @@
                         :key="episode_item.episode_number"
                       >
                         <v-list-item-content>
-                          <nuxt-link :to="`/h/${episode.serie.h_id}/${episode_item.episode_number}`" class="d-flex">
+                          <nuxt-link :to="localePath(`/h/${episode.serie.h_id}/${episode_item.episode_number}`)" class="d-flex">
                             <v-list-item-title v-text="episode.serie.title + ' episode ' + episode_item.episode_number" />
                           </nuxt-link>
                         </v-list-item-content>

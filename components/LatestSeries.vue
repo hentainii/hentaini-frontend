@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <h5 class="text--primary">
-          <nuxt-link to="/explore">
+          <nuxt-link :to="localePath('/explore')">
             {{ $t('landpage.latest_series_little') }}
           </nuxt-link>
         </h5>

@@ -108,7 +108,7 @@
             <v-chip
               v-for="(genre, index) in serie.genreList"
               :key="index"
-              :href="`/g/${genre.url}`"
+              :to="localePath(`/g/${genre.url}`)"
               color="primary ml-2 mt-2"
               text-color="white"
               small
@@ -124,7 +124,7 @@
             <v-chip
               v-for="(genre, index) in JSON.parse(serie.genres)"
               :key="index"
-              :href="`/g/${genre.url}`"
+              :to="localePath(`/g/${genre.url}`)"
               color="primary ml-2 mt-2"
               text-color="white"
               small

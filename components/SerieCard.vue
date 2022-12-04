@@ -1,6 +1,6 @@
 <template>
-  <nuxt-link :to="`/h/${url}`">
-    <v-hover v-slot:default="{ hover }">
+  <nuxt-link :to="localePath(`/h/${url}`)">
+    <v-hover v-slot="{ hover }">
       <v-card
         class="mx-auto elevation-4 rounded-xl"
       >
@@ -36,7 +36,7 @@
                     text-color="white"
                     small
                     class="mx-auto my-2 rounded-lg"
-                    :href="`/explore?genre=${genre.url}`"
+                    :to="localePath(`/explore?genre=${genre.url}`)"
                     style="font-size:0.7rem"
                   >
                     {{ genre.name }}
@@ -50,7 +50,7 @@
                     text-color="white"
                     small
                     class="mx-auto my-2 rounded-lg"
-                    :href="`/explore?genre=${genre.url}`"
+                    :to="localePath(`/explore?genre=${genre.url}`)"
                     style="font-size:0.7rem"
                   >
                     {{ genre.text }}

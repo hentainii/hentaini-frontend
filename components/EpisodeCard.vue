@@ -1,6 +1,6 @@
 <template>
-  <nuxt-link v-if="!isAd" :to="'/h/' + hid + '/' + episodeNumber">
-    <v-hover v-slot:default="{ hover }">
+  <nuxt-link v-if="!isAd" :to="localePath(`/h/${hid}/${episodeNumber}`)">
+    <v-hover v-slot="{ hover }">
       <v-img
         class="white--text rounded-xl lift-image"
         style="position:relative"
@@ -46,7 +46,7 @@
   </nuxt-link>
   <nuxt-link
     v-else
-    :to="url"
+    :to="localePath(url)"
   >
     <v-card
       class="mx-auto"

@@ -25,7 +25,7 @@
         <nuxt-link
           v-for="serie in searchResult"
           :key="serie.id"
-          :to="`/h/${serie.h_id}`"
+          :to="localePath(`/h/${serie.h_id}`)"
           class="my-3"
         >
           <v-card

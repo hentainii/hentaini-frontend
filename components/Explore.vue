@@ -116,7 +116,7 @@
                     <v-list-item
                       v-for="genre in genres"
                       :key="genre.name"
-                      :to="`/explore?genre=${genre.url}`"
+                      :to="localePath(`/explore?genre=${genre.url}`)"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-folder-search-outline</v-icon>
@@ -160,6 +160,7 @@
                     :title="serie.title"
                     :synopsis="serie.synopsis"
                     :genres="serie.genres"
+                    :componentgenres="serie.genreList"
                     :status="serie.status"
                     :url="serie.h_id"
                     :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
@@ -272,7 +273,8 @@ export default {
           'images',
           'images.image_type',
           'status',
-          'episodes'
+          'episodes',
+          'genreList'
         ]
       },
       {

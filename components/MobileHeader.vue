@@ -5,17 +5,17 @@
     color="blue"
     fixed
   >
-    <v-btn to="/">
+    <v-btn :to="localePath('/')">
       <span>{{ $t('mobile.home') }}</span>
       <v-icon>mdi-home</v-icon>
     </v-btn>
 
-    <v-btn to="/explore?filter=airing">
+    <v-btn :to="localePath('/explore?filter=airing')">
       <span>{{ $t('mobile.airing') }}</span>
       <v-icon>mdi-plus-thick</v-icon>
     </v-btn>
 
-    <v-btn to="/">
+    <v-btn :to="localePath('/')">
       <span>{{ $t('mobile.suggestions') }}</span>
       <v-icon>mdi-format-list-bulleted-square</v-icon>
     </v-btn>

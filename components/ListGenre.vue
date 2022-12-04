@@ -25,7 +25,7 @@
                 <v-list-item
                   v-for="order in Orders"
                   :key="order.id"
-                  :href="`/genres/${actualGenre}?sort=${order.url}`"
+                  :to="localePath(`/genres/${actualGenre}?sort=${order.url}`)"
                   active-class="primary white--text"
                   hover="primary white--text"
                 >
@@ -44,7 +44,7 @@
                 <v-list-item
                   v-for="genre in Genres"
                   :key="genre.text"
-                  :href="`/genres/${genre.url}`"
+                  :to="localePath(`/genres/${genre.url}`)"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-folder-search-outline</v-icon>
