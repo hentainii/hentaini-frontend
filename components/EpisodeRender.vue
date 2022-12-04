@@ -1,16 +1,14 @@
 <template>
-  <v-container v-if="episode">
+  <v-container v-if="episode" fluid>
     <v-row>
-      <v-col cols="12" xl="8" lg="6" md="12" sm="12">
+      <v-col cols="12" xl="8" lg="8" md="12" sm="12">
         <v-container>
           <v-row class="d-none d-md-flex d-lg-flex d-xl-flex">
             <v-col style="padding-top:0">
               <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
             </v-col>
           </v-row>
-          <v-row
-            class="mb-3"
-          >
+          <v-row>
             <v-col
               cols="12"
               lg="10"
@@ -147,7 +145,7 @@
           </v-row>
         </v-container>
       </v-col>
-      <v-col cols="12" xl="4" lg="6" md="12" sm="12">
+      <v-col cols="12" xl="4" lg="4" md="12" sm="12">
         <v-container>
           <v-row>
             <v-card
@@ -271,54 +269,38 @@ export default {
       user_id: ''
     }
   },
-  async mounted () {
-    await this.getEpisode()
-    this.genCurrentUrl()
-    this.genBreadcrumb()
-    this.setUserId()
+  computed: {
+    serieId () {
+      return this.$route.params.serie
+    },
+    episodeNumber () {
+      return this.$route.params.episode
+    }
+  },
+  mounted () {
+    this.getEpisode()
   },
   methods: {
     async getEpisode () {
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          serie: {
-            h_id: {
-              $eq: this.$route.params.serie
-            }
-          },
-          episode_number: {
-            $eq: this.$route.params.episode
-          }
-        },
-        populate: [
-          'serie',
-          'serie.episodes',
-          'serie.status'
-        ],
-        sort: ['createdAt:desc']
-      },
-      {
-        encodeValuesOnly: true
+      const episode = await this.$store.dispatch('episodes/getEpisodePublic', {
+        serieId: this.serieId,
+        episode_number: this.episodeNumber
       })
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
-        .then(res => res.json())
-        .then((episode) => {
-          this.episode = episode.data[0]
-        })
+      this.episode = episode
+      this.genCurrentUrl()
+      this.genBreadcrumb()
+      this.setUserId()
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
     },
     genCurrentUrl () {
-      if (this.episode.players.length > 0) {
-        this.currentUrl = this.episode.players[0].url
-      }
+      this.currentUrl = JSON.parse(this.episode.players)[0].url
     },
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
       this.breadcrumb[1].text = this.episode.serie.title
-      this.breadcrumb[1].href = `/h/${this.episode.serie.h_id}`
+      this.breadcrumb[1].to = `/h/${this.episode.serie.h_id}`
       this.breadcrumb[1].disabled = false
     },
     genDownloadName () {

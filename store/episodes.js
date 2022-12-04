@@ -15,6 +15,41 @@ export const mutations = {
   }
 }
 export const actions = {
+  getEpisodePublic ({ commit }, payload) {
+    try {
+      const qs = require('qs')
+      const query = qs.stringify({
+        filters: {
+          serie: {
+            h_id: {
+              $eq: payload.serieId
+            }
+          },
+          episode_number: {
+            $eq: payload.episode_number
+          }
+        },
+        populate: [
+          'serie',
+          'serie.episodes',
+          'serie.status'
+        ],
+        sort: ['createdAt:desc']
+      },
+      {
+        encodeValuesOnly: true
+      })
+      return new Promise((resolve, reject) => {
+        fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
+          .then(res => res.json())
+          .then((episode) => {
+            resolve(episode.data[0])
+          })
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
   getEpisode ({ commit }, payload) {
     const qs = require('qs')
     const query = qs.stringify({
