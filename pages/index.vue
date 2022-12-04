@@ -3,9 +3,9 @@
     <Header />
     <Carousel v-if="$store.state.isDesktop" />
     <TagCloud />
-    <LatestSeries />
-    <v-container><v-divider /></v-container>
     <LatestEpisodes />
+    <v-container><v-divider /></v-container>
+    <LatestSeries />
     <MobileHeader />
   </div>
 </template>

@@ -44,9 +44,9 @@
       {{ $moment(created).fromNow() }}
     </v-card-text>
   </nuxt-link>
-  <nuxt-link
+  <a
     v-else
-    :to="localePath(url)"
+    :href="url"
   >
     <v-card
       class="mx-auto"
@@ -55,17 +55,16 @@
       color="#111"
     >
       <v-img
-        class="white--text"
+        class="white--text rounded-xl"
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
-        :lazy-src="placeholder ? placeholder : screenshot"
       />
       <v-card-title class="pb-0 pt-2 pl-0" style="font-size:1rem">
         {{ title }}
       </v-card-title>
     </v-card>
-  </nuxt-link>
+  </a>
 </template>
 
 <script>

@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-row class="justify-center">
+      <client-only>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//platform.bidgear.com/ads.php?domainid=6413&sizeid=2&zoneid=6905"></script>'/>
+      </client-only>
+    </v-row>
     <v-row>
       <v-col>
         <h5>
@@ -31,9 +36,10 @@
           :title="episode.serie.title"
           :episodeNumber="episode.episode_number"
           :hid="episode.serie.h_id"
-          :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.path : null}`"
+          :screenshot="episode.isAd ? episode.screenshot : `${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.path : null}`"
           :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.placeholder : null}`"
           :created="episode.createdAt"
+          :isAd="episode.isAd"
         />
       </v-col>
     </v-row>
@@ -50,7 +56,6 @@ export default {
   },
   mounted () {
     this.getLatestEpisodes()
-    // this.createEpisodeAd()
   },
   methods: {
     async getLatestEpisodes () {
@@ -63,7 +68,7 @@ export default {
         ],
         sort: ['createdAt:desc'],
         pagination: {
-          limit: 16
+          limit: 15
         }
       },
       {
@@ -73,22 +78,42 @@ export default {
         .then(res => res.json())
         .then((episodes) => {
           this.episodes = episodes.data
+          const rn = Math.floor(Math.random() * 2)
+          if (rn === 0) {
+            this.createEpisodeAd()
+          } else {
+            this.createEpisodeAd2()
+          }
         })
+    },
+    createEpisodeAd () {
+      const ad = {
+        _id: 'ad1',
+        created_at: `${new Date()}`,
+        episode_number: 1,
+        screenshot: `img/${Math.floor(Math.random() * 2)}.gif`,
+        urlName: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
+        serie: {
+          title: 'Tentacle Fantasy'
+        },
+        isAd: true
+      }
+      this.episodes.unshift(ad)
+    },
+    createEpisodeAd2 () {
+      const ad = {
+        _id: 'ad2',
+        created_at: `${new Date()}`,
+        episode_number: 1,
+        screenshot: `img/psh${Math.floor(Math.random() * 5)}.gif`,
+        urlName: 'https://tm-offers.gamingadult.com/?offer=2565&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
+        serie: {
+          title: 'Pornstar Harem RPG'
+        },
+        isAd: true
+      }
+      this.episodes.unshift(ad)
     }
-    // createEpisodeAd () {
-    //   const ad = {
-    //     _id: 'ad1',
-    //     created_at: '2020-07-10T01:25:22.543Z',
-    //     episode_number: 1,
-    //     screenshot: 'img/animation2.gif',
-    //     urlName: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
-    //     serie: {
-    //       title: 'Tentacle Fantasy'
-    //     },
-    //     isAd: true
-    //   }
-    //   this.episodes.unshift(ad)
-    // }
   }
 }
 </script>

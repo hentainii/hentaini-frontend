@@ -219,6 +219,11 @@
             </v-card>
           </v-row>
           <v-divider />
+          <v-row class="justify-center mt-5">
+            <client-only>
+              <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//platform.bidgear.com/ads.php?domainid=6413&sizeid=2&zoneid=6905"></script>'/>
+            </client-only>
+          </v-row>
           <v-row class="mt-5">
             <Comments />
           </v-row>

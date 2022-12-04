@@ -18,6 +18,7 @@
     "@nuxtjs/strapi": "^0.3.1",
     "babel-eslint": "^10.1.0",
     "cookieparser": "^0.1.0",
+    "postscribe": "^2.0.8",
     "core-js": "^3.15.1",
     "js-cookie": "^3.0.0",
     "nuxt": "^2.15.7",
