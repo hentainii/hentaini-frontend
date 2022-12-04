@@ -35,7 +35,7 @@
             <ul>
               <li>
                 <v-img
-                  src="https://picsum.photos/200/300"
+                  :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
                   width="76px"
                   height="76px"
                   class="mr-3"
@@ -69,7 +69,7 @@ export default {
     // eslint-disable-next-line object-shorthand
     search: function (searchQuery) {
       if (searchQuery.length > 2) {
-        const query = `filters[title][$containsi]=${searchQuery}`
+        const query = `filters[title][$containsi]=${searchQuery}&populate[0]=images&populate[1]=images.image_type`
         fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
           .then(res => res.json())
           .then((seach) => {
