@@ -32,6 +32,7 @@
           :episodeNumber="episode.episode_number"
           :hid="episode.serie.h_id"
           :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.path : null}`"
+          :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.placeholder : null}`"
           :created="episode.createdAt"
         />
       </v-col>

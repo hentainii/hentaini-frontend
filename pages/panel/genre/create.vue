@@ -1,21 +1,15 @@
 <template>
-  <div>
-    <v-app>
-      <v-main>
-        <CreateGenre />
-      </v-main>
-    </v-app>
-  </div>
+  <CreateGenre />
 </template>
 
 <script>
 import CreateGenre from '../../../components/Create/CreateGenre'
 export default {
-  layout: 'panel',
-  middleware: 'authenticated',
   components: {
     CreateGenre
   },
+  layout: 'panel',
+  middleware: 'authenticated',
   data () {
     return {
     }

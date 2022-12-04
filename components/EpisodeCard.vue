@@ -59,6 +59,7 @@
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
+        :lazy-src="placeholder ? placeholder : screenshot"
       />
       <v-card-title class="pb-0 pt-2 pl-0" style="font-size:1rem">
         {{ title }}
@@ -96,6 +97,10 @@ export default {
       default: ''
     },
     screenshot: {
+      type: String,
+      default: ''
+    },
+    placeholder: {
       type: String,
       default: ''
     },
