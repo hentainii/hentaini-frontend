@@ -21,6 +21,7 @@
   },
   "peacock.color": "#215732",
   "conventionalCommits.scopes": [
-    "Admin Panel"
+    "Admin Panel",
+    "Public"
   ]
 }
