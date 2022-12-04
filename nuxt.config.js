@@ -79,6 +79,12 @@ export default {
         name: 'Español',
         iso: 'es-ES',
         file: 'es.js'
+      },
+      {
+        code: 'id',
+        name: 'Indonesia',
+        iso: 'id-ID',
+        file: 'id.js'
       }
     ],
     defaultLocale: 'en',
