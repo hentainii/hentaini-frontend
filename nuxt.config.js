@@ -44,7 +44,10 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/dotenv',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    ['@nuxtjs/google-analytics', {
+      id: 'UA-170511662-1'
+    }]
   ],
 
   moment: {
