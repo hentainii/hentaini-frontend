@@ -15,6 +15,26 @@ export const mutations = {
   }
 }
 export const actions = {
+  addVisit ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      console.log(payload)
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: {
+            visits: payload.visits
+          }
+        })
+      })
+        .then(res => res.json())
+        .then((episode) => {
+          resolve(episode)
+        })
+    })
+  },
   getEpisodePublic ({ commit }, payload) {
     try {
       const qs = require('qs')

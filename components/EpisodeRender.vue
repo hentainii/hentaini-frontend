@@ -295,6 +295,13 @@ export default {
       this.genCurrentUrl()
       this.genBreadcrumb()
       this.setUserId()
+      this.addVisit()
+    },
+    addVisit () {
+      this.$store.dispatch('episodes/addVisit', {
+        serieId: this.episode.serie.id,
+        visits: this.episode.serie.visits + 1
+      })
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
