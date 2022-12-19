@@ -275,13 +275,14 @@ export default {
       this.episode.players = []
       this.episode.players.push(
         { name: 'Cloud', url: '' },
-        { name: 'Clip', url: '' },
-        { name: 'Fembed', url: '' },
-        { name: 'Amazon', url: '' },
+        { name: 'Yourupload', url: '' },
+        { name: 'TERA', url: '' },
+        { name: 'Stream', url: '' },
         { name: 'mp4uplo', url: '' },
         { name: 'Senvid', url: '' },
-        { name: 'Yourupload', url: '' },
-        { name: 'Mega', url: '' }
+        { name: 'BR', url: '' },
+        { name: 'Mega', url: '' },
+        { name: 'Fembed', url: '' }
       )
     }
   }

@@ -219,6 +219,13 @@
             </v-card>
           </v-row>
           <v-divider />
+          <v-row class="mt-5 justify-center">
+            <div>
+              <v-img
+                :src="`/img/ads/${rand}.gif`"
+              />
+            </div>
+          </v-row>
           <v-row class="justify-center mt-5">
             <client-only>
               <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//platform.bidgear.com/ads.php?domainid=6413&sizeid=2&zoneid=6905"></script>'/>
@@ -247,6 +254,7 @@ export default {
     return {
       CDN: process.env.CDN_URI,
       episode: null,
+      rand: 1,
       downloadsName: [],
       areDownloadLinksGenerated: false,
       currentUrl: '',
@@ -284,6 +292,7 @@ export default {
   },
   mounted () {
     this.getEpisode()
+    this.genRandNumber()
   },
   methods: {
     async getEpisode () {
@@ -302,6 +311,9 @@ export default {
         serieId: this.episode.serie.id,
         visits: this.episode.serie.visits + 1
       })
+    },
+    genRandNumber () {
+      this.rand = Math.floor(Math.random() * 17)
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl

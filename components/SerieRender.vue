@@ -143,6 +143,14 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-row class="justify-center">
+        <div>
+          <v-img
+            width="400px"
+            :src="`/img/ads2/${rand}.gif`"
+          />
+        </div>
+      </v-row>
       <v-row>
         <ExploreCluster />
       </v-row>
@@ -154,6 +162,7 @@ export default {
   data () {
     return {
       serie: null,
+      rand: 1,
       breadcrumb: [
         {
           text: 'Home',
@@ -169,6 +178,7 @@ export default {
   },
   async mounted () {
     await this.getSerie()
+    this.genRandNumber()
   },
   methods: {
     async getSerie () {
@@ -194,6 +204,9 @@ export default {
           this.serie = serie.data[0]
           this.breadcrumb[1].text = serie.data[0].title
         })
+    },
+    genRandNumber () {
+      this.rand = Math.floor(Math.random() * 6)
     }
   }
 }
