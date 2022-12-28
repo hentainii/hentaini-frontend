@@ -62,6 +62,9 @@ export default {
     async getLatestEpisodes () {
       const qs = require('qs')
       const query = qs.stringify({
+        filters: {
+          visible: true
+        },
         populate: [
           'serie',
           'image',
