@@ -13,6 +13,9 @@
       :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(
         image => image.image_type.name === 'screenshot'
       ).path}`"
+      :lazy-src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(
+        image => image.image_type.name === 'screenshot'
+      ).placeholder}`"
       :to="localePath(`/h/${serie.h_id}`)"
       gradient="to top right, rgba(0,0,0,.8), rgba(0,0,0,.2)"
     >

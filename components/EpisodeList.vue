@@ -12,7 +12,7 @@
     <v-row>
       <v-col cols="3">
         <v-card
-          class="mx-auto"
+          class="mx-auto elevation-0"
           width="auto"
         >
           <v-img
@@ -36,16 +36,17 @@
 
           <v-card-actions>
             <v-btn
-              color="green"
-              text
+              color="deep-purple accent-4"
+              class="elevation-0"
               :to="`/panel/serie/${serie.id}/episode/create`"
             >
               Add Episode
             </v-btn>
 
             <v-btn
-              color="orange"
-              text
+              color="deep-purple accent-2"
+              outlined
+              class="elevation-0"
               :to="`/panel/serie/${serie.id}/edit`"
             >
               Edit Serie
