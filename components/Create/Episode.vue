@@ -12,35 +12,38 @@
     <v-row>
       <v-col cols="6">
         <v-card
-          elevation
+          class="rounded-xl elevation-0"
         >
           <v-card-title>
             Create Episode for: {{ serie.title }}
           </v-card-title>
           <v-container>
-            <v-switch
-              v-model="sendNotification"
-              label="Send Episode Notification?"
-              prepend-icon="mdi-bell"
-            />
-            <v-text-field
-              v-model.number="episode.episode_number"
-              label="Episode Number"
-              type="number"
-              required
-              outlined
-            />
-            <v-switch
-              v-model="episode.visible"
-              label="Is Visible?"
-              outlined
-            />
-            <v-switch
-              v-model="episode.hasCustomScreenshot"
-              label="Use Custom Image?"
-              prepend-icon="mdi-image"
-              @change="detectNewImage"
-            />
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model.number="episode.episode_number"
+                  label="Episode Number"
+                  type="number"
+                  required
+                  outlined
+                />
+              </v-col>
+              <v-col>
+                <v-switch
+                  v-model="episode.visible"
+                  label="Is Visible?"
+                  outlined
+                />
+              </v-col>
+              <v-col>
+                <v-switch
+                  v-model="episode.hasCustomScreenshot"
+                  label="Use Custom Image?"
+                  prepend-icon="mdi-image"
+                  @change="detectNewImage"
+                />
+              </v-col>
+            </v-row>
             <v-file-input
               v-if="episode.hasCustomScreenshot"
               ref="screenshot"
@@ -53,29 +56,11 @@
               submit
             </v-btn>
           </v-container>
-          <v-container v-if="!episode.hasCustomScreenshot">
-            <v-row>
-              <h2>Default Screenshot Image</h2>
-            </v-row>
-            <v-row>
-              <v-img
-                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
-              />
-            </v-row>
-          </v-container>
-          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
-            <h2>Custom Screenshot Image</h2>
-            <v-row>
-              <v-img
-                :src="screenshotPreview"
-              />
-            </v-row>
-          </v-container>
         </v-card>
       </v-col>
       <v-col cols="6">
         <v-card
-          elevation
+          class="rounded-xl elevation-0"
         >
           <v-card-title>
             Player Information
@@ -125,7 +110,7 @@
           </v-container>
         </v-card>
         <v-card
-          elevation
+          class="mt-4 rounded-xl elevation-0"
         >
           <v-card-title>
             Download Links
@@ -161,6 +146,26 @@
             >
               Add Download
             </v-btn>
+          </v-container>
+        </v-card>
+        <v-card class="mt-4 rounded-xl elevation-0">
+          <v-card-title>
+            <h4>Default Screenshot Image</h4>
+          </v-card-title>
+          <v-container v-if="!episode.hasCustomScreenshot">
+            <v-row>
+              <v-img
+                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
+              />
+            </v-row>
+          </v-container>
+          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
+            <h2>Custom Screenshot Image</h2>
+            <v-row>
+              <v-img
+                :src="screenshotPreview"
+              />
+            </v-row>
           </v-container>
         </v-card>
       </v-col>
@@ -206,6 +211,13 @@ export default {
   methods: {
     async createEpisode () {
       this.isSubmitting = !this.isSubmitting
+      if (this.serie.episodes.length >= this.episode.episode_number) {
+        this.alertBox = true
+        this.alertBoxColor = 'red'
+        this.errorMessage = 'Episode number already exists'
+        this.isSubmitting = !this.isSubmitting
+        return
+      }
       this.episode.players = JSON.stringify(this.episode.players)
       this.episode.downloads = JSON.stringify(this.episode.downloads)
       this.episode.serie = this.serie.id
@@ -219,12 +231,14 @@ export default {
       await this.$store.dispatch('series/getSerie', {
         serieId: this.$route.params.id,
         populate: [
+          'episodes',
           'language',
           'images',
           'images.image_type'
         ]
       })
       this.serie = { ...this.$store.state.series.currentSerie }
+      this.episode.episode_number = this.serie.episodes.length + 1
     },
     async getPlayers () {
       await this.$store.dispatch('players/getPlayers', {
