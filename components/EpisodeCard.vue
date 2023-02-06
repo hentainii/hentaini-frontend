@@ -6,7 +6,7 @@
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
-        :lazy-src="placeholder ? placeholder : screenshot"
+        :lazy-src="placeholder"
       >
         <div
           :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'"
@@ -73,8 +73,8 @@ export default {
   name: 'NiEpisodeCard',
   props: {
     episode: {
-      type: String,
-      default: '0'
+      type: Number,
+      default: 0
     },
     title: {
       type: String,
@@ -98,11 +98,11 @@ export default {
     },
     screenshot: {
       type: String,
-      default: ''
+      default: 'default.jpg'
     },
     placeholder: {
       type: String,
-      default: ''
+      default: 'default_placeholder.jpg'
     },
     created: {
       type: String,

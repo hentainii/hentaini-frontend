@@ -28,7 +28,7 @@
           :status="serie.status.name"
           :url="serie.h_id"
           :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-          :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder}`"
+          :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
         />
       </v-col>
     </v-row>

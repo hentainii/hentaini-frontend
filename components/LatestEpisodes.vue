@@ -24,7 +24,7 @@
     <v-row v-if="episodes">
       <v-col
         v-for="(episode) in episodes"
-        :key="episode._id"
+        :key="episode.id"
         cols="6"
         lg="3"
         md="4"
@@ -32,12 +32,12 @@
         xs="6"
       >
         <EpisodeCard
-          :episode="episode._id"
+          :episode="episode.id"
           :title="episode.serie.title"
           :episodeNumber="episode.episode_number"
           :hid="episode.serie.h_id"
-          :screenshot="episode.isAd ? episode.screenshot : `${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.path : null}`"
-          :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image ? episode.image.placeholder : null}`"
+          :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+          :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
           :created="episode.createdAt"
           :url="episode.url"
           :isAd="episode.isAd"
@@ -92,10 +92,13 @@ export default {
     },
     createEpisodeAd () {
       const ad = {
-        _id: 'ad1',
+        id: -1,
         created_at: `${new Date()}`,
         episode_number: 1,
-        screenshot: `img/${Math.floor(Math.random() * 2)}.gif`,
+        image: {
+          placeholder: 'default.png',
+          path: `img/${Math.floor(Math.random() * 2)}.gif`
+        },
         url: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
         serie: {
           title: 'Tentacle Fantasy'
@@ -106,10 +109,13 @@ export default {
     },
     createEpisodeAd2 () {
       const ad = {
-        _id: 'ad2',
+        id: -2,
         created_at: `${new Date()}`,
         episode_number: 1,
-        screenshot: `img/psh${Math.floor(Math.random() * 5)}.gif`,
+        image: {
+          placeholder: 'default.png',
+          path: `img/psh${Math.floor(Math.random() * 5)}.gif`
+        },
         url: 'https://tm-offers.gamingadult.com/?offer=2565&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
         serie: {
           title: 'Pornstar Harem RPG'

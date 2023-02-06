@@ -294,7 +294,7 @@ export default {
         },
         body: JSON.stringify({
           data: {
-            path: `medium_${image.hash}${image.ext}`,
+            path: `${image.hash}${image.ext}`,
             placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
             image_type: imageType === 'cover' ? 1 : 2,
             series: serieId
