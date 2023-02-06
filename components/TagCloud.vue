@@ -26,9 +26,7 @@ export default {
   },
   methods: {
     async getTags () {
-      await this.$store.dispatch('genres/getGenres', {
-        token: this.$store.state.auth.token
-      })
+      await this.$store.dispatch('genres/getGenres')
     }
   }
 }
