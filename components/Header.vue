@@ -259,7 +259,7 @@ export default {
   transition: .2s;
   height: 160px!important;
   opacity: .9;
-  background: linear-gradient(to bottom,rgba(20,26,50,1) 1%,rgba(20,26,50,0) 100%)!important;
+  background: linear-gradient(to bottom,rgb(36, 29, 39) 1%,rgba(31, 14, 35, 0) 100%)!important;
   box-shadow: none;
 }
 </style>
