@@ -163,6 +163,7 @@ export default {
     return {
       serie: null,
       rand: 1,
+      head: 'Loading you serie...',
       breadcrumb: [
         {
           text: 'Home',
@@ -175,6 +176,9 @@ export default {
         }
       ]
     }
+  },
+  head () {
+    return this.head
   },
   async mounted () {
     await this.getSerie()
@@ -203,6 +207,29 @@ export default {
         .then((serie) => {
           this.serie = serie.data[0]
           this.breadcrumb[1].text = serie.data[0].title
+          this.head = {
+            title: this.serie.title,
+            meta: [
+              { hid: 'language', name: 'language', content: 'en' },
+              { hid: 'audience', name: 'audience', content: 'all' },
+              { hid: 'rating', name: 'rating', content: 'general' },
+              { hid: 'distribution', name: 'distribution', content: 'global' },
+              { hid: 'document-type', name: 'document-type', content: 'Public' },
+              { hid: 'MSSmartTagsPreventParsing', name: 'MSSmartTagsPreventParsing', content: 'true' },
+              { hid: 'robots', name: 'robots', content: 'all' },
+              { hid: 'robots', name: 'robots', content: 'all, index, follow' },
+              { hid: 'googlebot', name: 'googlebot', content: 'all, index, follow' },
+              { hid: 'yahoo-slurp', name: 'yahoo-slurp', content: 'all, index, follow' },
+              { hid: 'msnbot', name: 'msnbot', content: 'index, follow' },
+              { hid: 'googlebot-image', name: 'googlebot-image', content: 'all' },
+              { hid: 'title', name: 'title', content: 'Watch ' + this.serie.title + ' free online HD' },
+              { hid: 'description', name: 'description', content: 'Watch online ' + this.serie.title + ' in best quality. I mean, its Hentaini, the best place to watch your favourite series' },
+              { hid: 'keywords', name: 'keywords', content: 'Watch online hentai, best HD archive of the best of japanese culture for the world, hentaini, ahegao, yuri, yaoi, tentacle, maid, siscon, brocon' },
+              { hid: 'og:url', property: 'og:url', content: `https://hentaini.com${this.$route.path}` },
+              { hid: 'og:image', property: 'og:image', content: `${this.$config.SCREENSHOT_ENDPOINT}${this.serie.images.find(image => image.image_type.name === 'screenshot').path}` },
+              { hid: 'author', name: 'author', content: 'hentaini' }
+            ]
+          }
         })
     },
     genRandNumber () {
