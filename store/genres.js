@@ -21,8 +21,7 @@ export const actions = {
     })
     await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres?${query}`, {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${payload.token}`
+        'Content-Type': 'application/json'
       }
     })
       .then(res => res.json())
