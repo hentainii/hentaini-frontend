@@ -15,7 +15,7 @@ export default {
   name: 'Index',
   data () {
     return {
-      title: 'hentaini | its hentai, thats all.',
+      title: 'hentaini',
       isDesktop: false
     }
   },

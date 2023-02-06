@@ -4,22 +4,19 @@
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        class="rounded-xl elevation-0"
+        class="rounded-xl elevation-0 transparent"
         :label="$t('menu.search_bar_text')"
-        solo
-        filled
+        outlined
         dense
-        hide-details
+        hide-details="auto"
         @focus="focus = true"
         @blur="blurFocus"
       />
       <v-sheet
         v-if="search"
         width="100%"
-        height="auto"
-        style="position:absolute;top:2.7rem;left:0;z-index:999!important"
-        elevation="0"
-        color="grey darken-4"
+        style="position:absolute;top:2.7rem;left:0;z-index:999!important;;background-color:rgba(32,18,36,0.8);backdrop-filter:blur(10px)"
+        class="elevation-0 rounded-xl"
         tile
       >
         <nuxt-link
@@ -27,25 +24,32 @@
           :key="serie.id"
           :to="localePath(`/h/${serie.h_id}`)"
           class="my-3"
+          style="color:inherit;"
         >
           <v-card
-            color="grey darken-4"
-            class="py-4"
+            class="py-4 transparent elevation-0"
           >
             <ul>
-              <li>
-                <v-img
-                  :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-                  width="76px"
-                  height="76px"
-                  class="mr-3"
-                  style="display:inline-block;vertical-align:middle"
-                />
-                <span
-                  class="blue--text darken-3"
-                >
-                  {{ serie.title }}
-                </span>
+              <li class="d-flex">
+                <div>
+                  <v-img
+                    :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+                    width="76px"
+                    height="76px"
+                    class="mr-3 rounded-lg"
+                    style="display:inline-block;vertical-align:middle;"
+                  />
+                </div>
+                <div class="d-flex flex-column">
+                  <span
+                    class=""
+                  >
+                    {{ serie.title }}
+                  </span>
+                  <caption class="caption grey--text text-truncate text-left" style="width:600px;">
+                    {{ serie.synopsis }}
+                  </caption>
+                </div>
               </li>
             </ul>
           </v-card>
@@ -69,7 +73,7 @@ export default {
     // eslint-disable-next-line object-shorthand
     search: function (searchQuery) {
       if (searchQuery.length > 2) {
-        const query = `filters[title][$containsi]=${searchQuery}&populate[0]=images&populate[1]=images.image_type`
+        const query = `filters[title][$containsi]=${searchQuery}&populate[0]=images&populate[1]=images.image_type&pagination[limit]=5`
         fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
           .then(res => res.json())
           .then((seach) => {
@@ -87,6 +91,5 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
 </style>
