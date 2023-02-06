@@ -38,7 +38,6 @@ export default {
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}categories?${query}`)
         .then(res => res.json())
         .then((categories) => {
-          console.log(categories)
           this.categories = categories.data
         })
     }
