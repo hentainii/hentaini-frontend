@@ -1,12 +1,13 @@
 <template>
-  <v-container v-if="serieData">
+  <v-container v-if="serieData" fluid>
     <v-row>
       <v-col cols="6">
         <v-card
-          elevation
+          class="rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
-            Initial information
+            Edit basic Hentai information
           </v-card-title>
           <v-container>
             <v-text-field
@@ -23,11 +24,13 @@
               label="Serie Name"
               required
               outlined
+              dense
             />
             <v-text-field
               v-model="serieData.title_english"
               label="Serie English Name"
               required
+              dense
               outlined
             />
             <v-textarea
@@ -37,6 +40,7 @@
               value="Todo comenzo con el que tenia el peinado follador..."
               hint="Describe the Hentai"
               outlined
+              dense
             />
             <v-autocomplete
               v-model="serieData.genreList"
@@ -46,6 +50,7 @@
               item-value="id"
               multiple
               outlined
+              dense
               clearable
               deletable-chips
               chips
@@ -57,12 +62,14 @@
               item-text="name"
               item-value="id"
               outlined
+              dense
               label="Language"
             />
             <v-select
               v-model="serieData.serie_type"
               :items="serie_typeList"
               outlined
+              dense
               label="Serie Type"
               item-text="name"
               item-value="id"
@@ -72,6 +79,7 @@
               v-model="serieData.status"
               :items="statusList"
               outlined
+              dense
               label="Status"
               item-text="name"
               item-value="id"
@@ -86,7 +94,8 @@
       </v-col>
       <v-col cols="6">
         <v-card
-          elevation
+          class="rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
             Image Settings
@@ -108,12 +117,16 @@
                   label="Next episode on"
                   prepend-icon="mdi-calendar"
                   readonly
+                  outlined
+                  dense
                   v-on="on"
                 />
               </template>
               <v-date-picker v-model="serieData.next_episode" />
             </v-menu>
-            <v-btn class="mr-4 primary" large :loading="loading" @click.once="editSerie">
+          </v-container>
+          <v-container>
+            <v-btn class="mr-4 primary rounded-xl" large block :loading="loading" @click.once="editSerie">
               submit
             </v-btn>
           </v-container>

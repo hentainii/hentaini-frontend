@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-alert
       v-if="alert"
       :type="alertType"
@@ -12,22 +12,25 @@
     <v-row>
       <v-col cols="6">
         <v-card
-          elevation
+          class="elevation-0 rounded-xl"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
-            Initial information of {{ serie.h_id }}
+            Crafting new Hentai {{ serie.h_id }}
           </v-card-title>
           <v-container>
             <v-text-field
               v-model="serie.title"
               label="Hentai Title"
               required
+              dense
               outlined
             />
             <v-text-field
               v-model="serie.title_english"
               label="Hentai English Title"
               outlined
+              dense
             />
             <v-textarea
               v-model="serie.synopsis"
@@ -36,6 +39,7 @@
               value="Como comenzo con el que tenia el peinado follador..."
               hint="Describe the Hentai"
               outlined
+              dense
             />
             <v-autocomplete
               v-model="serie.genreList"
@@ -43,6 +47,7 @@
               label="Hentai Genres"
               item-text="name"
               item-value="id"
+              dense
               multiple
               clearable
               deletable-chips
@@ -54,6 +59,7 @@
               v-model="serie.serie_type"
               :items="serie_typeList"
               outlined
+              dense
               item-text="name"
               item-value="id"
               label="Serie Type"
@@ -64,6 +70,7 @@
               item-text="name"
               item-value="id"
               outlined
+              dense
               label="Status"
             />
             <v-select
@@ -72,6 +79,7 @@
               item-text="name"
               item-value="id"
               outlined
+              dense
               label="Language"
             />
             <v-switch
@@ -84,10 +92,11 @@
       </v-col>
       <v-col cols="6">
         <v-card
-          elevation
+          class="rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
-            Image Settings
+            Define Images
           </v-card-title>
           <v-container>
             <v-file-input
@@ -96,6 +105,8 @@
               :error="error"
               label="Cover Image"
               :clearable="false"
+              outlined
+              dense
               @change="coverSelected"
               @click="initialCoverClear"
             />
@@ -105,6 +116,8 @@
               :error="error"
               label="Screenshot Image"
               :clearable="false"
+              outlined
+              dense
               @change="background_coverSelected"
               @click="initialScreenshotClear"
             />
@@ -121,16 +134,21 @@
                   label="Next episode on"
                   prepend-icon="mdi-calendar"
                   readonly
+                  outlined
+                  dense
                   v-on="on"
                 />
               </template>
               <v-date-picker v-model="serie.next_episode" />
             </v-menu>
+          </v-container>
+          <v-container>
             <v-btn
-              class="mr-4 primary"
+              class="mr-4 primary rounded-xl"
               :loading="isSubmitting"
               :disabled="isSubmitting"
               large
+              block
               @click="createSerie"
             >
               submit
@@ -139,16 +157,37 @@
           <v-container>
             <v-row>
               <v-col
-                v-if="coverPreview"
-                cols="6"
+                v-if="screenshotPreview"
+                class="d-flex flex-column justify-center align-center"
               >
-                <v-img :src="coverPreview" />
+                <v-img
+                  :src="screenshotPreview"
+                  class="rounded-xl mx-auto"
+                  style="box-shadow: #7b1fa2 2px 2px 0px 1px;"
+                  max-width="300"
+                />
+                <v-chip class="mt-2">
+                  <v-icon>mdi-image</v-icon>
+                  Screenshot
+                </v-chip>
               </v-col>
               <v-col
-                v-if="screenshotPreview"
-                cols="6"
+                v-if="coverPreview"
+                class="d-flex flex-column justify-center align-center"
               >
-                <v-img :src="screenshotPreview" />
+                <div>
+                  <v-img
+                    :src="coverPreview"
+                    class="mx-auto rounded-xl"
+                    style="box-shadow: #7b1fa2 2px 2px 0px 1px;"
+                    width="350"
+                    height="auto"
+                  />
+                </div>
+                <v-chip class="mt-2">
+                  <v-icon>mdi-image</v-icon>
+                  Cover
+                </v-chip>
               </v-col>
             </v-row>
           </v-container>
@@ -174,8 +213,8 @@ export default {
       h_id: null,
       genreList: null,
       status: null,
-      language: null,
-      serie_type: null
+      language: 1,
+      serie_type: 1
     },
     cover: [],
     background_cover: [],

@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="serie">
+  <v-container v-if="serie" fluid>
     <v-alert
       v-if="alertBox"
       type="info"
@@ -13,6 +13,7 @@
       <v-col cols="6">
         <v-card
           class="rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
             Create Episode for: {{ serie.title }}
@@ -25,6 +26,8 @@
                   label="Episode Number"
                   type="number"
                   required
+                  hide-details
+                  dense
                   outlined
                 />
               </v-col>
@@ -52,15 +55,40 @@
               outlined
               @change="screenshotSelected"
             />
-            <v-btn class="mr-4 primary" large @click="createEpisode">
+          </v-container>
+          <v-container>
+            <v-btn class="mr-4 primary rounded-xl" large block @click="createEpisode">
               submit
             </v-btn>
+          </v-container>
+        </v-card>
+        <v-card class="mt-4 rounded-xl elevation-0">
+          <v-card-title>
+            Using Default Screenshot Image
+          </v-card-title>
+          <v-container v-if="!episode.hasCustomScreenshot">
+            <v-row>
+              <v-img
+                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
+                class="rounded-xl"
+                style="box-shadow: #7b1fa2 0px -5px 0px 0px !important;"
+              />
+            </v-row>
+          </v-container>
+          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
+            <h2>Custom Screenshot Image</h2>
+            <v-row>
+              <v-img
+                :src="screenshotPreview"
+              />
+            </v-row>
           </v-container>
         </v-card>
       </v-col>
       <v-col cols="6">
         <v-card
           class="rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
             Player Information
@@ -98,19 +126,20 @@
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </TemplatePlayerInput>
-            <v-btn class="mr-4 primary" large @click="addPlayerSlot">
+            <v-btn class="mr-4 primary rounded-xl" large @click="addPlayerSlot">
               Add Player
             </v-btn>
-            <v-btn class="mr-4 green darken-4" large @click="playerListModel">
+            <v-btn class="mr-4 green darken-4 rounded-xl" large @click="playerListModel">
               Airing Model
             </v-btn>
-            <v-btn class="mr-4 grey darken-4" large @click="resetPlayerList">
+            <v-btn class="mr-4 grey darken-4 rounded-xl" large @click="resetPlayerList">
               Clear Fields
             </v-btn>
           </v-container>
         </v-card>
         <v-card
           class="mt-4 rounded-xl elevation-0"
+          style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
         >
           <v-card-title>
             Download Links
@@ -132,13 +161,14 @@
               />
               <v-btn
                 slot="downloadDeleteItem"
+                class="rounded-xl"
                 @click="removeDownloadSlot(index)"
               >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </TemplateDownloadInput>
             <v-btn
-              class="mr-4 primary"
+              class="mr-4 primary rounded-xl"
               :loading="isSubmitting"
               :disabled="isSubmitting"
               large
@@ -146,26 +176,6 @@
             >
               Add Download
             </v-btn>
-          </v-container>
-        </v-card>
-        <v-card class="mt-4 rounded-xl elevation-0">
-          <v-card-title>
-            <h4>Default Screenshot Image</h4>
-          </v-card-title>
-          <v-container v-if="!episode.hasCustomScreenshot">
-            <v-row>
-              <v-img
-                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
-              />
-            </v-row>
-          </v-container>
-          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
-            <h2>Custom Screenshot Image</h2>
-            <v-row>
-              <v-img
-                :src="screenshotPreview"
-              />
-            </v-row>
           </v-container>
         </v-card>
       </v-col>

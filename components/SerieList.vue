@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="series">
+  <v-container v-if="series" fluid>
     <v-row>
       <v-col cols="12">
         <v-alert
@@ -19,7 +19,9 @@
             append-icon="mdi-magnify"
             label="Search for Hentai"
             single-line
-            hide-details
+            outlined
+            dense
+            hide-details="auto"
             class="white--text"
             @keyup.enter="getSeries"
           />

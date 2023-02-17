@@ -4,10 +4,8 @@
       app
       dark
       dense
-      style="background: #424242;"
       flat
     >
-      <v-app-bar-nav-icon @click="nav = !nav" />
       <div class="v-toolbar-title">
         <v-toolbar-title class="font-weight-light text-general">
           <v-btn
@@ -55,22 +53,14 @@
     <v-navigation-drawer
       v-model="nav"
       app
-      color="black"
-      floating
-      mobile-breakpoint="991"
-      width="260"
+      expand-on-hover
+      mini-variant
     >
       <v-layout
         class=""
         tag="v-list"
         column
       >
-        <v-list-item class="px-2">
-          <v-list-item-avatar>
-            <v-img src="/img/user_default.jpg" />
-          </v-list-item-avatar>
-        </v-list-item>
-
         <v-list-item link>
           <v-list-item-content>
             <v-list-item-title class="title">
