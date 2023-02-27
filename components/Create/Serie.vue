@@ -271,6 +271,8 @@ export default {
         return
       }
 
+      this.serie.synopsis = this.removeNoUTFCharacters(this.serie.synopsis)
+
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}series`, {
         method: 'POST',
         headers: {
@@ -360,6 +362,15 @@ export default {
       await this.$store.dispatch('statuses/getStatuses', {
         token: this.$store.state.auth.token
       })
+    },
+    removeNoUTFCharacters (str) {
+      let output = ''
+      for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) <= 127) {
+          output += str.charAt(i)
+        }
+      }
+      return output
     },
     coverSelected (e) {
       this.alert = false

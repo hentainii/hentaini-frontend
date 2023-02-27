@@ -1,93 +1,107 @@
 <template>
-  <v-container v-if="episode" fluid>
+  <v-container v-if="episode">
+    <v-row class="d-none d-md-flex d-lg-flex d-xl-flex">
+      <v-col style="padding-top:0">
+        <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
+      </v-col>
+    </v-row>
     <v-row>
-      <v-col cols="12" xl="8" lg="8" md="12" sm="12">
-        <v-container>
-          <v-row class="d-none d-md-flex d-lg-flex d-xl-flex">
-            <v-col style="padding-top:0">
-              <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
-            </v-col>
-          </v-row>
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="12"
+        lg="8"
+        class="d-flex"
+      >
+        <h1 class="align-self-center text-h6 text-md-h5 text-lg-h5 font-weight-black">
+          {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
+        </h1>
+      </v-col>
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="12"
+        lg="4"
+        class="d-flex"
+      >
+        <v-btn-toggle
+          rounded
+          class="float-left"
+        >
+          <v-btn
+            v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
+            :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number - 1}`)"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <v-btn
+            :to="localePath(`/h/${episode.serie.h_id}`)"
+          >
+            <v-icon>mdi-view-list</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
+            :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number + 1}`)"
+          >
+            <v-icon>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-btn-toggle>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="12"
+        lg="8"
+      >
+        <VideoElement :src="currentUrl" />
+        <v-container fluid>
           <v-row>
             <v-col
               cols="12"
-              lg="10"
-              md="9"
-              sm="8"
               xs="12"
+              sm="8"
+              md="8"
+              lg="9"
               class="d-flex"
             >
-              <h1 class="align-self-center text-h6 text-md-h5 text-lg-h5 font-weight-black">
-                {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
-              </h1>
+              <v-slide-group
+                show-arrows
+                center-active
+                mandatory
+                class="py-2"
+              >
+                <v-slide-item
+                  v-for="player in JSON.parse(episode.players)"
+                  :key="player.name"
+                  v-slot:="{ active, toggle }"
+                >
+                  <v-btn
+                    class="mx-2"
+                    :input-value="active"
+                    active-class="primary white--text"
+                    depressed
+                    rounded
+                    @click="toggle"
+                    @focus="changeCurrentUrl(player.url)"
+                  >
+                    {{ player.name }}
+                  </v-btn>
+                </v-slide-item>
+              </v-slide-group>
             </v-col>
             <v-col
               cols="12"
-              lg="2"
-              md="3"
+              xs="12"
               sm="4"
-              sx="12"
+              md="4"
+              lg="3"
+              class="d-flex justify-start justify-sm-end justify-md-end justify-lg-end justify-xl-end"
             >
-              <v-btn-toggle
-                rounded
-                class="float-right"
-              >
-                <v-btn
-                  v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
-                  :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number - 1}`)"
-                >
-                  <v-icon>mdi-arrow-left</v-icon>
-                </v-btn>
-                <v-btn
-                  :to="localePath(`/h/${episode.serie.h_id}`)"
-                >
-                  <v-icon>mdi-view-list</v-icon>
-                </v-btn>
-                <v-btn
-                  v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
-                  :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number + 1}`)"
-                >
-                  <v-icon>mdi-arrow-right</v-icon>
-                </v-btn>
-              </v-btn-toggle>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <VideoElement :src="currentUrl" />
-              <v-sheet
-                class="mx-auto transparent"
-                max-width="100%"
-              >
-                <v-slide-group
-                  show-arrows
-                  center-active
-                  mandatory
-                  class="py-2"
-                >
-                  <v-slide-item
-                    v-for="player in JSON.parse(episode.players)"
-                    :key="player.name"
-                    v-slot:="{ active, toggle }"
-                  >
-                    <v-btn
-                      class="mx-2"
-                      :input-value="active"
-                      active-class="primary white--text"
-                      depressed
-                      rounded
-                      @click="toggle"
-                      @focus="changeCurrentUrl(player.url)"
-                    >
-                      {{ player.name }}
-                    </v-btn>
-                  </v-slide-item>
-                </v-slide-group>
-              </v-sheet>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
               <v-dialog
                 v-model="modalDownload"
                 width="900"
@@ -95,7 +109,7 @@
                 <template #activator="{ on, attrs }">
                   <v-btn
                     color="primary"
-                    class="mr-2"
+                    class="mr-2 mt-2"
                     dark
                     elevation="0"
                     rounded
@@ -103,10 +117,9 @@
                     v-on="on"
                     @click="genDownloadName"
                   >
-                    <v-icon class="mr-2">
+                    <v-icon>
                       mdi-download
                     </v-icon>
-                    {{ $t('episode.download_text') }}
                   </v-btn>
                 </template>
 
@@ -135,17 +148,28 @@
                 color="deep-purple accent-1"
                 rounded
                 outlined
+                class="mt-2"
               >
-                <v-icon left>
+                <v-icon>
                   mdi-heart
                 </v-icon>
-                {{ $t('episode.add_favorite') }}
               </v-btn>
+            </v-col>
+          </v-row>
+          <v-row class="mt-0">
+            <v-col>
+              <Comments />
             </v-col>
           </v-row>
         </v-container>
       </v-col>
-      <v-col cols="12" xl="4" lg="4" md="12" sm="12">
+      <v-col
+        cols="12"
+        xs="12"
+        sm="12"
+        md="12"
+        lg="4"
+      >
         <v-container>
           <v-row>
             <v-card
@@ -230,9 +254,6 @@
             <client-only>
               <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//platform.bidgear.com/ads.php?domainid=6413&sizeid=2&zoneid=6905"></script>'/>
             </client-only>
-          </v-row>
-          <v-row class="mt-5">
-            <Comments />
           </v-row>
         </v-container>
       </v-col>
