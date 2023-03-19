@@ -47,7 +47,6 @@ export default {
   mounted () {
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
-    this.$router.push('/mysupahome')
   },
   methods: {
     isDesktopScreen () {
