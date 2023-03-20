@@ -41,7 +41,6 @@ export default {
   buildModules: [
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
-    '@nuxtjs/dotenv',
     '@nuxtjs/moment',
     ['@nuxtjs/google-analytics', {
       id: 'UA-170511662-1'
@@ -56,8 +55,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    'nuxt-i18n',
-    '@nuxtjs/strapi'
+    'nuxt-i18n'
   ],
 
   strapi: {

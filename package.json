@@ -11,20 +11,15 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
-    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/moment": "^1.6.1",
-    "@nuxtjs/onesignal": "^3.0.0-beta.16",
     "@nuxtjs/pwa": "^3.3.5",
-    "@nuxtjs/strapi": "^0.3.1",
     "babel-eslint": "^10.1.0",
     "cookieparser": "^0.1.0",
-    "postscribe": "^2.0.8",
-    "core-js": "^3.15.1",
     "js-cookie": "^3.0.0",
     "nuxt": "^2.15.7",
     "nuxt-i18n": "^6.28.1",
-    "url-parse": "^1.5.3",
-    "vuetify": "^2.5.5"
+    "postscribe": "^2.0.8",
+    "url-parse": "^1.5.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
