@@ -1,141 +1,155 @@
 <template>
-  <div>
-    <v-toolbar
-      style="position:relative;z-index:1"
-      flat
-      class="hnibg"
-    >
-      <v-app-bar-nav-icon
-        class="d-flex d-md-none d-lg-none d-lx-flex"
-        @click="nav = !nav"
-      />
-      <v-toolbar-title>
-        <nuxt-link :to="localePath('/')">
-          <LayoutLogo />
-        </nuxt-link>
-      </v-toolbar-title>
-      <ul class="d-none d-md-flex d-lg-flex">
-        <li class="mr-2">
-          <v-btn text large>
-            <nuxt-link :to="localePath('/explore')" style="color:white">
-              {{ $t('menu.explore') }}
-            </nuxt-link>
-          </v-btn>
-        </li>
-        <li v-if="rrss" class="mr-2">
-          <v-tooltip
-            v-for="rs in rrss"
-            :key="rs.name"
-            bottom
-          >
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                large
-                :href="rs.url"
-                target="_blank"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-{{ rs.name.toLowerCase() }}</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('menu.rrss') }} {{ rs.name }}</span>
-          </v-tooltip>
-        </li>
-      </ul>
-      <v-spacer />
-      <v-row class="mr-2 d-none d-md-flex d-lg-flex d-lx-flex">
-        <UtilsSearch />
-      </v-row>
-      <v-menu offset-y :close-on-click="true">
-        <template #activator="{ on: onMenu }">
-          <v-tooltip bottom>
-            <template #activator="{ on: onTooltip }">
-              <v-btn
-                icon
-                large
-                dark
-                v-on="{ ...onMenu, ...onTooltip }"
-              >
-                <v-icon>
-                  mdi-translate
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('menu.change_language') }}</span>
-          </v-tooltip>
-        </template>
-        <v-list>
-          <v-list-item
-            v-for="lang in availableLocales"
-            :key="lang.code"
-            :to="switchLocalePath(lang.code)"
-          >
-            <v-list-item-title>{{ lang.name }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-      <v-tooltip v-if="!$store.state.auth" bottom>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            icon
-            large
-            to="/login"
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-account</v-icon>
-          </v-btn>
-        </template>
-        <span>Login</span>
-      </v-tooltip>
-      <div v-else class="d-none d-sm-flex d-md-flex d-lg-flex">
-        <v-tooltip bottom>
+  <v-container
+    class="transparent"
+    style="position:relative; z-index:9999;"
+  >
+    <v-row>
+      <v-col class="d-flex align-center" style="height:100px;">
+        <v-app-bar-nav-icon
+          class="d-flex d-md-none d-lg-none d-lx-flex"
+          @click="nav = !nav"
+        />
+        <v-toolbar-title>
+          <nuxt-link :to="localePath('/')">
+            <LayoutLogo />
+          </nuxt-link>
+        </v-toolbar-title>
+        <ul class="d-none d-md-flex d-lg-flex">
+          <li class="mr-2">
+            <v-btn text large>
+              <v-icon class="mr-2">
+                mdi-magnify
+              </v-icon>
+              <nuxt-link :to="localePath('/explore')" style="color:white">
+                {{ $t('menu.explore') }}
+              </nuxt-link>
+            </v-btn>
+          </li>
+          <li class="mr-2">
+            <v-btn text large color="red lighten-1">
+              <v-icon class="mr-2">
+                mdi-heart
+              </v-icon>
+              <nuxt-link :to="localePath('/favorites')" style="color:white">
+                {{ $t('favorites.title') }}
+              </nuxt-link>
+            </v-btn>
+          </li>
+          <li v-if="rrss" class="mr-2">
+            <v-tooltip
+              v-for="rs in rrss"
+              :key="rs.name"
+              bottom
+            >
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  large
+                  :href="rs.url"
+                  target="_blank"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-{{ rs.name.toLowerCase() }}</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('menu.rrss') }} {{ rs.name }}</span>
+            </v-tooltip>
+          </li>
+        </ul>
+        <v-spacer />
+        <v-row class="mr-2 d-none d-md-flex d-lg-flex d-lx-flex">
+          <UtilsSearch />
+        </v-row>
+        <v-menu offset-y :close-on-click="true">
+          <template #activator="{ on: onMenu }">
+            <v-tooltip bottom>
+              <template #activator="{ on: onTooltip }">
+                <v-btn
+                  icon
+                  large
+                  dark
+                  v-on="{ ...onMenu, ...onTooltip }"
+                >
+                  <v-icon>
+                    mdi-translate
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('menu.change_language') }}</span>
+            </v-tooltip>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="lang in availableLocales"
+              :key="lang.code"
+              :to="switchLocalePath(lang.code)"
+            >
+              <v-list-item-title>{{ lang.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-tooltip v-if="!$store.state.auth" bottom>
           <template #activator="{ on, attrs }">
             <v-btn
               icon
               large
-              color="blue"
+              to="/login"
               v-bind="attrs"
-              to="/user"
               v-on="on"
             >
               <v-icon>mdi-account</v-icon>
             </v-btn>
           </template>
-          <span>{{ $t('menu.user_profile') }}</span>
+          <span>Login</span>
         </v-tooltip>
-        <v-tooltip v-if="$store.state.auth.level === 2" bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              icon
-              large
-              v-bind="attrs"
-              to="/panel"
-              v-on="on"
-            >
-              <v-icon>mdi-cog</v-icon>
-            </v-btn>
-          </template>
-          <span>{{ $t('menu.admin_panel_button') }}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              icon
-              large
-              v-bind="attrs"
-              v-on="on"
-              @click="logout"
-            >
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-btn>
-          </template>
-          <span>{{ $t('menu.logout_text') }}</span>
-        </v-tooltip>
-      </div>
-    </v-toolbar>
+        <div v-else class="d-none d-sm-flex d-md-flex d-lg-flex">
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                large
+                color="blue"
+                v-bind="attrs"
+                to="/user"
+                v-on="on"
+              >
+                <v-icon>mdi-account</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('menu.user_profile') }}</span>
+          </v-tooltip>
+          <v-tooltip v-if="$store.state.auth.level === 2" bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                large
+                v-bind="attrs"
+                to="/panel"
+                v-on="on"
+              >
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('menu.admin_panel_button') }}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                large
+                v-bind="attrs"
+                v-on="on"
+                @click="logout"
+              >
+                <v-icon>mdi-exit-to-app</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('menu.logout_text') }}</span>
+          </v-tooltip>
+        </div>
+      </v-col>
+    </v-row>
     <v-navigation-drawer
       v-model="nav"
       app
@@ -200,7 +214,7 @@
         </v-layout>
       </v-img>
     </v-navigation-drawer>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -228,7 +242,7 @@ export default {
     }
   },
   mounted () {
-    this.getRrss()
+    // this.getRrss()
   },
   methods: {
     async getRrss () {

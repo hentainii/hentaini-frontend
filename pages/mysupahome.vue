@@ -6,7 +6,7 @@
     <LatestEpisodes />
     <v-container><v-divider /></v-container>
     <LatestSeries />
-    <MobileHeader />
+    <!-- <MobileHeader /> -->
   </div>
 </template>
 

@@ -34,22 +34,15 @@
             <v-col cols="12">
               <v-btn
                 block
-                color="red accent-2"
-                elevation="0"
-                rounded
+                color="red accent-1"
+                class="elevation-0 rounded-xl"
+                :outlined="!serieIsPresentInFavorites"
+                @click="serieIsPresentInFavorites ? removeFavorite(serie.id) : setFavorite(serie.id)"
               >
-                <v-icon>mdi-heart</v-icon>
-                Fav
-              </v-btn>
-              <v-btn
-                block
-                outlined
-                class="mt-4"
-                elevation="0"
-                rounded
-              >
-                <v-icon>mdi-clock</v-icon>
-                Watch later
+                <v-icon class="mr-2">
+                  mdi-heart
+                </v-icon>
+                {{ serieIsPresentInFavorites ? $t('favorites.remove') : $t('favorites.add') }}
               </v-btn>
             </v-col>
           </v-row>
@@ -57,9 +50,10 @@
             <v-col cols="12">
               <v-btn
                 block
-                color="primary"
+                color="'red accent-1'"
                 class="elevation-0 rounded-xl"
                 href="/login"
+                v-on="on"
               >
                 <v-icon class="mr-2">
                   mdi-heart
@@ -164,6 +158,7 @@ export default {
       serie: null,
       rand: 1,
       head: 'Loading you serie...',
+      favorites: [],
       breadcrumb: [
         {
           text: 'Home',
@@ -179,6 +174,11 @@ export default {
   },
   head () {
     return this.head
+  },
+  computed: {
+    serieIsPresentInFavorites () {
+      return this.favorites.some(favorite => favorite.h_id === this.serie.h_id)
+    }
   },
   async mounted () {
     await this.getSerie()
@@ -206,6 +206,7 @@ export default {
         .then(res => res.json())
         .then((serie) => {
           this.serie = serie.data[0]
+          this.getFavorites()
           this.breadcrumb[1].text = serie.data[0].title
           this.head = {
             title: this.serie.title,
@@ -231,6 +232,32 @@ export default {
             ]
           }
         })
+    },
+    async getFavorites () {
+      this.favorites = await this.$store.dispatch('favorite/getFavorites', {
+        user: this.$store.state.auth,
+        serie: this.serie,
+        token: this.$store.state.auth.token
+      })
+    },
+    async setFavorite () {
+      const res = await this.$store.dispatch('favorite/setNewFavorite', {
+        user: this.$store.state.auth,
+        serie: this.serie,
+        token: this.$store.state.auth.token
+      })
+      this.favorites.push({
+        id: res.data.id,
+        h_id: this.serie.h_id
+      })
+    },
+    removeFavorite () {
+      this.$store.dispatch('favorite/removeFavorite', {
+        user: this.$store.state.auth,
+        favorite: this.favorites.filter(favorite => favorite.h_id === this.serie.h_id)[0],
+        token: this.$store.state.auth.token
+      })
+      this.favorites = this.favorites.filter(favorite => favorite.h_id !== this.serie.h_id)
     },
     genRandNumber () {
       this.rand = Math.floor(Math.random() * 6)

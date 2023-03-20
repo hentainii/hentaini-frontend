@@ -13,12 +13,6 @@
           </nuxt-link>
         </h5>
         <h1>{{ $t('landpage.latest_episodes') }}</h1>
-        <h4 class="grey--text text-body-2 darken-3">
-          <v-icon class="grey--text darken-3">
-            mdi-clock-outline
-          </v-icon>
-          {{ $t('landpage.updated_text') }} {{ episodes ? $moment(episodes[1].createdAt).fromNow() : null }}
-        </h4>
       </v-col>
     </v-row>
     <v-row v-if="episodes">
@@ -26,7 +20,7 @@
         v-for="(episode) in episodes"
         :key="episode.id"
         cols="6"
-        lg="3"
+        lg="2"
         md="4"
         sm="6"
         xs="6"
@@ -72,7 +66,7 @@ export default {
         ],
         sort: ['createdAt:desc'],
         pagination: {
-          limit: 15
+          limit: 23
         }
       },
       {

@@ -8,6 +8,7 @@
         :label="$t('menu.search_bar_text')"
         outlined
         dense
+        filled
         hide-details="auto"
         @focus="focus = true"
         @blur="blurFocus"

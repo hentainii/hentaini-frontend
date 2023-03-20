@@ -7,6 +7,13 @@ export default {
     latest_series: 'Recent Hentai',
     updated_text: 'Updated '
   },
+  favorites: {
+    title: 'My Favorites',
+    subtitle: 'You can save your favorite Hentai here.',
+    no_favorites: 'No favorites yet',
+    add: 'Add to Favorites',
+    remove: 'Remove from Favorites'
+  },
   menu: {
     explore: 'EXPLORE',
     airing: 'AIRING',

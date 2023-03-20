@@ -20,13 +20,14 @@
           </v-icon>
         </div>
         <v-card-text
-          class="align-self-end text--primary"
+          class="align-self-end text--primary pl-0 pb-1"
           style="position:absolute;bottom:0"
         >
           <v-chip
             color="primary"
             text-color="white"
             small
+            style="border-radius:0 10px 10px 0;"
           >
             <v-icon left>
               mdi-play
@@ -36,12 +37,12 @@
         </v-card-text>
       </v-img>
     </v-hover>
-    <v-card-title class="pb-0 pt-2 pl-2" style="overflow:hidden;white-space:nowrap;">
-      <p style="text-overflow:ellipsis;font-size:1rem;" class="pa-0 ma-0 white--text text-weight-bold">
+    <v-card-title class="pb-0 pt-1 mt-2 pl-2" style="overflow:hidden;white-space:nowrap;line-height:15px;">
+      <p style="text-overflow:ellipsis;font-size:0.9rem;" class="pa-0 ma-0 white--text text-weight-bold">
         {{ title }}
       </p>
     </v-card-title>
-    <v-card-text class="py-0 pl-2 grey--text darken-3">
+    <v-card-text class="py-0 pl-2 grey--text darken-3 text-caption">
       {{ $moment(created).fromNow() }}
     </v-card-text>
   </nuxt-link>

@@ -2,11 +2,11 @@
   <div>
     <Header />
     <Carousel v-if="$store.state.isDesktop" />
-    <TagCloud />
+    <!-- <TagCloud />
     <LatestEpisodes />
     <v-container><v-divider /></v-container>
     <LatestSeries />
-    <MobileHeader />
+    <MobileHeader /> -->
   </div>
 </template>
 

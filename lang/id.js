@@ -18,6 +18,13 @@ export default {
     logout_text: 'Keluar',
     login_register_nav: 'Masuk atau Daftar'
   },
+  favorites: {
+    title: 'Favorit Saya',
+    subtitle: 'Anda dapat menyimpan Hentai favorit Anda di sini.',
+    no_favorites: 'Belum ada favorit',
+    add: 'Tambahkan ke Favorit',
+    remove: 'Hapus dari Favorit'
+  },
   mobile: {
     home: 'Beranda',
     airing: 'Sedang Tayang',

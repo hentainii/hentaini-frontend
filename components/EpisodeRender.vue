@@ -144,16 +144,23 @@
                   </v-card-text>
                 </v-card>
               </v-dialog>
-              <v-btn
-                color="deep-purple accent-1"
-                rounded
-                outlined
-                class="mt-2"
-              >
-                <v-icon>
-                  mdi-heart
-                </v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="{ on }">
+                  <v-btn
+                    :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
+                    rounded
+                    outlined
+                    class="mt-2"
+                    v-on="on"
+                    @click="serieIsPresentInFavorites ? removeFavorite(episode.serie.id) : setFavorite(episode.serie.id)"
+                  >
+                    <v-icon>
+                      mdi-heart
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ serieIsPresentInFavorites ? $t('favorites.remove') : $t('favorites.add') }}</span>
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row class="mt-0">
@@ -281,6 +288,7 @@ export default {
       currentUrl: '',
       nextEpisodeUrl: '',
       episodeCount: [],
+      favorites: [],
       breadcrumb: [
         {
           text: 'Hentaini',
@@ -339,6 +347,9 @@ export default {
     },
     episodeNumber () {
       return this.$route.params.episode
+    },
+    serieIsPresentInFavorites () {
+      return this.favorites.some(favorite => favorite.h_id === this.episode.serie.h_id)
     }
   },
   mounted () {
@@ -354,8 +365,16 @@ export default {
       this.episode = episode
       this.genCurrentUrl()
       this.genBreadcrumb()
+      this.getFavorites()
       this.setUserId()
       this.addVisit()
+    },
+    async getFavorites () {
+      this.favorites = await this.$store.dispatch('favorite/getFavorites', {
+        user: this.$store.state.auth,
+        serie: this.episode.serie,
+        token: this.$store.state.auth.token
+      })
     },
     addVisit () {
       this.$store.dispatch('episodes/addVisit', {
@@ -399,6 +418,25 @@ export default {
       } else {
         this.user_id = this.$store.state.auth.username
       }
+    },
+    async setFavorite () {
+      const res = await this.$store.dispatch('favorite/setNewFavorite', {
+        user: this.$store.state.auth,
+        serie: this.episode.serie,
+        token: this.$store.state.auth.token
+      })
+      this.favorites.push({
+        id: res.data.id,
+        h_id: this.episode.serie.h_id
+      })
+    },
+    removeFavorite () {
+      this.$store.dispatch('favorite/removeFavorite', {
+        user: this.$store.state.auth,
+        favorite: this.favorites.filter(favorite => favorite.h_id === this.episode.serie.h_id)[0],
+        token: this.$store.state.auth.token
+      })
+      this.favorites = this.favorites.filter(favorite => favorite.h_id !== this.episode.serie.h_id)
     }
   }
 }

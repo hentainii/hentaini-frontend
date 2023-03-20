@@ -24,6 +24,13 @@ export default {
     airing: 'Emisión',
     suggestions: 'Mi Lista'
   },
+  favorites: {
+    title: 'Mis Favoritos',
+    subtitle: 'Puedes guardar tus Hentais favoritos aquí.',
+    no_favorites: 'No hay favoritos aún',
+    add: 'Agregar a Favoritos',
+    remove: 'Quitar de Favoritos'
+  },
   episode: {
     episode_number: 'Episodio',
     download_text: 'Descargar Episodio',

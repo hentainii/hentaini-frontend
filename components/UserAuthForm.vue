@@ -104,6 +104,7 @@ export default {
               const auth = {
                 token: res.jwt,
                 username: res.user.username,
+                id: res.user.id,
                 level: res.user.level
               }
               this.$store.commit('setAuth', auth)
