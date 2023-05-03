@@ -43,7 +43,7 @@ export default {
     '@nuxtjs/vuetify',
     '@nuxtjs/moment',
     ['@nuxtjs/google-analytics', {
-      id: 'UA-170511662-1'
+      id: 'G-CC7E5GXL8F'
     }]
   ],
 
