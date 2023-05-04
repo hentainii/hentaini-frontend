@@ -25,6 +25,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/gtag.js' }
   ],
 
   publicRuntimeConfig: {
@@ -41,10 +42,7 @@ export default {
   buildModules: [
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
-    '@nuxtjs/moment',
-    ['@nuxtjs/google-analytics', {
-      id: 'G-CC7E5GXL8F'
-    }]
+    '@nuxtjs/moment'
   ],
 
   moment: {
