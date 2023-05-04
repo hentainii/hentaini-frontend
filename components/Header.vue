@@ -16,24 +16,24 @@
         </v-toolbar-title>
         <ul class="d-none d-md-flex d-lg-flex">
           <li class="mr-2">
-            <v-btn text large>
-              <v-icon class="mr-2">
-                mdi-magnify
-              </v-icon>
-              <nuxt-link :to="localePath('/explore')" style="color:white">
+            <nuxt-link :to="localePath('/explore')" style="color:white">
+              <v-btn text large>
+                <v-icon class="mr-2">
+                  mdi-magnify
+                </v-icon>
                 {{ $t('menu.explore') }}
-              </nuxt-link>
-            </v-btn>
+              </v-btn>
+            </nuxt-link>
           </li>
           <li class="mr-2">
-            <v-btn text large color="red lighten-1">
-              <v-icon class="mr-2">
-                mdi-heart
-              </v-icon>
-              <nuxt-link :to="localePath('/favorites')" style="color:white">
+            <nuxt-link :to="localePath('/favorites')" style="color:white">
+              <v-btn text large color="red lighten-1">
+                <v-icon class="mr-2">
+                  mdi-heart
+                </v-icon>
                 {{ $t('favorites.title') }}
-              </nuxt-link>
-            </v-btn>
+              </v-btn>
+            </nuxt-link>
           </li>
           <li v-if="rrss" class="mr-2">
             <v-tooltip
