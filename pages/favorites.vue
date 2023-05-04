@@ -98,8 +98,12 @@ export default {
         .then(res => res.json())
         .then((favorites) => {
           favorites.data.map((favorite) => {
-            favorite.serie.genres = JSON.parse(favorite.serie.genres)
-            return favorite
+            if (favorite.serie.genres) {
+              favorite.serie.genres = JSON.parse(favorite.serie.genres)
+              return favorite
+            } else {
+              return favorite
+            }
           })
           this.favorites = favorites.data
         })
