@@ -31,6 +31,7 @@
             :headers="headers"
             :items="series"
             :page.sync="page"
+            :options.sync="options"
             :items-per-page="itemsPerPage"
             hide-default-footer
             class="elevation-1"
@@ -66,7 +67,7 @@
               </v-edit-dialog>
             </template>
             <!-- ########################### -->
-            <template #[`item.isFeatured`]="{ item }">
+            <template #[`item.featured`]="{ item }">
               <v-tooltip top>
                 <template #activator="{ on, attrs }">
                   <v-btn
@@ -179,12 +180,16 @@ export default {
       { text: 'Episodes', value: 'episodes.length' },
       { text: 'Visits', value: 'visits' },
       { text: 'Airing', sortable: true, value: 'status' },
-      { text: 'Featured', sortable: true, value: 'isFeatured' },
+      { text: 'Featured', sortable: true, value: 'featured' },
       { text: 'Actions', sortable: false, value: 'actions' }
     ],
     pagination: {
       page: 1,
       pageSize: 24
+    },
+    options: {
+      sortBy: ['createdAt'],
+      sortDesc: [true]
     },
     snack: false,
     snackColor: '',
@@ -203,6 +208,12 @@ export default {
       Object.assign(this.pagination, val)
     },
     'pagination.page': {
+      handler () {
+        this.getSeries()
+      },
+      deep: false
+    },
+    options: {
       handler () {
         this.getSeries()
       },
@@ -233,7 +244,8 @@ export default {
       await this.$store.dispatch('series/getPanelSerieList', {
         search: this.search,
         token: this.$store.state.auth.token,
-        pagination: this.pagination
+        pagination: this.pagination,
+        options: this.options
       })
     },
     async getStatuses () {

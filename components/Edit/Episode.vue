@@ -27,13 +27,13 @@
               label="Is Visible?"
             />
             <v-switch
-              v-model="episode.hasCustomScreenshot"
+              v-model="hasCustomScreenshot"
               label="Change Custom Image?"
               prepend-icon="mdi-image"
               @change="detectNewImage"
             />
             <v-file-input
-              v-if="episode.hasCustomScreenshot"
+              v-if="hasCustomScreenshot"
               ref="screenshot"
               accept="image/*"
               label="Select a Custom Image"
@@ -59,7 +59,7 @@
           </v-container>
           <v-container v-if="hasCustomScreenshot">
             <h2>Custom Screenshot Image</h2>
-            <v-row>
+            <v-row class="mt-2">
               <v-img
                 :src="screenshotPreview"
               />
@@ -194,26 +194,65 @@ export default {
       })
     },
     editEpisode () {
-      this.episode.players = JSON.stringify(this.episode.players)
-      this.episode.downloads = JSON.stringify(this.episode.downloads)
+      const players = JSON.stringify(this.episode.players)
+      const downloads = JSON.stringify(this.episode.downloads)
       this.$store.dispatch('episodes/editEpisode', {
-        episode: this.episode,
+        episode: { ...this.episode, players, downloads },
         token: this.$store.state.auth.token
       })
+      if (this.episode.hasCustomScreenshot) {
+        this.uploadImageToStrapi(this.customScreenshot[0], this.customScreenshot[1], 'image/png', this.episode.id)
+      }
     },
     screenshotSelected () {
       this.customScreenshot = []
       this.customScreenshot.push(this.$refs.screenshot.$refs.input.files[0])
-      this.customScreenshot.push(this.serie_title)
+      this.customScreenshot.push(this.episode.serie.title)
       this.customScreenshot.push(this.episode_number)
       this.screenshotPreview = URL.createObjectURL(this.$refs.screenshot.$refs.input.files[0])
     },
+    async uploadImageToStrapi (imageBlob, imageName, imageType, episodeId) {
+      const formData = new FormData()
+      formData.append('files', imageBlob, `${imageName}_${imageType}`)
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.$store.state.auth.token}`
+        },
+        body: formData
+      }).then((input) => {
+        if (input.status === 200) {
+          Promise.resolve(input.json())
+            .then((strapiRes) => {
+              this.createImageComponent(strapiRes[0], episodeId)
+            })
+        } else {
+          throw new Error('Upload failed')
+        }
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+      })
+    },
+    async createImageComponent (image, episodeId) {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.$store.state.auth.token}`
+        },
+        body: JSON.stringify({
+          data: {
+            path: `${image.hash}${image.ext}`,
+            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+            image_type: 2,
+            episodes: [episodeId]
+          }
+        })
+      })
+    },
     detectNewImage () {
-      if (this.hasCustomScreenshot) {
-        this.customScreenshot = []
-      } else {
-        this.customScreenshot = []
-      }
+      this.screenshotPreview = ''
     },
     addPlayerSlot () {
       this.episode.players.push({

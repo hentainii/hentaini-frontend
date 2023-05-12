@@ -55,6 +55,7 @@ export const actions = {
       })
   },
   async getPanelSerieList ({ commit }, payload) {
+    const sorted = `${payload.options.sortBy[0]}:${payload.options.sortDesc[0] ? 'desc' : 'asc'}`
     let filters = {}
     if (payload.search !== '') {
       filters = {
@@ -70,7 +71,7 @@ export const actions = {
         'status',
         'episodes'
       ],
-      sort: ['createdAt:desc'],
+      sort: [sorted],
       pagination: payload.pagination
     },
     {
