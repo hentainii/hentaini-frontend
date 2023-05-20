@@ -303,10 +303,9 @@ export default {
         { name: 'TERA', url: '' },
         { name: 'Stream', url: '' },
         { name: 'mp4uplo', url: '' },
-        { name: 'Senvid', url: '' },
+        { name: 'HIDE', url: '' },
         { name: 'BR', url: '' },
-        { name: 'Mega', url: '' },
-        { name: 'Fembed', url: '' }
+        { name: 'Mega', url: '' }
       )
     }
   }
