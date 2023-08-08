@@ -76,7 +76,7 @@
                 class="py-2"
               >
                 <v-slide-item
-                  v-for="player in JSON.parse(episode.players)"
+                  v-for="player in filteredPlayers"
                   :key="player.name"
                   v-slot:="{ active, toggle }"
                 >
@@ -350,6 +350,9 @@ export default {
     },
     serieIsPresentInFavorites () {
       return this.favorites.some(favorite => favorite.h_id === this.episode.serie.h_id)
+    },
+    filteredPlayers () {
+      return this.episode.players.filter(player => player.name !== 'SSB')
     }
   },
   mounted () {
@@ -362,6 +365,7 @@ export default {
         serieId: this.serieId,
         episode_number: this.episodeNumber
       })
+      episode.players = JSON.parse(episode.players)
       this.episode = episode
       this.genCurrentUrl()
       this.genBreadcrumb()

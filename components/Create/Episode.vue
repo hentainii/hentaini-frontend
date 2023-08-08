@@ -301,9 +301,8 @@ export default {
         { name: 'Cloud', url: '' },
         { name: 'Yourupload', url: '' },
         { name: 'TERA', url: '' },
-        { name: 'Stream', url: '' },
+        { name: 'Stream2', url: '' },
         { name: 'mp4uplo', url: '' },
-        { name: 'HIDE', url: '' },
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' }
       )
