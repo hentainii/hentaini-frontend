@@ -91,3 +91,4 @@ sw.*
 
 static/img/ads/*
 static/img/ads2/*
+yarn.lock
