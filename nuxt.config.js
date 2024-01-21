@@ -82,6 +82,18 @@ export default {
         name: 'Indonesia',
         iso: 'id-ID',
         file: 'id.js'
+      },
+      {
+        code: 'ms',
+        name: 'Malaysia',
+        iso: 'ms',
+        file: 'ms.js'
+      },
+      {
+        code: 'tl',
+        name: 'Filipino',
+        iso: 'tl',
+        file: 'tl.js'
       }
     ],
     defaultLocale: 'en',
