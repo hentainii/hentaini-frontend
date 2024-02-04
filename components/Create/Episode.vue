@@ -221,7 +221,7 @@ export default {
   methods: {
     async createEpisode () {
       this.isSubmitting = !this.isSubmitting
-      if (this.serie.episodes.length >= this.episode.episode_number) {
+      if (this.serie.episodes.find(episode => episode.episode_number === this.episode.episode_number)) {
         this.alertBox = true
         this.alertBoxColor = 'red'
         this.errorMessage = 'Episode number already exists'
@@ -248,7 +248,7 @@ export default {
         ]
       })
       this.serie = { ...this.$store.state.series.currentSerie }
-      this.episode.episode_number = this.serie.episodes.length + 1
+      this.episode.episode_number = this.serie.episodes.length
     },
     async getPlayers () {
       await this.$store.dispatch('players/getPlayers', {
