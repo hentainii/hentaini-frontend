@@ -180,7 +180,6 @@
         <v-container>
           <v-row>
             <v-card
-              style="z-index:1000;position:relative;"
               class="mx-auto black rounded-xl elevation-0"
               width="100%"
               elevation="0"
@@ -366,6 +365,7 @@ export default {
         episode_number: this.episodeNumber
       })
       episode.players = JSON.parse(episode.players)
+      episode.downloads = JSON.parse(episode.downloads)
       this.episode = episode
       this.genCurrentUrl()
       this.genBreadcrumb()
