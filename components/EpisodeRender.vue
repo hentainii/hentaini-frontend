@@ -136,6 +136,7 @@
                       v-for="link in downloadsName"
                       :key="link.name"
                       :href="link.url.url"
+                      target="_blank"
                       color="primary mr-2"
                       class="p-3"
                     >
@@ -367,11 +368,13 @@ export default {
       episode.players = JSON.parse(episode.players)
       episode.downloads = JSON.parse(episode.downloads)
       this.episode = episode
-      this.genCurrentUrl()
-      this.genBreadcrumb()
-      this.getFavorites()
-      this.setUserId()
-      this.addVisit()
+      setTimeout(() => {
+        this.genCurrentUrl()
+        this.genBreadcrumb()
+        this.getFavorites()
+        this.setUserId()
+        this.addVisit()
+      }, 1000)
     },
     async getFavorites () {
       this.favorites = await this.$store.dispatch('favorite/getFavorites', {
@@ -393,7 +396,7 @@ export default {
       this.currentUrl = currentUrl
     },
     genCurrentUrl () {
-      this.currentUrl = JSON.parse(this.episode.players)[0].url
+      this.currentUrl = this.episode.players[0].url
     },
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
