@@ -248,7 +248,7 @@ export default {
         ]
       })
       this.serie = { ...this.$store.state.series.currentSerie }
-      this.episode.episode_number = this.serie.episodes.length
+      this.episode.episode_number = this.serie.episodes.length === 0 ? 1 : this.serie.episodes.length + 1
     },
     async getPlayers () {
       await this.$store.dispatch('players/getPlayers', {
