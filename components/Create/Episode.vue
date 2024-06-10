@@ -57,7 +57,14 @@
             />
           </v-container>
           <v-container>
-            <v-btn class="mr-4 primary rounded-xl" large block @click="createEpisode">
+            <v-btn
+              class="mr-4 primary rounded-xl"
+              large
+              block
+              :loading="isSubmitting"
+              :disabled="isSubmitting"
+              @click="createEpisode"
+            >
               submit
             </v-btn>
           </v-container>
@@ -169,8 +176,6 @@
             </TemplateDownloadInput>
             <v-btn
               class="mr-4 primary rounded-xl"
-              :loading="isSubmitting"
-              :disabled="isSubmitting"
               large
               @click="addDownloadSlot"
             >

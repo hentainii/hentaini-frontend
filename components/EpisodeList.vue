@@ -88,7 +88,20 @@
                     </template>
                     <span>Edit Episode</span>
                   </v-tooltip>
-                  <!-- <DeleteModalDeleteEpisode :episodenumber="episode.episode_number" :episodeid="episode.id" :serieid="$route.params.id" /> -->
+                  <v-tooltip top>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="deleteEpisode(episode.id)"
+                      >
+                        <v-icon>
+                          mdi-delete-outline
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Remove Episode</span>
+                  </v-tooltip>
                 </td>
               </tr>
             </tbody>
@@ -141,6 +154,23 @@ export default {
         ]
       })
       this.serie = { ...this.$store.state.series.currentSerie }
+    },
+    deleteEpisode (episodeId) {
+      const alertResult = confirm('Are you sure you want to delete this episode?')
+      if (!alertResult) { return }
+      const deleted = this.$store.dispatch('episodes/deleteEpisode', {
+        episodeId,
+        token: this.$store.state.auth.token
+      })
+      if (deleted) {
+        this.$router.push({
+          query: {
+            deleted: true
+          }
+        })
+        this.serie = null
+        this.getSerie()
+      }
     }
   }
 }

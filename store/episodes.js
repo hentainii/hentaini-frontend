@@ -131,5 +131,23 @@ export const actions = {
       // eslint-disable-next-line no-console
       console.error(error)
     })
+  },
+  async deleteEpisode ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${payload.episodeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    }).then((response) => {
+      if (response.status === 200) {
+        return true
+      } else {
+        throw new Error('Error deleting serie')
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
   }
 }
