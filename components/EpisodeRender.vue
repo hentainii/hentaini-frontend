@@ -352,7 +352,7 @@ export default {
       return this.favorites.some(favorite => favorite.h_id === this.episode.serie.h_id)
     },
     filteredPlayers () {
-      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud')
+      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C')
     }
   },
   mounted () {
