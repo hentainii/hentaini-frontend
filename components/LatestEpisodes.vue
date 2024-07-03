@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="justify-center">
       <client-only>
-        <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//platform.bidgear.com/ads.php?domainid=6413&sizeid=2&zoneid=6905"></script>'/>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//bullionglidingscuttle.com/lv/esnk/2030947/code.js" async class="__clb-2030947"></script>'/>
       </client-only>
     </v-row>
     <v-row>
