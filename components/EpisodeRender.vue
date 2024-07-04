@@ -414,10 +414,10 @@ export default {
           const newDownloadButtons = {}
           newDownloadButtons.url = this.episode.downloads[i]
           newDownloadButtons.name = newName[1]
-          if (newDownloadButtons.name !== 'CLOUDUP' && newDownloadButtons.name !== 'SSB' && newDownloadButtons.name !== 'CLOUD' && newDownloadButtons.name !== 'C') {
+          if (!newDownloadButtons.name.includes('cloudup')) {
             this.downloadsName.push(newDownloadButtons)
+            this.areDownloadLinksGenerated = true
           }
-          this.areDownloadLinksGenerated = true
         }
       }
     },
