@@ -396,7 +396,7 @@ export default {
       this.currentUrl = currentUrl
     },
     genCurrentUrl () {
-      this.currentUrl = this.episode.players[0].url
+      this.currentUrl = this.filteredPlayers[0].url
     },
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
@@ -414,7 +414,9 @@ export default {
           const newDownloadButtons = {}
           newDownloadButtons.url = this.episode.downloads[i]
           newDownloadButtons.name = newName[1]
-          this.downloadsName.push(newDownloadButtons)
+          if (newDownloadButtons.name !== 'CLOUDUP' && newDownloadButtons.name !== 'SSB' && newDownloadButtons.name !== 'CLOUD' && newDownloadButtons.name !== 'C') {
+            this.downloadsName.push(newDownloadButtons)
+          }
           this.areDownloadLinksGenerated = true
         }
       }
