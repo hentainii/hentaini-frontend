@@ -95,6 +95,24 @@ export default {
         name: 'Filipino',
         iso: 'tl',
         file: 'tl.js'
+      },
+      {
+        code: 'hi',
+        name: 'Hindi',
+        iso: 'hi',
+        file: 'hi.js'
+      },
+      {
+        code: 'bn',
+        name: 'Bengali',
+        iso: 'bn',
+        file: 'bn.js'
+      },
+      {
+        code: 'mr',
+        name: 'Marathi',
+        iso: 'mr',
+        file: 'mr.js'
       }
     ],
     defaultLocale: 'en',
