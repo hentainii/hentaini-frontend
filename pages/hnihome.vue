@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <section>
     <Header />
     <Carousel v-if="$store.state.isDesktop" />
     <TagCloud />
+    <TextHeader />
     <LatestEpisodes />
     <v-container><v-divider /></v-container>
     <LatestSeries />
     <!-- <MobileHeader /> -->
-  </div>
+  </section>
 </template>
 
 <script>
@@ -23,6 +24,9 @@ export default {
     return {
       title: this.title,
       meta: [
+        { hid: 'description', name: 'description', content: 'Watch and save your favorite Hentai in the interwebs, just the best quality for you' },
+        { hid: 'keywords', name: 'keywords', content: 'hentai, hentaini, anime' },
+        { hid: 'canonical', rel: 'canonical', href: 'https://hentaini.com' },
         { hid: 'language', name: 'language', content: 'en' },
         { hid: 'audience', name: 'audience', content: 'all' },
         { hid: 'rating', name: 'rating', content: 'general' },

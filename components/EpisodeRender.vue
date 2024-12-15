@@ -276,7 +276,7 @@
           </v-row> -->
           <v-row class="justify-center mt-5">
             <client-only>
-              <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//bullionglidingscuttle.com/lv/esnk/2030946/code.js" async class="__clb-2030946"></script>'/>
+              <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//bullionglidingscuttle.com/lv/esnk/2030946/code.js" async class="__clb-2030946"></script>' />
             </client-only>
           </v-row>
         </v-container>
@@ -333,7 +333,10 @@ export default {
       title: this.episode ? this.episode.serie.title : 'Hentaini',
       meta: this.episode
         ? [
-            { hid: 'language', name: 'language', content: 'es' },
+            { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality' },
+            { hid: 'keywords', name: 'keywords', content: 'Watch online' },
+            { hid: 'canonical', rel: 'canonical', href: `https://hentaini.com/h/${this.episode.serie.url}/${this.episode.episode_number}` },
+            { hid: 'language', name: 'language', content: 'en' },
             { hid: 'Revisit-After', name: 'Revisit-After', content: '3 days' },
             { hid: 'audience', name: 'audience', content: 'all' },
             { hid: 'rating', name: 'rating', content: 'general' },
@@ -351,7 +354,7 @@ export default {
             { hid: 'keywords', name: 'keywords', content: 'Watch online hentai, best HD archive of the best of japanese culture for the world, hentaini, ahegao, yuri, yaoi, tentacle, maid, siscon, brocon' },
             { hid: 'og:title', property: 'og:title', content: this.episode.serie.title },
             { hid: 'og:description', property: 'og:description', content: 'Its a Hentai site, what do you expect? a no-girlfriend-depression solution?' },
-            { hid: 'og:url', property: 'og:url', content: 'https://hentaini.com' },
+            { hid: 'og:url', property: 'og:url', content: `https://hentaini.com/h/${this.episode.serie.url}/${this.episode.episode_number}` },
             { hid: 'og:image', property: 'og:image', content: 'https://hentaini.com/screenshot/' + this.episode.serie.background_coverUrl },
             { hid: 'author', name: 'author', content: 'hentaini' }
           ]

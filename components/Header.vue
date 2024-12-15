@@ -111,7 +111,7 @@
                 large
                 color="blue"
                 v-bind="attrs"
-                to="/user"
+                :to="localePath('/favorites')"
                 v-on="on"
               >
                 <v-icon>mdi-account</v-icon>
@@ -228,8 +228,7 @@ export default {
       focus: false,
       navs: [
         { id: 1, name: this.$t('menu.explore'), url: '/explore', icon: 'mdi-home' },
-        { id: 2, name: this.$t('menu.airing'), url: '/explore?filter=airing', icon: 'mdi-plus-circle' },
-        { id: 3, name: this.$t('menu.suggestions'), url: '/', icon: 'mdi-format-list-bulleted-square' }
+        { id: 2, name: this.$t('favorites.title'), url: '/favorites', icon: 'mdi-heart' }
       ]
     }
   },

@@ -38,9 +38,9 @@
       </v-img>
     </v-hover>
     <v-card-title class="pb-0 pt-1 mt-2 pl-2" style="overflow:hidden;white-space:nowrap;line-height:15px;">
-      <p style="text-overflow:ellipsis;font-size:0.9rem;" class="pa-0 ma-0 white--text text-weight-bold">
+      <h2 style="text-overflow:ellipsis;font-size:0.9rem;" class="pa-0 ma-0 white--text text-weight-bold">
         {{ title }}
-      </p>
+      </h2>
     </v-card-title>
     <v-card-text class="py-0 pl-2 grey--text darken-3 text-caption">
       {{ $moment(created).fromNow() }}

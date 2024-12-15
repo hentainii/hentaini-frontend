@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="justify-center">
       <client-only>
-        <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//bullionglidingscuttle.com/lv/esnk/2030947/code.js" async class="__clb-2030947"></script>'/>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" type="text/javascript" src="//bullionglidingscuttle.com/lv/esnk/2030947/code.js" async class="__clb-2030947"></script>' />
       </client-only>
     </v-row>
     <v-row>
@@ -25,17 +25,19 @@
         sm="6"
         xs="6"
       >
-        <EpisodeCard
-          :episode="episode.id"
-          :title="episode.serie.title"
-          :episodeNumber="episode.episode_number"
-          :hid="episode.serie.h_id"
-          :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
-          :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
-          :created="episode.createdAt"
-          :url="episode.serie.url"
-          :isAd="episode.isAd"
-        />
+        <article>
+          <EpisodeCard
+            :episode="episode.id"
+            :title="episode.serie.title"
+            :episodeNumber="episode.episode_number"
+            :hid="episode.serie.h_id"
+            :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+            :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
+            :created="episode.createdAt"
+            :url="episode.serie.url"
+            :isAd="episode.isAd"
+          />
+        </article>
       </v-col>
     </v-row>
   </v-container>

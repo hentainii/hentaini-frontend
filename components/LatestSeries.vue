@@ -20,16 +20,18 @@
         sm="4"
         xs="4"
       >
-        <SerieCard
-          :title="serie.title"
-          :synopsis="serie.synopsis"
-          :genres="serie.genres"
-          :componentgenres="serie.genreList"
-          :status="serie.status.name"
-          :url="serie.url"
-          :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-          :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
-        />
+        <article>
+          <SerieCard
+            :title="serie.title"
+            :synopsis="serie.synopsis"
+            :genres="serie.genres"
+            :componentgenres="serie.genreList"
+            :status="serie.status.name"
+            :url="serie.url"
+            :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
+          />
+        </article>
       </v-col>
     </v-row>
   </v-container>
