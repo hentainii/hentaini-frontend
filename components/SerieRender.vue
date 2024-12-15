@@ -52,7 +52,7 @@
                 block
                 color="'red accent-1'"
                 class="elevation-0 rounded-xl"
-                href="/login"
+                :to="localePath('/login')"
                 v-on="on"
               >
                 <v-icon class="mr-2">

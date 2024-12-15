@@ -26,7 +26,7 @@
             </nuxt-link>
           </li>
           <li class="mr-2">
-            <nuxt-link :to="localePath('/favorites')" style="color:white">
+            <nuxt-link :to="$store.state.auth ? localePath('/favorites') : localePath('/login')" style="color:white">
               <v-btn text large color="red lighten-1">
                 <v-icon class="mr-2">
                   mdi-heart

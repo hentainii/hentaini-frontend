@@ -240,6 +240,9 @@ export default {
     },
     statusList () {
       return this.$store.state.statuses.statuses
+    },
+    hiphenated_name () {
+      return this.serie.title.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-')
     }
   },
   mounted () {
@@ -280,7 +283,10 @@ export default {
           Authorization: `Bearer ${this.$store.state.auth.token}`
         },
         body: JSON.stringify({
-          data: this.serie
+          data: {
+            ...this.serie,
+            url: this.hiphenated_name
+          }
         })
       }).then((input) => {
         if (input.status === 200) {

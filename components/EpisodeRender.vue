@@ -145,7 +145,7 @@
                   </v-card-text>
                 </v-card>
               </v-dialog>
-              <v-tooltip bottom>
+              <v-tooltip v-if="$store.state.auth" bottom>
                 <template #activator="{ on }">
                   <v-btn
                     :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
@@ -154,6 +154,23 @@
                     class="mt-2"
                     v-on="on"
                     @click="serieIsPresentInFavorites ? removeFavorite(episode.serie.id) : setFavorite(episode.serie.id)"
+                  >
+                    <v-icon>
+                      mdi-heart
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ serieIsPresentInFavorites ? $t('favorites.remove') : $t('favorites.add') }}</span>
+              </v-tooltip>
+              <v-tooltip v-else bottom>
+                <template #activator="{ on }">
+                  <v-btn
+                    :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
+                    rounded
+                    outlined
+                    class="mt-2"
+                    :to="localePath('/login')"
+                    v-on="on"
                   >
                     <v-icon>
                       mdi-heart
