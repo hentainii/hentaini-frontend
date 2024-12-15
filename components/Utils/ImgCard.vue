@@ -5,7 +5,7 @@
     class="pa-0"
   >
     <v-hover v-slot="{ hover }">
-      <nuxt-link :to="`${$route.path}${data.url}`">
+      <nuxt-link :to="`/explore`">
         <v-img
           :src="`${$config.CDN_ENDPOINT}${data.image.path}`"
           class="align-end justify-center text-center"

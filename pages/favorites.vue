@@ -26,7 +26,7 @@
             :genres="favorite.serie.genres"
             :componentgenres="favorite.serie.genreList"
             :status="favorite.serie.status.name"
-            :url="favorite.serie.h_id"
+            :url="favorite.serie.url"
             :screenshot="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
             :placeholder="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder ? favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder : favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
           />

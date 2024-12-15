@@ -3,7 +3,7 @@
     <nuxt-link
       v-for="(episode, index) in episodes"
       :key="index"
-      :to="localePath(`/h/${serie.h_id}/${episode.episode_number}`)"
+      :to="localePath(`/h/${serie.url}/${episode.episode_number}`)"
     >
       <v-row
         class="episode"

@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link v-if="!isAd" :to="localePath(`/h/${hid}/${episodeNumber}`)">
+  <nuxt-link v-if="!isAd" :to="localePath(`/h/${url}/${episodeNumber}`)">
     <v-hover v-slot="{ hover }">
       <v-img
         class="white--text rounded-xl lift-image"

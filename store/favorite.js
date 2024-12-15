@@ -28,7 +28,7 @@ export const actions = {
         .then(res => res.json())
         .then((favorites) => {
           favorites.data.map((favorite) => {
-            favorite.h_id = favorite.serie.h_id
+            favorite.url = favorite.serie.url
             return favorite
           })
           resolve(favorites.data)

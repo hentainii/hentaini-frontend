@@ -40,7 +40,7 @@ export const actions = {
       const query = qs.stringify({
         filters: {
           serie: {
-            h_id: {
+            url: {
               $eq: payload.serieId
             }
           },

@@ -32,18 +32,18 @@
         >
           <v-btn
             v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
-            :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number - 1}`)"
+            :to="localePath(`/h/${episode.serie.url}/${episode.episode_number - 1}`)"
           >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <v-btn
-            :to="localePath(`/h/${episode.serie.h_id}`)"
+            :to="localePath(`/h/${episode.serie.url}`)"
           >
             <v-icon>mdi-view-list</v-icon>
           </v-btn>
           <v-btn
             v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
-            :to="localePath(`/h/${episode.serie.h_id}/${episode.episode_number + 1}`)"
+            :to="localePath(`/h/${episode.serie.url}/${episode.episode_number + 1}`)"
           >
             <v-icon>mdi-arrow-right</v-icon>
           </v-btn>
@@ -231,7 +231,7 @@
                         :key="episode_item.episode_number"
                       >
                         <v-list-item-content>
-                          <nuxt-link :to="localePath(`/h/${episode.serie.h_id}/${episode_item.episode_number}`)" class="d-flex">
+                          <nuxt-link :to="localePath(`/h/${episode.serie.url}/${episode_item.episode_number}`)" class="d-flex">
                             <v-list-item-title v-text="episode.serie.title + ' episode ' + episode_item.episode_number" />
                           </nuxt-link>
                         </v-list-item-content>
@@ -349,7 +349,7 @@ export default {
       return this.$route.params.episode
     },
     serieIsPresentInFavorites () {
-      return this.favorites.some(favorite => favorite.h_id === this.episode.serie.h_id)
+      return this.favorites.some(favorite => favorite.url === this.episode.serie.url)
     },
     filteredPlayers () {
       return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C')
@@ -401,7 +401,7 @@ export default {
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
       this.breadcrumb[1].text = this.episode.serie.title
-      this.breadcrumb[1].to = `/h/${this.episode.serie.h_id}`
+      this.breadcrumb[1].to = `/h/${this.episode.serie.url}`
       this.breadcrumb[1].disabled = false
     },
     genDownloadName () {
@@ -436,16 +436,16 @@ export default {
       })
       this.favorites.push({
         id: res.data.id,
-        h_id: this.episode.serie.h_id
+        url: this.episode.serie.url
       })
     },
     removeFavorite () {
       this.$store.dispatch('favorite/removeFavorite', {
         user: this.$store.state.auth,
-        favorite: this.favorites.filter(favorite => favorite.h_id === this.episode.serie.h_id)[0],
+        favorite: this.favorites.filter(favorite => favorite.url === this.episode.serie.url)[0],
         token: this.$store.state.auth.token
       })
-      this.favorites = this.favorites.filter(favorite => favorite.h_id !== this.episode.serie.h_id)
+      this.favorites = this.favorites.filter(favorite => favorite.url !== this.episode.serie.url)
     }
   }
 }

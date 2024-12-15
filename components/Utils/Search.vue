@@ -23,7 +23,7 @@
         <nuxt-link
           v-for="serie in searchResult"
           :key="serie.id"
-          :to="localePath(`/h/${serie.h_id}`)"
+          :to="localePath(`/h/${serie.url}`)"
           class="my-3"
           style="color:inherit;"
         >

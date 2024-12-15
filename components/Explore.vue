@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <v-row class="mt-10 mb-5">
-      <ExploreCluster />
-    </v-row>
     <v-row>
       <v-container class="pb-0">
         <v-row>
@@ -162,7 +159,7 @@
                     :genres="serie.genres"
                     :componentgenres="serie.genreList"
                     :status="serie.status"
-                    :url="serie.h_id"
+                    :url="serie.url"
                     :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
                   />
                 </v-col>

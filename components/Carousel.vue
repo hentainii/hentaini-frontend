@@ -21,7 +21,7 @@
         ).placeholder : serie.images.find(
           image => image.image_type.name === 'screenshot'
         ).path}`"
-        :to="localePath(`/h/${serie.h_id}`)"
+        :to="localePath(`/h/${serie.url}`)"
         gradient="to top right, rgba(0,0,0,.8), rgba(0,0,0,.2)"
       >
         <v-row align="end" class="lightbox white--text pa-2 fill-height">

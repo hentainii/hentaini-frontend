@@ -33,7 +33,7 @@
           :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
           :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
           :created="episode.createdAt"
-          :url="episode.url"
+          :url="episode.serie.url"
           :isAd="episode.isAd"
         />
       </v-col>

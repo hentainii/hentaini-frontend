@@ -177,7 +177,7 @@ export default {
   },
   computed: {
     serieIsPresentInFavorites () {
-      return this.favorites.some(favorite => favorite.h_id === this.serie.h_id)
+      return this.favorites.some(favorite => favorite.url === this.serie.url)
     }
   },
   async mounted () {
@@ -189,7 +189,7 @@ export default {
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
-          h_id: this.$route.params.serie
+          url: this.$route.params.serie
         },
         populate: [
           'images',
@@ -248,16 +248,16 @@ export default {
       })
       this.favorites.push({
         id: res.data.id,
-        h_id: this.serie.h_id
+        url: this.serie.url
       })
     },
     removeFavorite () {
       this.$store.dispatch('favorite/removeFavorite', {
         user: this.$store.state.auth,
-        favorite: this.favorites.filter(favorite => favorite.h_id === this.serie.h_id)[0],
+        favorite: this.favorites.filter(favorite => favorite.url === this.serie.url)[0],
         token: this.$store.state.auth.token
       })
-      this.favorites = this.favorites.filter(favorite => favorite.h_id !== this.serie.h_id)
+      this.favorites = this.favorites.filter(favorite => favorite.url !== this.serie.url)
     },
     genRandNumber () {
       this.rand = Math.floor(Math.random() * 6)
