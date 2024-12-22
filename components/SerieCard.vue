@@ -7,7 +7,6 @@
         <v-img
           :aspect-ratio="9/14"
           :src="screenshot"
-          :lazy-src="placeholder ? placeholder : screenshot"
           style="position:relative;"
         >
           <v-chip v-if="visits" style="position:absolte;top:10px;float:right;right:10px;" color="grey darken-4 white--text" small>

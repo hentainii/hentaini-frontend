@@ -6,7 +6,6 @@
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
-        :lazy-src="placeholder"
       >
         <div
           :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'"
