@@ -49,7 +49,7 @@ export default {
   mounted () {
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
-    this.$router.push('/hnihome')
+    this.$router.push('/home')
   },
   methods: {
     isDesktopScreen () {

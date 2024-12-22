@@ -49,7 +49,7 @@ export default {
     this.getLatestSeries()
   },
   methods: {
-    async getLatestSeries () {
+    getLatestSeries () {
       const qs = require('qs')
       const query = qs.stringify({
         populate: [
@@ -66,7 +66,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then((series) => {
           series.data.map((serie) => {

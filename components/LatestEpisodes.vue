@@ -15,7 +15,7 @@
         <h2>{{ $t('landpage.latest_episodes') }}</h2>
       </v-col>
     </v-row>
-    <v-row v-if="episodes">
+    <v-row>
       <v-col
         v-for="(episode) in episodes"
         :key="episode.id"
@@ -48,14 +48,14 @@ export default {
   name: 'LatestEpisodes',
   data () {
     return {
-      episodes: null
+      episodes: []
     }
   },
   mounted () {
     this.getLatestEpisodes()
   },
   methods: {
-    async getLatestEpisodes () {
+    getLatestEpisodes () {
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
@@ -74,7 +74,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
         .then(res => res.json())
         .then((episodes) => {
           this.episodes = episodes.data

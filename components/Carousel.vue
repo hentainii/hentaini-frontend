@@ -1,7 +1,6 @@
 <template>
   <div style="height:400px;">
     <v-carousel
-      v-if="featuredSeries"
       v-model="model"
       :show-arrows="false"
       hide-delimiters
@@ -57,7 +56,7 @@ export default {
     this.getFeaturedSeries()
   },
   methods: {
-    async getFeaturedSeries () {
+    getFeaturedSeries () {
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
@@ -73,7 +72,7 @@ export default {
       {
         encodeValuesOnly: true
       })
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then((series) => {
           series.data.map((serie) => {
