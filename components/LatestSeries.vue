@@ -7,7 +7,7 @@
             {{ $t('landpage.latest_series_little') }}
           </nuxt-link>
         </h5>
-        <h1>{{ $t('landpage.latest_series') }}</h1>
+        <h2>{{ $t('landpage.latest_series') }}</h2>
       </v-col>
     </v-row>
     <v-row>

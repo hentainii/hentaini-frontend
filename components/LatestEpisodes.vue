@@ -12,7 +12,7 @@
             {{ $t('landpage.latest_episodes_little') }}
           </nuxt-link>
         </h5>
-        <h1>{{ $t('landpage.latest_episodes') }}</h1>
+        <h2>{{ $t('landpage.latest_episodes') }}</h2>
       </v-col>
     </v-row>
     <v-row v-if="episodes">
