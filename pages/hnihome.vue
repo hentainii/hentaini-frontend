@@ -45,6 +45,27 @@ export default {
         { hid: 'og:url', property: 'og:url', content: 'https://hentaini.com' },
         { hid: 'og:image', property: 'og:image', content: 'https://hentaini.com/hentaini.jpg' },
         { hid: 'author', name: 'author', content: 'hentaini' }
+      ],
+      script: [
+        {
+          hid: 'schema-org',
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            url: 'https://hentaini.com',
+            name: 'Hentaini',
+            description: 'Watch and save your favorite Hentai in the interwebs, just the best quality for you',
+            publisher: {
+              '@type': 'Organization',
+              name: 'Hentaini',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://hentaini.com/hentaini.jpg'
+              }
+            }
+          }
+        }
       ]
     }
   },
