@@ -1,13 +1,13 @@
 <template>
-  <section>
+  <div>
     <Header />
     <Carousel v-if="$store.state.isDesktop" />
-    <TextHeader />
+    <!-- <TagCloud />
     <LatestEpisodes />
     <v-container><v-divider /></v-container>
     <LatestSeries />
-    <LayoutPreFooter />
-  </section>
+    <MobileHeader /> -->
+  </div>
 </template>
 
 <script>
@@ -25,7 +25,6 @@ export default {
       meta: [
         { hid: 'description', name: 'description', content: 'Watch and save your favorite Hentai in the interwebs, just the best quality for you' },
         { hid: 'keywords', name: 'keywords', content: 'hentai, hentaini, anime' },
-        { hid: 'canonical', rel: 'canonical', href: 'https://hentaini.com' },
         { hid: 'language', name: 'language', content: 'en' },
         { hid: 'audience', name: 'audience', content: 'all' },
         { hid: 'rating', name: 'rating', content: 'general' },
@@ -40,7 +39,7 @@ export default {
         { hid: 'googlebot-image', name: 'googlebot-image', content: 'all' },
         { hid: 'title', name: 'title', content: this.title },
         { hid: 'og:title', property: 'og:title', content: this.title },
-        { hid: 'og:description', property: 'og:description', content: 'Its a Hentai site, what do you expect? a no-girlfriend-depression solution?' },
+        { hid: 'og:description', property: 'og:description', content: 'Watch and save your favorite Hentai in the interwebs, just the best quality for you' },
         { hid: 'og:url', property: 'og:url', content: 'https://hentaini.com' },
         { hid: 'og:image', property: 'og:image', content: 'https://hentaini.com/hentaini.jpg' },
         { hid: 'author', name: 'author', content: 'hentaini' }
@@ -50,6 +49,7 @@ export default {
   mounted () {
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
+    this.$router.push('/home')
   },
   methods: {
     isDesktopScreen () {
