@@ -41,12 +41,12 @@ ul {
   background-color: #222;
 }
 ::-webkit-scrollbar-thumb {
-  background: #7C4DFF;
+  background: #e4e429;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6c42df;
+  background: #dfca42;
 }
 .v-application a {
-  color: #7C4DFF;
+  color: #f8f829;
 }
 </style>

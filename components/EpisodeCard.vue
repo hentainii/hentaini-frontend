@@ -2,7 +2,7 @@
   <nuxt-link v-if="!isAd" :to="localePath(`/h/${url}/${episodeNumber}`)">
     <v-hover v-slot="{ hover }">
       <v-img
-        class="white--text rounded-xl lift-image"
+        class="white--text rounded-lg lift-image"
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
@@ -19,22 +19,6 @@
             mdi-play
           </v-icon>
         </div>
-        <v-card-text
-          class="align-self-end text--primary pl-0 pb-1"
-          style="position:absolute;bottom:0"
-        >
-          <v-chip
-            color="primary"
-            text-color="white"
-            small
-            style="border-radius:0 10px 10px 0;"
-          >
-            <v-icon left>
-              mdi-play
-            </v-icon>
-            Episode: {{ episodeNumber }}
-          </v-chip>
-        </v-card-text>
       </v-img>
     </v-hover>
     <v-card-title class="pb-0 pt-1 mt-2 pl-2" style="overflow:hidden;white-space:nowrap;line-height:15px;">
@@ -42,8 +26,8 @@
         {{ title }}
       </h2>
     </v-card-title>
-    <v-card-text class="py-0 pl-2 grey--text darken-3 text-caption">
-      {{ $moment(created).fromNow() }}
+    <v-card-text class="py-0 pl-2 yellow--text darken-3 text-caption">
+      Episode {{ episodeNumber }}
     </v-card-text>
   </nuxt-link>
   <a
@@ -57,7 +41,7 @@
       color="#111"
     >
       <v-img
-        class="white--text rounded-xl"
+        class="white--text rounded-lg"
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
@@ -143,7 +127,7 @@ export default {
 }
 .lift-image:hover {
     transform: translate(2px, -2px);
-    box-shadow: #4527A0 -4px 4px 0px 1px;
+    box-shadow: #a08227 -4px 4px 0px 1px;
     transition: all  0.2s;
 }
 </style>

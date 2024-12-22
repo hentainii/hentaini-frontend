@@ -1,5 +1,5 @@
 <template>
-  <div style="position:relative;overflow: hidden;padding-top:56.25%" class="rounded-xl">
+  <div style="position:relative;overflow: hidden;padding-top:56.25%" class="rounded-lg">
     <iframe
       width="100%"
       height="100%"

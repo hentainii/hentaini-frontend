@@ -33,9 +33,8 @@
               multiple
               tile
               flat
-              class="transparent"
             >
-              <v-expansion-panel class="transparent">
+              <v-expansion-panel>
                 <v-expansion-panel-header>{{ $t('explore.filter.title') }}</v-expansion-panel-header>
                 <v-expansion-panel-content class="px-0">
                   <v-list
@@ -69,7 +68,7 @@
               tile
               flat
             >
-              <v-expansion-panel class="transparent">
+              <v-expansion-panel>
                 <v-expansion-panel-header>{{ $t('explore.order_by.title') }}</v-expansion-panel-header>
                 <v-expansion-panel-content class="px-0">
                   <v-list
@@ -103,7 +102,7 @@
               tile
               flat
             >
-              <v-expansion-panel class="transparent">
+              <v-expansion-panel>
                 <v-expansion-panel-header>{{ $t('explore.genres') }}</v-expansion-panel-header>
                 <v-expansion-panel-content class="px-0">
                   <v-list
@@ -149,8 +148,8 @@
                   v-for="serie in series"
                   :key="serie.id"
                   cols="4"
-                  lg="3"
-                  md="4"
+                  lg="2"
+                  md="3"
                   sm="4"
                 >
                   <SerieCard
@@ -161,6 +160,7 @@
                     :status="serie.status"
                     :url="serie.url"
                     :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
+                    :visits="serie.visits"
                   />
                 </v-col>
               </v-row>
@@ -200,10 +200,10 @@ export default {
         }
       },
       defaultOrder: [
-        'createdAt:desc'
+        'visits:desc'
       ],
       sort: [
-        'createdAt:desc'
+        'visits:desc'
       ],
       filters: {},
       pagination: {

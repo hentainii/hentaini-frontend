@@ -4,6 +4,7 @@
       v-if="featuredSeries"
       v-model="model"
       :show-arrows="false"
+      hide-delimiters
       height="400"
       cycle
       interval="4000"
@@ -35,19 +36,6 @@
               </v-chip>
               <h1>{{ serie.title }}</h1>
               <p>{{ serie.synopsis }}</p>
-              <v-chip-group
-                active-class="primary"
-                column
-              >
-                <v-chip
-                  v-for="genre in serie.genres"
-                  :key="genre.name"
-                  :to="localePath(`/explore?genre=${genre.url}`)"
-                  class="rounded-lg grey darken-4"
-                >
-                  {{ genre.name ? genre.name : genre.text }}
-                </v-chip>
-              </v-chip-group>
             </v-container>
           </v-col>
         </v-row>

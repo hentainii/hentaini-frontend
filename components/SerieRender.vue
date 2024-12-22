@@ -5,7 +5,7 @@
         :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(image => image.image_type.name === 'screenshot').path}`"
         alt=""
         aspect-ratio="16/9"
-        style="position: absolute; top: 0; left: 0; width: 100%; height:100vh;filter:blur(10px);"
+        style="position: absolute; top: 0; left: 0; width: 100%; height:100vh;filter:opacity(0.3);"
         class="background"
       />
     </v-container>
@@ -69,23 +69,27 @@
           md="8"
           lg="10"
         >
-          <v-row class="px-4 py-5">
+          <v-row class="px-4">
             <h1>
               {{ serie.title }}
             </h1>
           </v-row>
-          <v-row v-if="serie.title_english" class="px-4 py-5">
-            English: {{ serie.title_english }}
+          <v-row v-if="serie.title_english" class="px-4 pb-4">
+            <span style="color:#b9b9b9;">English: {{ serie.title_english }}</span>
           </v-row>
-          <v-row class="px-4 pb-2">
-            <v-alert
-              dense
-              text
+          <v-row class="px-4 pb-4" style="gap:10px;">
+            <v-chip
+              small
               :color="serie.status.name === 'Airing' ? 'success' : 'red accent-2'"
-              :icon="serie.status.name === 'Airing' ? 'mdi-play' : 'mdi-information'"
             >
               <strong>{{ serie.status.name }}</strong>
-            </v-alert>
+            </v-chip>
+            <v-chip
+              small
+              :color="serie.censorship ? 'red accent-2' : 'success'"
+            >
+              <strong>{{ serie.censorship ? 'Censored' : 'No Censorship' }}</strong>
+            </v-chip>
           </v-row>
           <v-row class="px-4">
             <v-alert
@@ -105,6 +109,7 @@
               :to="localePath(`/g/${genre.url}`)"
               color="primary ml-2 mt-2"
               text-color="white"
+              outlined
               small
             >
               <v-icon left>
@@ -121,11 +126,9 @@
               :to="localePath(`/g/${genre.url}`)"
               color="primary ml-2 mt-2"
               text-color="white"
+              outlined
               small
             >
-              <v-icon left>
-                mdi-play
-              </v-icon>
               {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
@@ -145,8 +148,10 @@
           />
         </div>
       </v-row>
+    </v-container>
+    <v-container>
       <v-row>
-        <ExploreCluster />
+        <LayoutComments />
       </v-row>
     </v-container>
   </div>
@@ -180,8 +185,27 @@ export default {
       return this.favorites.some(favorite => favorite.url === this.serie.url)
     }
   },
-  async mounted () {
-    await this.getSerie()
+  mounted () {
+    const serie = this.$route.params.serie
+    // is its a string of six numbers
+    if (/^\d{6}$/.test(serie)) {
+      const qs = require('qs')
+      const query = qs.stringify({
+        filters: {
+          h_id: serie
+        }
+      },
+      {
+        encodeValuesOnly: true
+      })
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
+        .then(res => res.json())
+        .then(({ data: serie }) => {
+          this.$router.push(`/h/${serie[0].url}`)
+        })
+    }
+
+    this.getSerie()
     this.genRandNumber()
   },
   methods: {

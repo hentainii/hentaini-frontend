@@ -2,13 +2,17 @@
   <nuxt-link :to="localePath(`/h/${url}`)">
     <v-hover v-slot="{ hover }">
       <v-card
-        class="mx-auto elevation-4 rounded-xl"
+        class="mx-auto elevation-4 rounded-lg"
       >
         <v-img
           :aspect-ratio="9/14"
           :src="screenshot"
           :lazy-src="placeholder ? placeholder : screenshot"
+          style="position:relative;"
         >
+          <v-chip v-if="visits" style="position:absolte;top:10px;float:right;right:10px;" color="grey darken-4 white--text" small>
+            <v-icon small>mdi-eye</v-icon> <strong class="ml-1">{{ visits.toLocaleString() }}</strong>
+          </v-chip>
           <v-expand-transition>
             <div
               v-if="hover"
@@ -18,43 +22,15 @@
               <v-container>
                 <v-row>
                   <v-card-title
-                    class="text-body-2 text-sm-h5 text-md-h5 text-lg-body-1"
+                    class="text-body-2 text-sm-h5 text-md-h5 text-lg-body-1 yellow--text"
                   >
                     {{ title }}
                   </v-card-title>
                 </v-row>
                 <v-row>
-                  <v-card-text style="font-size:0.7rem">
-                    {{ synopsis.substr(0,200) + '...' }}
+                  <v-card-text style="font-size:0.9rem">
+                    {{ synopsis.substr(0,150) + '...' }}
                   </v-card-text>
-                </v-row>
-                <v-row v-if="componentgenres.length > 0">
-                  <v-chip
-                    v-for="genre in componentgenres"
-                    :key="genre.url"
-                    color="primary"
-                    text-color="white"
-                    small
-                    class="mx-auto my-2 rounded-lg"
-                    :to="localePath(`/explore?genre=${genre.url}`)"
-                    style="font-size:0.7rem"
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </v-row>
-                <v-row v-else>
-                  <v-chip
-                    v-for="genre in genres"
-                    :key="genre.text"
-                    color="primary"
-                    text-color="white"
-                    small
-                    class="mx-auto my-2 rounded-lg"
-                    :to="localePath(`/explore?genre=${genre.url}`)"
-                    style="font-size:0.7rem"
-                  >
-                    {{ genre.text }}
-                  </v-chip>
                 </v-row>
               </v-container>
             </div>
@@ -108,6 +84,10 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    visits: {
+      type: Number,
+      default: null
     }
   },
   data () {

@@ -4,7 +4,7 @@
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        class="rounded-xl elevation-0 transparent"
+        class="rounded-lg elevation-0 transparent"
         :label="$t('menu.search_bar_text')"
         outlined
         dense

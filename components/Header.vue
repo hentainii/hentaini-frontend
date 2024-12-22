@@ -1,10 +1,11 @@
 <template>
   <v-container
-    class="transparent"
+    class="grey darken-4"
+    fluid
     style="position:relative; z-index:9999;"
   >
     <v-row>
-      <v-col class="d-flex align-center" style="height:100px;">
+      <v-col class="d-flex align-center" style="height:72px;">
         <v-app-bar-nav-icon
           class="d-flex d-md-none d-lg-none d-lx-flex"
           @click="nav = !nav"
@@ -17,9 +18,9 @@
         <ul class="d-none d-md-flex d-lg-flex">
           <li class="mr-2">
             <nuxt-link :to="localePath('/explore')" style="color:white">
-              <v-btn text large>
+              <v-btn elevation="0" color="grey darken-3">
                 <v-icon class="mr-2">
-                  mdi-magnify
+                  mdi-book-outline
                 </v-icon>
                 {{ $t('menu.explore') }}
               </v-btn>
@@ -27,7 +28,7 @@
           </li>
           <li class="mr-2">
             <nuxt-link :to="$store.state.auth ? localePath('/favorites') : localePath('/login')" style="color:white">
-              <v-btn text large color="red lighten-1">
+              <v-btn elevation="0" color="red lighten-1">
                 <v-icon class="mr-2">
                   mdi-heart
                 </v-icon>
@@ -57,7 +58,6 @@
             </v-tooltip>
           </li>
         </ul>
-        <v-spacer />
         <v-row class="mr-2 d-none d-md-flex d-lg-flex d-lx-flex">
           <UtilsSearch />
         </v-row>

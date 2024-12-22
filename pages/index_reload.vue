@@ -7,7 +7,6 @@
     <v-container><v-divider /></v-container>
     <LatestSeries />
     <LayoutPreFooter />
-    <!-- <MobileHeader /> -->
   </section>
 </template>
 

@@ -27,7 +27,6 @@
         class="d-flex"
       >
         <v-btn-toggle
-          rounded
           class="float-left"
         >
           <v-btn
@@ -85,7 +84,6 @@
                     :input-value="active"
                     active-class="primary white--text"
                     depressed
-                    rounded
                     @click="toggle"
                     @focus="changeCurrentUrl(player.url)"
                   >
@@ -112,7 +110,6 @@
                     class="mr-2 mt-2"
                     dark
                     elevation="0"
-                    rounded
                     v-bind="attrs"
                     v-on="on"
                     @click="genDownloadName"
@@ -149,7 +146,6 @@
                 <template #activator="{ on }">
                   <v-btn
                     :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
-                    rounded
                     outlined
                     class="mt-2"
                     v-on="on"
@@ -166,7 +162,6 @@
                 <template #activator="{ on }">
                   <v-btn
                     :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
-                    rounded
                     outlined
                     class="mt-2"
                     :to="localePath('/login')"
@@ -198,7 +193,7 @@
         <v-container>
           <v-row>
             <v-card
-              class="mx-auto black rounded-xl elevation-0"
+              class="mx-auto black rounded-lg elevation-0"
               width="100%"
               elevation="0"
               tile
@@ -376,6 +371,25 @@ export default {
     }
   },
   mounted () {
+    const serie = this.$route.params.serie
+    // is its a string of six numbers
+    if (/^\d{6}$/.test(serie)) {
+      const qs = require('qs')
+      const query = qs.stringify({
+        filters: {
+          h_id: serie
+        }
+      },
+      {
+        encodeValuesOnly: true
+      })
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
+        .then(res => res.json())
+        .then(({ data: serie }) => {
+          this.$router.push(`/h/${serie[0].url}/${this.$route.params.episode}`)
+        })
+    }
+
     this.getEpisode()
     this.genRandNumber()
   },
