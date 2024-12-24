@@ -293,7 +293,7 @@ export default {
           Promise.resolve(input.json())
             .then((res) => {
               images.forEach((image) => {
-                this.uploadImageToStrapi(image.blob, this.serie.title, image.type, res.data.id)
+                this.uploadImageToStrapi(image.blob, this.allowOnlyNumbersAndLetters(this.serie.title), image.type, res.data.id)
               })
             })
           this.isSubmitting = !this.isSubmitting
@@ -331,6 +331,9 @@ export default {
         // eslint-disable-next-line no-console
         console.error(error)
       })
+    },
+    allowOnlyNumbersAndLetters (str) {
+      return str.replace(/[^a-zA-Z0-9]/g, '')
     },
     async createImageComponent (image, imageType, serieId) {
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
