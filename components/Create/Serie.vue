@@ -296,7 +296,6 @@ export default {
                 this.uploadImageToStrapi(image.blob, this.allowOnlyNumbersAndLetters(this.serie.title), image.type, res.data.id)
               })
             })
-          this.isSubmitting = !this.isSubmitting
           this.alert = true
           this.alertType = 'info'
           this.alertMessage = 'Serie created successfully.'

@@ -20,7 +20,7 @@
         v-for="(episode) in episodes"
         :key="episode.id"
         cols="6"
-        lg="3"
+        lg="2"
         md="4"
         sm="6"
         xs="6"

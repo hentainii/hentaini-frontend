@@ -55,6 +55,10 @@ export const actions = {
       })
   },
   async getPanelSerieList ({ commit }, payload) {
+    const sortBy = payload.options.sortBy[0]
+    if (sortBy === 'status') {
+      payload.options.sortBy[0] = 'status.name'
+    }
     const sorted = `${payload.options.sortBy[0]}:${payload.options.sortDesc[0] ? 'desc' : 'asc'}`
     let filters = {}
     if (payload.search !== '') {
@@ -85,12 +89,14 @@ export const actions = {
     })
       .then(res => res.json())
       .then((seriList) => {
-        const pagination = seriList.meta.pagination
-        const series = seriList.data
-        commit('getPanelSerieList', {
-          series,
-          pagination
-        })
+        if (seriList.data !== null) {
+          const pagination = seriList.meta.pagination
+          const series = seriList.data
+          commit('getPanelSerieList', {
+            series,
+            pagination
+          })
+        }
       })
   },
   setFeatured ({ commit }, payload) {
