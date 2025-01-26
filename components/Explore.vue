@@ -147,8 +147,8 @@
                 <v-col
                   v-for="serie in series"
                   :key="serie.id"
-                  cols="4"
-                  lg="2"
+                  cols="6"
+                  lg="3"
                   md="3"
                   sm="4"
                 >
@@ -233,6 +233,13 @@ export default {
     }
   },
   watch: {
+    '$route.query.genre': {
+      handler () {
+        this.prettyGenreName()
+        this.getSeries()
+      },
+      deep: false
+    },
     'pagination.page': {
       handler () {
         this.getSeries()
@@ -263,7 +270,10 @@ export default {
     async getSeries () {
       const qs = require('qs')
       const query = qs.stringify({
-        filters: this.filters,
+        filters: {
+          ...this.filters,
+          genreList: this.$route.query.genre ? { url: this.$route.query.genre } : undefined
+        },
         sort: this.sort,
         pagination: this.pagination,
         populate: [

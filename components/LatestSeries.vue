@@ -14,7 +14,7 @@
       <v-col
         v-for="(serie) in series"
         :key="serie._id"
-        cols="4"
+        cols="6"
         lg="2"
         md="4"
         sm="4"

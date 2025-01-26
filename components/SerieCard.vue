@@ -8,6 +8,7 @@
           :aspect-ratio="9/14"
           :src="screenshot"
           style="position:relative;"
+          gradient="0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,.6) 15%, rgba(255,255,255,0)"
         >
           <v-chip v-if="visits" style="position:absolte;top:10px;float:right;right:10px;" color="grey darken-4 white--text" small>
             <v-icon small>mdi-eye</v-icon> <strong class="ml-1">{{ visits.toLocaleString() }}</strong>
@@ -20,20 +21,16 @@
             >
               <v-container>
                 <v-row>
-                  <v-card-title
-                    class="text-body-2 text-sm-h5 text-md-h5 text-lg-body-1 yellow--text"
-                  >
-                    {{ title }}
-                  </v-card-title>
-                </v-row>
-                <v-row>
                   <v-card-text style="font-size:0.9rem">
-                    {{ synopsis.substr(0,150) + '...' }}
+                    {{ synopsis.substr(0,180) + '...' }}
                   </v-card-text>
                 </v-row>
               </v-container>
             </div>
           </v-expand-transition>
+          <v-card-title style="position:absolute;bottom:0;width:100%;" class="text-body-2 font-weight-bold text-center d-flex justify-center">
+            {{ title }}
+          </v-card-title>
         </v-img>
       </v-card>
     </v-hover>
@@ -69,8 +66,8 @@ export default {
       ]
     },
     status: {
-      type: String,
-      default: 'No Status'
+      type: Object,
+      default: () => ({})
     },
     url: {
       type: String,
