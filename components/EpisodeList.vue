@@ -86,7 +86,7 @@
                         </v-icon>
                       </v-btn>
                     </template>
-                    <span>Edit Episode</span>
+                    <span>Play Episode</span>
                   </v-tooltip>
                   <v-tooltip top>
                     <template #activator="{ on, attrs }">
