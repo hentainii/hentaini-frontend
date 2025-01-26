@@ -73,12 +73,12 @@ export default {
         .then(res => res.json())
         .then((episodes) => {
           this.episodes = episodes.data
-          const rn = Math.floor(Math.random() * 2)
-          if (rn === 0) {
-            this.createEpisodeAd()
-          } else {
-            this.createEpisodeAd2()
-          }
+          // const rn = Math.floor(Math.random() * 2)
+          // if (rn === 0) {
+          //   this.createEpisodeAd()
+          // } else {
+          //   this.createEpisodeAd2()
+          // }
         })
     },
     createEpisodeAd () {
