@@ -77,6 +77,20 @@
                   <v-tooltip top>
                     <template #activator="{ on, attrs }">
                       <v-btn
+                        :to="`/h/${serie.url}/${episode.episode_number}`"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>
+                          mdi-play-box-edit-outline
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Edit Episode</span>
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
                         :to="`/panel/serie/${serie.id}/episodes/${episode.id}/edit`"
                         v-bind="attrs"
                         v-on="on"

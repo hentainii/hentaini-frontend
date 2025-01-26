@@ -63,7 +63,7 @@ export default {
         ],
         sort: ['createdAt:desc'],
         pagination: {
-          limit: 23
+          limit: 24
         }
       },
       {

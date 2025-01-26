@@ -90,6 +90,7 @@
                 label="Player Select"
                 hide-details
                 solo
+                @change="calculatePlayerUrl(episode.id, index)"
               />
               <v-text-field
                 :id="'code'+index"
@@ -270,6 +271,17 @@ export default {
     },
     removeDownloadSlot (slot) {
       this.episode.downloads.splice(slot, 1)
+    },
+    calculatePlayerUrl (episodeId, index) {
+      const player = this.episode.players[index]
+      let playerUrl
+      if (episodeId > 741) {
+        playerUrl = this.players.find(p => p.name === player.name).player_code
+      } else {
+        playerUrl = this.players.find(p => p.short_name === player.name).player_code
+      }
+      playerUrl = playerUrl.replace('codigo', player.code)
+      this.episode.players[index].url = playerUrl
     }
   }
 }
