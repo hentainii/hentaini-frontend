@@ -86,7 +86,7 @@
                 slot="playerList"
                 v-model="player.name"
                 :items="players"
-                item-text="name"
+                :item-text="episode.id > 741 ? 'name' : 'short_name'"
                 label="Player Select"
                 hide-details
                 solo
