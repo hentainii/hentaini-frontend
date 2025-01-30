@@ -99,7 +99,7 @@
                 label="Player Code"
                 hide-details
                 solo
-                @keydown="calculatePlayerUrl(episode.id, index)"
+                @input="calculatePlayerUrl(episode.id, index)"
               />
               <v-btn
                 slot="playerDeleteItem"
