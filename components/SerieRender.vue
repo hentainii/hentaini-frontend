@@ -230,6 +230,7 @@ export default {
         .then(res => res.json())
         .then((serie) => {
           this.serie = serie.data[0]
+          this.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
           this.getFavorites()
           this.breadcrumb[1].text = serie.data[0].title
           this.head = {

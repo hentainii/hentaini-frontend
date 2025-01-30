@@ -167,7 +167,8 @@ export default {
           'episodes'
         ]
       })
-      this.serie = { ...this.$store.state.series.currentSerie }
+      this.serie = { ...JSON.parse(JSON.stringify(this.$store.state.series.currentSerie)) }
+      this.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
     },
     deleteEpisode (episodeId) {
       const alertResult = confirm('Are you sure you want to delete this episode?')
@@ -184,6 +185,7 @@ export default {
         })
         this.serie = null
         this.getSerie()
+        window.location.reload()
       }
     }
   }
