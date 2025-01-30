@@ -276,7 +276,6 @@ export default {
     calculatePlayerUrl (episodeId, index) {
       const player = this.episode.players[index]
       let playerUrl
-      console.log(episodeId)
       if (episodeId > 741) {
         playerUrl = this.players.find(p => p.name === player.name).player_code
       } else {
