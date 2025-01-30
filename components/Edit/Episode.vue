@@ -172,6 +172,9 @@ export default {
   async mounted () {
     await this.getPlayers()
     await this.getEpisode()
+    this.episode.players.forEach((_, index) => {
+      this.calculatePlayerUrl(this.episode.id, index)
+    })
   },
   methods: {
     async getEpisode () {
