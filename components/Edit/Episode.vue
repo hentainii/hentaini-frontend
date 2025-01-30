@@ -99,6 +99,7 @@
                 label="Player Code"
                 hide-details
                 solo
+                @keydown="calculatePlayerUrl(episode.id, index)"
               />
               <v-btn
                 slot="playerDeleteItem"
@@ -172,9 +173,6 @@ export default {
   async mounted () {
     await this.getPlayers()
     await this.getEpisode()
-    this.episode.players.forEach((_, index) => {
-      this.calculatePlayerUrl(this.episode.id, index)
-    })
   },
   methods: {
     async getEpisode () {
@@ -278,6 +276,7 @@ export default {
     calculatePlayerUrl (episodeId, index) {
       const player = this.episode.players[index]
       let playerUrl
+      console.log(episodeId)
       if (episodeId > 741) {
         playerUrl = this.players.find(p => p.name === player.name).player_code
       } else {
