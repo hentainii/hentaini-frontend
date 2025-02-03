@@ -113,6 +113,12 @@ export default {
         name: 'Marathi',
         iso: 'mr',
         file: 'mr.js'
+      },
+      {
+        code: 'vi',
+        name: 'Vietnamese',
+        iso: 'vi-VN',
+        file: 'vi.js'
       }
     ],
     defaultLocale: 'en',
