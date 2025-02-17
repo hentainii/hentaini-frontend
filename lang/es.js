@@ -2,7 +2,7 @@
 export default {
   landpage: {
     latest_episodes_little: 'Explora los últimos Episodios',
-    latest_episodes: 'Episodios Recientes',
+    latest_episodes: 'Nuevos Capitulos',
     latest_series_little: 'Explora las últimas Series Hentai',
     latest_series: 'Últimos Hentais',
     updated_text: 'Actualizado '
