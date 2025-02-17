@@ -403,6 +403,8 @@ export default {
       })
       episode.players = JSON.parse(episode.players)
       episode.downloads = JSON.parse(episode.downloads)
+      // sort episode.series.episodes by episode number
+      episode.serie.episodes = episode.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
       this.episode = episode
       setTimeout(() => {
         this.genCurrentUrl()
