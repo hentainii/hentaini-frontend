@@ -23,7 +23,8 @@
     "url-parse": "^1.5.3",
     "vue": "^2.7.1",
     "vue-disqus": "^4.0.1",
-    "vue-gtag": "^1.16.1"
+    "vue-gtag": "^1.16.1",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",

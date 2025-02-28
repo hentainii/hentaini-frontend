@@ -3,12 +3,17 @@
     pa-1
   >
     <v-row>
+      <v-col cols="1">
+        <slot
+          name="dragHandle"
+        />
+      </v-col>
       <v-col cols="3">
         <slot
           name="playerList"
         />
       </v-col>
-      <v-col cols="7">
+      <v-col cols="6">
         <slot
           name="playerCode"
         />

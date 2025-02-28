@@ -81,6 +81,7 @@
         </v-card>
       </v-col>
       <v-col cols="6">
+        <!-- Player Information -->
         <v-card
           class="rounded-xl elevation-0"
           style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
@@ -89,38 +90,52 @@
             Player Information
           </v-card-title>
           <v-container>
-            <TemplatePlayerInput
-              v-for="(player, index) in episode.players"
-              :id="'container'+index"
-              :key="index"
-              :index="index"
+            <!-- Usamos draggable y envolvemos cada elemento en un <div> -->
+            <draggable
+              v-model="episode.players"
+              tag="div"
+              :options="{ handle: '.drag-handle', animation: 200 }"
             >
-              <v-select
-                :id="'list'+index"
-                slot="playerList"
-                v-model="player.name"
-                :items="players"
-                item-text="name"
-                label="Player Select"
-                hide-details
-                solo
-              />
-              <v-text-field
-                :id="'code'+index"
-                slot="playerCode"
-                v-model="player.code"
-                label="Player Code"
-                hide-details
-                solo
-                @change="createPlayerUrl(player.name, player.code, index)"
-              />
-              <v-btn
-                slot="playerDeleteItem"
-                @click="removePlayerSlot(index)"
-              >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </TemplatePlayerInput>
+              <div v-for="(player, index) in episode.players" :key="player.id || index">
+                <TemplatePlayerInput :index="index">
+                  <!-- Slot para el handle de arrastre -->
+                  <template #dragHandle>
+                    <v-icon class="drag-handle" style="cursor: move;">
+                      mdi-drag
+                    </v-icon>
+                  </template>
+                  <!-- Slot para el selector de player -->
+                  <template #playerList>
+                    <v-select
+                      :id="'list' + index"
+                      v-model="player.name"
+                      :items="players"
+                      item-text="name"
+                      label="Player Select"
+                      hide-details
+                      solo
+                    />
+                  </template>
+                  <!-- Slot para el campo de código -->
+                  <template #playerCode>
+                    <v-text-field
+                      :id="'code' + index"
+                      v-model="player.code"
+                      label="Player Code"
+                      hide-details
+                      solo
+                      @change="createPlayerUrl(player.name, player.code, index)"
+                    />
+                  </template>
+                  <!-- Slot para el botón de borrar -->
+                  <template #playerDeleteItem>
+                    <v-btn @click="removePlayerSlot(index)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                </TemplatePlayerInput>
+              </div>
+            </draggable>
             <v-btn class="mr-4 primary rounded-xl" large @click="addPlayerSlot">
               Add Player
             </v-btn>
@@ -132,6 +147,7 @@
             </v-btn>
           </v-container>
         </v-card>
+        <!-- Resto del componente (Download Links, Imagen, etc.) -->
         <v-card
           class="mt-4 rounded-xl elevation-0"
           style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;"
@@ -198,8 +214,11 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: 'CreateEpisode',
+  components: { draggable },
   data: () => ({
     episode: {
       serie: null,
@@ -256,6 +275,7 @@ export default {
         this.isSubmitting = !this.isSubmitting
         return
       }
+      // Convertimos los arrays a JSON para enviarlos
       this.episode.players = JSON.stringify(this.episode.players)
       this.episode.downloads = JSON.stringify(this.episode.downloads)
       this.episode.serie = this.serie.id
@@ -284,10 +304,11 @@ export default {
       })
     },
     createPlayerUrl (player, code, index) {
-      const playername = player
-      const playerFromList = this.players.filter(player => player.name === playername)
-      const playerUrl = playerFromList[0].player_code.replace('codigo', code)
-      this.episode.players[index].url = playerUrl
+      const playerFromList = this.players.filter(p => p.name === player)
+      if (playerFromList.length) {
+        const playerUrl = playerFromList[0].player_code.replace('codigo', code)
+        this.episode.players[index].url = playerUrl
+      }
     },
     screenshotSelected () {
       this.episode.customScreenshot = []
@@ -297,15 +318,12 @@ export default {
       this.screenshotPreview = URL.createObjectURL(this.$refs.screenshot.$refs.input.files[0])
     },
     detectNewImage () {
-      if (this.episode.hasCustomScreenshot) {
-        this.episode.customScreenshot = []
-      } else {
-        this.episode.customScreenshot = []
-      }
+      this.episode.customScreenshot = []
     },
     addPlayerSlot () {
       this.episode.players.push({
         name: '',
+        code: '',
         url: ''
       })
     },
@@ -324,8 +342,7 @@ export default {
       this.episode.players = []
     },
     playerListModel () {
-      this.episode.players = []
-      this.episode.players.push(
+      this.episode.players = [
         { name: 'Cloud', url: '' },
         { name: 'Yourupload', url: '' },
         { name: 'Stream2', url: '' },
@@ -333,12 +350,15 @@ export default {
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' },
         { name: 'TERA', url: '' }
-      )
+      ]
     }
   }
 }
 </script>
 
 <style>
-
+/* Puedes agregar estilos personalizados para el handle, por ejemplo: */
+.drag-handle {
+  margin-right: 8px;
+}
 </style>

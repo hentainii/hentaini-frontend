@@ -2,9 +2,7 @@
   <v-container v-if="episode">
     <v-row>
       <v-col cols="6">
-        <v-card
-          elevation
-        >
+        <v-card elevation>
           <v-card-title>
             Edit Episode {{ episode.episode_number }} for: {{ episode.serie.title }}
           </v-card-title>
@@ -68,54 +66,64 @@
         </v-card>
       </v-col>
       <v-col cols="6">
-        <v-card
-          elevation
-        >
+        <v-card elevation>
           <v-card-title>
             Player Information
           </v-card-title>
           <v-container>
-            <TemplatePlayerInput
-              v-for="(player, index) in episode.players"
-              :id="'container'+index"
-              :key="index"
-              :index="index"
+            <!-- Envolvemos la lista de players con draggable -->
+            <draggable
+              v-model="episode.players"
+              tag="div"
+              :options="{ handle: '.drag-handle', animation: 200 }"
             >
-              <v-select
-                :id="'list'+index"
-                slot="playerList"
-                v-model="player.name"
-                :items="players"
-                :item-text="episode.id > 741 ? 'name' : 'short_name'"
-                label="Player Select"
-                hide-details
-                solo
-                @change="calculatePlayerUrl(episode.id, index)"
-              />
-              <v-text-field
-                :id="'code'+index"
-                slot="playerCode"
-                v-model="player.code"
-                label="Player Code"
-                hide-details
-                solo
-                @input="calculatePlayerUrl(episode.id, index)"
-              />
-              <v-btn
-                slot="playerDeleteItem"
-                @click="removePlayerSlot(index)"
-              >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </TemplatePlayerInput>
+              <div v-for="(player, index) in episode.players" :key="player.id || index">
+                <TemplatePlayerInput :index="index">
+                  <!-- Slot para el handle de arrastre -->
+                  <template #dragHandle>
+                    <v-icon class="drag-handle" style="cursor: move;">
+                      mdi-drag
+                    </v-icon>
+                  </template>
+                  <!-- Slot para el selector de player -->
+                  <template #playerList>
+                    <v-select
+                      :id="'list'+index"
+                      v-model="player.name"
+                      :items="players"
+                      :item-text="episode.id > 741 ? 'name' : 'short_name'"
+                      label="Player Select"
+                      hide-details
+                      solo
+                      @change="calculatePlayerUrl(episode.id, index)"
+                    />
+                  </template>
+                  <!-- Slot para el campo de código -->
+                  <template #playerCode>
+                    <v-text-field
+                      :id="'code'+index"
+                      v-model="player.code"
+                      label="Player Code"
+                      hide-details
+                      solo
+                      @input="calculatePlayerUrl(episode.id, index)"
+                    />
+                  </template>
+                  <!-- Slot para el botón de borrar -->
+                  <template #playerDeleteItem>
+                    <v-btn @click="removePlayerSlot(index)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                </TemplatePlayerInput>
+              </div>
+            </draggable>
             <v-btn class="mr-4 primary" large @click="addPlayerSlot">
               Add Player
             </v-btn>
           </v-container>
         </v-card>
-        <v-card
-          elevation
-        >
+        <v-card elevation>
           <v-card-title>
             Download Links
           </v-card-title>
@@ -152,8 +160,11 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: 'EditEpisode',
+  components: { draggable },
   data: () => ({
     currentCounter: 0,
     episode: null,
@@ -232,7 +243,6 @@ export default {
           throw new Error('Upload failed')
         }
       }).catch((error) => {
-        // eslint-disable-next-line no-console
         console.error(error)
       })
     },
@@ -289,5 +299,7 @@ export default {
 </script>
 
 <style>
-
+.drag-handle {
+  margin-right: 8px;
+}
 </style>
