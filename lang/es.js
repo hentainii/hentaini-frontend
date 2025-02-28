@@ -37,7 +37,7 @@ export default {
     add_favorite: 'Favorito',
     show_episodes: 'Mostrar Episodios',
     comments_section_header: 'Comentarios',
-    new_badge: 'Nuevo'
+    new_badge: 'Estreno'
   },
   serie: {
     synopsis: 'Sinopsis: ',

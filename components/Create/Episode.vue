@@ -18,7 +18,7 @@
           <v-card-title>
             Create Episode for: {{ serie.title }}
           </v-card-title>
-          <v-container>
+          <v-card-text>
             <v-row>
               <v-col>
                 <v-text-field
@@ -55,8 +55,11 @@
               outlined
               @change="screenshotSelected"
             />
-          </v-container>
-          <v-container>
+          </v-card-text>
+          <v-card-text v-if="false">
+            <UploaderMain />
+          </v-card-text>
+          <v-card-actions>
             <v-btn
               class="mr-4 primary rounded-xl"
               large
@@ -67,29 +70,7 @@
             >
               submit
             </v-btn>
-          </v-container>
-        </v-card>
-        <v-card class="mt-4 rounded-xl elevation-0">
-          <v-card-title>
-            Using Default Screenshot Image
-          </v-card-title>
-          <v-container v-if="!episode.hasCustomScreenshot">
-            <v-row>
-              <v-img
-                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
-                class="rounded-xl"
-                style="box-shadow: #7b1fa2 0px -5px 0px 0px !important;"
-              />
-            </v-row>
-          </v-container>
-          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
-            <h2>Custom Screenshot Image</h2>
-            <v-row>
-              <v-img
-                :src="screenshotPreview"
-              />
-            </v-row>
-          </v-container>
+          </v-card-actions>
         </v-card>
       </v-col>
       <v-col cols="6">
@@ -183,6 +164,27 @@
             </v-btn>
           </v-container>
         </v-card>
+        <v-card class="mt-4 rounded-xl elevation-0">
+          <v-card-title>
+            {{ episode.hasCustomScreenshot ? 'Using custom image' : 'Using Default Screenshot Image' }}
+          </v-card-title>
+          <v-container v-if="!episode.hasCustomScreenshot">
+            <v-row>
+              <v-img
+                :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
+                class="rounded-xl"
+                style="box-shadow: #7b1fa2 0px -5px 0px 0px !important;"
+              />
+            </v-row>
+          </v-container>
+          <v-container v-if="episode.customScreenshot.length > 0 && episode.hasCustomScreenshot">
+            <v-row>
+              <v-img
+                :src="screenshotPreview"
+              />
+            </v-row>
+          </v-container>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -212,7 +214,20 @@ export default {
     alertBox: false,
     alertBoxColor: '',
     errorMessage: '',
-    isSubmitting: false
+    isSubmitting: false,
+    headers: [
+      { text: 'Player', value: 'name' },
+      { text: 'Progress', value: 'progress' }
+    ],
+    uploader: [
+      { name: 'Cloud', progress: 0 },
+      { name: 'Yourupload', progress: 0 },
+      { name: 'TERA', progress: 0 },
+      { name: 'Stream2', progress: 0 },
+      { name: 'mp4uplo', progress: 0 },
+      { name: 'BR', progress: 0 },
+      { name: 'Mega', progress: 0 }
+    ]
   }),
   computed: {
     players () {
