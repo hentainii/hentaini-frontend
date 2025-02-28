@@ -40,6 +40,13 @@
               </v-col>
               <v-col>
                 <v-switch
+                  v-model="episode.isNew"
+                  label="Is Premiere?"
+                  outlined
+                />
+              </v-col>
+              <v-col>
+                <v-switch
                   v-model="episode.hasCustomScreenshot"
                   label="Use Custom Image?"
                   prepend-icon="mdi-image"
@@ -198,6 +205,7 @@ export default {
       serie: null,
       episode_number: 1,
       visible: true,
+      isNew: false,
       language: null,
       hasCustomScreenshot: false,
       image: null,
@@ -320,11 +328,11 @@ export default {
       this.episode.players.push(
         { name: 'Cloud', url: '' },
         { name: 'Yourupload', url: '' },
-        { name: 'TERA', url: '' },
         { name: 'Stream2', url: '' },
         { name: 'mp4uplo', url: '' },
         { name: 'BR', url: '' },
-        { name: 'Mega', url: '' }
+        { name: 'Mega', url: '' },
+        { name: 'TERA', url: '' }
       )
     }
   }
