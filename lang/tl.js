@@ -36,7 +36,8 @@ export default {
     download_text: 'I-download ang Kabanata',
     add_favorite: 'Idagdag sa Paborito',
     show_episodes: 'Ipakita ang Mga Kabanata',
-    comments_section_header: 'Mga Puna'
+    comments_section_header: 'Mga Puna',
+    new_badge: 'Bago'
   },
   serie: {
     synopsis: 'Buod: ',

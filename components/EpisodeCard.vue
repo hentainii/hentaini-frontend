@@ -7,9 +7,9 @@
         :aspect-ratio="16/9"
         :src="screenshot"
       >
-        <div
-          :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'"
-        />
+        <!-- Badge para "new" -->
+        <div v-if="isNew" class="new-badge">{{ $t('episode.new_badge') }}</div>
+        <div :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'" />
         <div
           :class="hover ? 'play-button play-hover' : 'play-button'"
           style="position:absolute;top:50%;left:50%; transform: translate(-50%, -50%)"
@@ -29,22 +29,17 @@
       Episode {{ episodeNumber }}
     </v-card-text>
   </nuxt-link>
-  <a
-    v-else
-    :href="url"
-  >
-    <v-card
-      class="mx-auto"
-      flat
-      tile
-      color="#111"
-    >
+  <a v-else :href="url">
+    <v-card class="mx-auto" flat tile color="#111">
       <v-img
         class="white--text rounded-lg"
         style="position:relative"
         :aspect-ratio="16/9"
         :src="screenshot"
-      />
+      >
+        <!-- Badge para "new" -->
+        <div v-if="isNew" class="new-badge">New</div>
+      </v-img>
       <v-card-title class="pb-0 pt-2 pl-0" style="font-size:1rem">
         {{ title }}
       </v-card-title>
@@ -95,6 +90,10 @@ export default {
     isAd: {
       type: Boolean,
       default: false
+    },
+    isNew: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -128,5 +127,18 @@ export default {
     transform: translate(2px, -2px);
     box-shadow: #a08227 -4px 4px 0px 1px;
     transition: all  0.2s;
+}
+
+.new-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: green;
+  color: white;
+  padding: 4px 6px;
+  border-bottom-left-radius: 4px;
+  border-top-right-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
 }
 </style>

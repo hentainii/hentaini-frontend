@@ -41,6 +41,7 @@
             :created="episode.createdAt"
             :url="episode.serie.url"
             :isAd="episode.isAd"
+            :isNew="episode.isNew"
           />
         </article>
       </v-col>

@@ -36,7 +36,8 @@ export default {
     download_text: 'এপিসোড ডাউনলোড করুন',
     add_favorite: 'পছন্দে যুক্ত করুন',
     show_episodes: 'এপিসোড দেখান',
-    comments_section_header: 'মন্তব্য'
+    comments_section_header: 'মন্তব্য',
+    new_badge: 'নতুন'
   },
   serie: {
     synopsis: 'সারাংশ: ',

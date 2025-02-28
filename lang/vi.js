@@ -36,7 +36,8 @@ export default {
     download_text: 'Tải xuống tập phim',
     add_favorite: 'Thêm vào yêu thích',
     show_episodes: 'Hiển thị tập',
-    comments_section_header: 'Bình luận'
+    comments_section_header: 'Bình luận',
+    new_badge: 'Mới'
   },
   serie: {
     synopsis: 'Tóm tắt: ',

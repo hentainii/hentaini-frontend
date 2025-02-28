@@ -36,7 +36,8 @@ export default {
     download_text: 'एपिसोड डाउनलोड करा',
     add_favorite: 'आवडत्या मध्ये जोडा',
     show_episodes: 'एपिसोड दाखवा',
-    comments_section_header: 'टिप्पण्या'
+    comments_section_header: 'टिप्पण्या',
+    new_badge: 'नवीन'
   },
   serie: {
     synopsis: 'सारांश: ',

@@ -36,7 +36,8 @@ export default {
     download_text: 'Descargar Episodio',
     add_favorite: 'Favorito',
     show_episodes: 'Mostrar Episodios',
-    comments_section_header: 'Comentarios'
+    comments_section_header: 'Comentarios',
+    new_badge: 'Nuevo'
   },
   serie: {
     synopsis: 'Sinopsis: ',

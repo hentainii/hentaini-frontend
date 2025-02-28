@@ -36,7 +36,8 @@ export default {
     download_text: 'Muat Turun Episod',
     add_favorite: 'Tambah ke Kegemaran',
     show_episodes: 'Tunjukkan Episod',
-    comments_section_header: 'Ulasan'
+    comments_section_header: 'Ulasan',
+    new_badge: 'Baru'
   },
   serie: {
     synopsis: 'Sinopsis: ',

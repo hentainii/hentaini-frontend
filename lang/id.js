@@ -35,7 +35,8 @@ export default {
     download_text: 'Unduh Episode',
     add_favorite: 'Tambahkan ke Favorit',
     show_episodes: 'Tampilkan Episode',
-    comments_section_header: 'Komentar'
+    comments_section_header: 'Komentar',
+    new_badge: 'Baru'
   },
   serie: {
     synopsis: 'Sinopsis: ',
