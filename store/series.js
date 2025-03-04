@@ -21,6 +21,24 @@ export const mutations = {
   }
 }
 export const actions = {
+  async removeOldImage ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/${payload.imageId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    }).then((input) => {
+      if (input.status === 200) {
+        return true
+      } else {
+        return false
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
+  },
   async editSerie ({ commit }, payload) {
     await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieData.id}`, {
       method: 'PUT',

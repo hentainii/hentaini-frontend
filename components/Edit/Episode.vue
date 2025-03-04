@@ -1,5 +1,13 @@
 <template>
   <v-container v-if="episode">
+    <v-row v-if="error">
+      <v-alert
+        type="error"
+        dismissible
+      >
+        {{ errorMessage }}
+      </v-alert>
+    </v-row>
     <v-row>
       <v-col cols="6">
         <v-card elevation>
@@ -49,11 +57,14 @@
             <v-row>
               <h2>Current Screenshot Image</h2>
             </v-row>
-            <v-row>
+            <v-row v-if="episode.image">
               <v-img
                 :src="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
               />
             </v-row>
+            <p v-else class="mt-3">
+              No Image
+            </p>
           </v-container>
           <v-container v-if="hasCustomScreenshot">
             <h2>Custom Screenshot Image</h2>
@@ -174,7 +185,9 @@ export default {
     customScreenshot: [],
     screenshot: '',
     screenshotPreview: '',
-    CDN: process.env.CDN_URI
+    CDN: process.env.CDN_URI,
+    errorMessage: '',
+    error: false
   }),
   computed: {
     players () {
@@ -207,15 +220,19 @@ export default {
       })
     },
     editEpisode () {
+      if (this.hasCustomScreenshot && this.customScreenshot.length > 0) {
+        this.uploadImageToStrapi(this.customScreenshot[0], this.customScreenshot[1], 'image/png', this.episode.id)
+      } else {
+        this.error = true
+        this.errorMessage = 'No image selected'
+        return
+      }
       const players = JSON.stringify(this.episode.players)
       const downloads = JSON.stringify(this.episode.downloads)
       this.$store.dispatch('episodes/editEpisode', {
         episode: { ...this.episode, players, downloads },
         token: this.$store.state.auth.token
       })
-      if (this.episode.hasCustomScreenshot) {
-        this.uploadImageToStrapi(this.customScreenshot[0], this.customScreenshot[1], 'image/png', this.episode.id)
-      }
     },
     screenshotSelected () {
       this.customScreenshot = []
