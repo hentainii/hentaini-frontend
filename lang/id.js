@@ -25,6 +25,13 @@ export default {
     add: 'Tambahkan ke Favorit',
     remove: 'Hapus dari Favorit'
   },
+  watch_later: {
+    title: 'Tonton Nanti',
+    subtitle: 'Anda dapat menyimpan Hentai untuk ditonton nanti di sini.',
+    no_watch_later: 'Belum ada Hentai untuk ditonton nanti',
+    add: 'Tambahkan untuk Ditonton Nanti',
+    remove: 'Hapus dari Ditonton Nanti'
+  },
   mobile: {
     home: 'Beranda',
     airing: 'Sedang Tayang',
@@ -36,7 +43,9 @@ export default {
     add_favorite: 'Tambahkan ke Favorit',
     show_episodes: 'Tampilkan Episode',
     comments_section_header: 'Komentar',
-    new_badge: 'Baru'
+    new_badge: 'Baru',
+    uncensored: 'Tanpa Sensor',
+    watch_later: 'Tambahkan untuk Dit Hentai Nanti'
   },
   serie: {
     synopsis: 'Sinopsis: ',

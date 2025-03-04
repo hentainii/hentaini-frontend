@@ -147,7 +147,7 @@
                   <v-btn
                     :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
                     outlined
-                    class="mt-2"
+                    class="mt-2 mr-2"
                     v-on="on"
                     @click="serieIsPresentInFavorites ? removeFavorite(episode.serie.id) : setFavorite(episode.serie.id)"
                   >
@@ -163,7 +163,7 @@
                   <v-btn
                     :color="serieIsPresentInFavorites ? 'red accent-1' : 'white'"
                     outlined
-                    class="mt-2"
+                    class="mt-2 mr-2"
                     :to="localePath('/login')"
                     v-on="on"
                   >
@@ -173,6 +173,36 @@
                   </v-btn>
                 </template>
                 <span>{{ serieIsPresentInFavorites ? $t('favorites.remove') : $t('favorites.add') }}</span>
+              </v-tooltip>
+              <v-tooltip v-if="$store.state.auth" bottom>
+                <template #activator="{ on }">
+                  <v-btn
+                    :color="isInWatchLater ? 'green darken-2' : 'white'"
+                    outlined
+                    class="mt-2"
+                    v-on="on"
+                    @click="toggleWatchLater(episode.serie)"
+                  >
+                    <v-icon>{{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ isInWatchLater ? $t('watch_later.remove') : $t('watch_later.add') }}</span>
+              </v-tooltip>
+              <v-tooltip v-else bottom>
+                <template #activator="{ on }">
+                  <v-btn
+                    color="grey darken-4"
+                    outlined
+                    class="mt-2"
+                    :to="localePath('/login')"
+                    v-on="on"
+                  >
+                    <v-icon>
+                      mdi-history
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t('watch_later.add') }}</span>
               </v-tooltip>
             </v-col>
           </v-row>
@@ -323,7 +353,8 @@ export default {
       modalDownload: false,
       rating: 0,
       show: false,
-      user_id: ''
+      user_id: '',
+      watchlaters: []
     }
   },
   head () {
@@ -371,6 +402,12 @@ export default {
     },
     filteredPlayers () {
       return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C')
+    },
+    isInWatchLater () {
+      return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
+    },
+    thisWatchLater () {
+      return this.watchlaters.find(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber)) || null
     }
   },
   mounted () {
@@ -395,6 +432,7 @@ export default {
 
     this.getEpisode()
     this.genRandNumber()
+    this.getWatchLaters()
   },
   methods: {
     async getEpisode () {
@@ -484,6 +522,74 @@ export default {
         token: this.$store.state.auth.token
       })
       this.favorites = this.favorites.filter(favorite => favorite.url !== this.episode.serie.url)
+    },
+    toggleWatchLater (serie) {
+      if (this.isInWatchLater) {
+        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters/${this.thisWatchLater.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
+        }).then((result) => {
+          if (result.status === 200) {
+            this.getEpisode()
+            this.getWatchLaters()
+          }
+        }).catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        })
+      } else {
+        const user = this.$store.state.auth.id
+        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: JSON.stringify({
+            data: {
+              user,
+              serie,
+              episode_number: this.episodeNumber
+            }
+          })
+        }).then((result) => {
+          if (result.status === 200) {
+            this.getEpisode()
+            this.getWatchLaters()
+          }
+        }).catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        })
+      }
+    },
+    getWatchLaters () {
+      const qs = require('qs')
+      const query = qs.stringify({
+        filters: {
+          user: {
+            id: this.$store.state.auth.id
+          }
+        },
+        populate: ['serie']
+      },
+      {
+        encodeValuesOnly: true
+      })
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters?${query}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.$store.state.auth.token}`
+        }
+      })
+        .then(res => res.json())
+        .then(({ data: watchLaters }) => {
+          this.watchlaters = watchLaters
+        })
     }
   }
 }

@@ -14,6 +14,13 @@ export default {
     add: 'आवडत्या मध्ये जोडा',
     remove: 'आवडत्या मधून काढा'
   },
+  watch_later: {
+    title: 'नंतर पहा',
+    subtitle: 'आपण येथे पहायला हेंटाई जतन करू शकता.',
+    no_watch_later: 'आत्ताच कोणतेही हेंटाई पहायला नाही',
+    add: 'नंतर पहा मध्ये जोडा',
+    remove: 'नंतर पहा मधून काढा'
+  },
   menu: {
     explore: 'शोधा',
     airing: 'प्रसारित',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'आवडत्या मध्ये जोडा',
     show_episodes: 'एपिसोड दाखवा',
     comments_section_header: 'टिप्पण्या',
-    new_badge: 'नवीन'
+    new_badge: 'नवीन',
+    uncensored: 'सेंसर नाही',
+    watch_later: 'नंतर पहा मध्ये जो डा'
   },
   serie: {
     synopsis: 'सारांश: ',

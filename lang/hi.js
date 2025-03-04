@@ -14,6 +14,13 @@ export default {
     add: 'पसंदीदा में जोड़ें',
     remove: 'पसंदीदा से निकालें'
   },
+  watch_later: {
+    title: 'बाद में देखने के लिए',
+    subtitle: 'आप यहाँ हेंटाई को बाद में देखने के लिए सहेज सकते हैं।',
+    no_watch_later: 'अभी तक कोई हेंटाई बाद में देखने के लिए नहीं',
+    add: 'बाद में देखने के लिए जोड़ें',
+    remove: 'बाद में देखने के लिए हटाएं'
+  },
   menu: {
     explore: 'अन्वेषण करें',
     airing: 'प्रसारण',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'पसंदीदा में जोड़ें',
     show_episodes: 'एपिसोड दिखाएँ',
     comments_section_header: 'टिप्पणियाँ',
-    new_badge: 'नया'
+    new_badge: 'नया',
+    uncensored: 'सेंसर नहीं',
+    watch_later: 'बाद में देखने के लिए जोड़ें'
   },
   serie: {
     synopsis: 'संक्षेप: ',

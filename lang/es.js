@@ -31,13 +31,22 @@ export default {
     add: 'Agregar a Favoritos',
     remove: 'Quitar de Favoritos'
   },
+  watch_later: {
+    title: 'Ver Después',
+    subtitle: 'Puedes guardar tus Hentai para ver después aquí.',
+    no_watch_later: 'No hay Hentais para ver después aún',
+    add: 'Agregar a Ver Después',
+    remove: 'Quitar de Ver Después'
+  },
   episode: {
     episode_number: 'Episodio',
     download_text: 'Descargar Episodio',
     add_favorite: 'Favorito',
     show_episodes: 'Mostrar Episodios',
     comments_section_header: 'Comentarios',
-    new_badge: 'Estreno'
+    new_badge: 'Estreno',
+    uncensored: 'Sin Censura',
+    watch_later: 'Ver Después'
   },
   serie: {
     synopsis: 'Sinopsis: ',

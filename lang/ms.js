@@ -14,6 +14,13 @@ export default {
     add: 'Tambah ke Kegemaran',
     remove: 'Buang dari Kegemaran'
   },
+  watch_later: {
+    title: 'Tonton Kemudian',
+    subtitle: 'Anda boleh simpan Hentai untuk ditonton kemudian di sini.',
+    no_watch_later: 'Tiada Hentai untuk ditonton kemudian lagi',
+    add: 'Tambah untuk Ditonton Kemudian',
+    remove: 'Buang dari Ditonton Kemudian'
+  },
   menu: {
     explore: 'TEROKAI',
     airing: 'PENAYANGAN',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'Tambah ke Kegemaran',
     show_episodes: 'Tunjukkan Episod',
     comments_section_header: 'Ulasan',
-    new_badge: 'Baru'
+    new_badge: 'Baru',
+    uncensored: 'Tanpa Sensor',
+    watch_later: 'Tambahkan untuk Dit Hentai Nanti'
   },
   serie: {
     synopsis: 'Sinopsis: ',

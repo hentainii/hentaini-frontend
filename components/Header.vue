@@ -27,6 +27,16 @@
             </nuxt-link>
           </li>
           <li class="mr-2">
+            <nuxt-link :to="$store.state.auth ? localePath('/watchlater') : localePath('/login')" style="color:white">
+              <v-btn elevation="0" color="grey darken-3">
+                <v-icon class="mr-2">
+                  mdi-history
+                </v-icon>
+                {{ $t('watch_later.title') }}
+              </v-btn>
+            </nuxt-link>
+          </li>
+          <li class="mr-2">
             <nuxt-link :to="$store.state.auth ? localePath('/favorites') : localePath('/login')" style="color:white">
               <v-btn elevation="0" color="red lighten-1">
                 <v-icon class="mr-2">
@@ -228,7 +238,8 @@ export default {
       focus: false,
       navs: [
         { id: 1, name: this.$t('menu.explore'), url: '/explore', icon: 'mdi-home' },
-        { id: 2, name: this.$t('favorites.title'), url: '/favorites', icon: 'mdi-heart' }
+        { id: 2, name: this.$t('favorites.title'), url: '/favorites', icon: 'mdi-heart' },
+        { id: 2, name: this.$t('watch_later.title'), url: '/watchlater', icon: 'mdi-history' }
       ]
     }
   },

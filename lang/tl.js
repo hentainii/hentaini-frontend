@@ -14,6 +14,13 @@ export default {
     add: 'Idagdag sa Paborito',
     remove: 'Tanggalin sa Paborito'
   },
+  watch_later: {
+    title: 'Panoorin Mamaya',
+    subtitle: 'Maaari mong i-save ang iyong Hentai upang panoorin mamaya dito.',
+    no_watch_later: 'Hentai na hindi pa panoorin mamaya',
+    add: 'Idagdag sa Panoorin Mamaya',
+    remove: 'Tanggalin sa Panoorin Mamaya'
+  },
   menu: {
     explore: 'TUKLASIN',
     airing: 'NAGPAPALABAS',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'Idagdag sa Paborito',
     show_episodes: 'Ipakita ang Mga Kabanata',
     comments_section_header: 'Mga Puna',
-    new_badge: 'Bago'
+    new_badge: 'Bago',
+    uncensored: 'Walang Pagsensor',
+    watch_later: 'Idagdag sa Panoorin Mamaya'
   },
   serie: {
     synopsis: 'Buod: ',

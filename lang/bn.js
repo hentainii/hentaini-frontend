@@ -14,6 +14,13 @@ export default {
     add: 'পছন্দে যুক্ত করুন',
     remove: 'পছন্দ থেকে সরান'
   },
+  watch_later: {
+    title: 'পরে দেখার জন্য',
+    subtitle: 'আপনি এখানে দেখার জন্য আপনার হেন্টাই সংরক্ষণ করতে পারেন।',
+    no_watch_later: 'এখনো কোনো হেন্টাই পরে দেখার জন্য নেই',
+    add: 'পরে দেখার জন্য যুক্ত করুন',
+    remove: 'পরে দেখার জন্য সরান'
+  },
   menu: {
     explore: 'অন্বেষণ করুন',
     airing: 'প্রসারিত',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'পছন্দে যুক্ত করুন',
     show_episodes: 'এপিসোড দেখান',
     comments_section_header: 'মন্তব্য',
-    new_badge: 'নতুন'
+    new_badge: 'নতুন',
+    uncensored: 'অসেন্সরড',
+    watch_later: 'পরে দেখার জন্য যুক্ত করুন'
   },
   serie: {
     synopsis: 'সারাংশ: ',

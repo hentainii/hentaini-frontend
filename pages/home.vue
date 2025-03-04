@@ -3,7 +3,7 @@
     <Header />
     <Carousel v-if="$store.state.isDesktop" />
     <TextHeader />
-    <LatestEpisodes />
+    <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
     <v-container><v-divider /></v-container>
     <LatestSeries />
     <LayoutPreFooter />
@@ -17,7 +17,8 @@ export default {
   data () {
     return {
       title: 'hentaini',
-      isDesktop: false
+      isDesktop: false,
+      watchlaters: []
     }
   },
   head () {
@@ -72,6 +73,7 @@ export default {
   mounted () {
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
+    this.getWatchLaters()
   },
   methods: {
     isDesktopScreen () {
@@ -82,6 +84,31 @@ export default {
         this.isDesktop = true
       }
       this.$store.commit('isDesktop', this.isDesktop)
+    },
+    getWatchLaters () {
+      const qs = require('qs')
+      const query = qs.stringify({
+        filters: {
+          user: {
+            id: this.$store.state.auth.id
+          }
+        },
+        populate: ['serie']
+      },
+      {
+        encodeValuesOnly: true
+      })
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters?${query}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.$store.state.auth.token}`
+        }
+      })
+        .then(res => res.json())
+        .then(({ data: watchLaters }) => {
+          this.watchlaters = watchLaters
+        })
     }
   }
 }

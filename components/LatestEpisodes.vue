@@ -25,7 +25,8 @@
         v-for="(episode) in episodes"
         :key="episode.id"
         cols="12"
-        lg="2"
+        xl="2"
+        lg="3"
         md="4"
         sm="6"
         xs="6"
@@ -33,6 +34,7 @@
         <article>
           <EpisodeCard
             :episode="episode.id"
+            :serie="episode.serie.id"
             :title="episode.serie.title"
             :episodeNumber="episode.episode_number"
             :hid="episode.serie.h_id"
@@ -42,6 +44,9 @@
             :url="episode.serie.url"
             :isAd="episode.isAd"
             :isNew="episode.isNew"
+            :censorship="episode.serie.censorship"
+            :watchlaters="watchlaters"
+            @refresh="refresh"
           />
         </article>
       </v-col>
@@ -52,6 +57,12 @@
 <script>
 export default {
   name: 'LatestEpisodes',
+  props: {
+    watchlaters: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       episodes: []
@@ -61,6 +72,10 @@ export default {
     this.getLatestEpisodes()
   },
   methods: {
+    refresh () {
+      this.getLatestEpisodes()
+      this.$emit('refreshwatchlaters')
+    },
     getLatestEpisodes () {
       const qs = require('qs')
       const query = qs.stringify({

@@ -14,6 +14,13 @@ export default {
     add: 'Thêm vào yêu thích',
     remove: 'Xóa khỏi yêu thích'
   },
+  watch_later: {
+    title: 'Xem sau',
+    subtitle: 'Bạn có th Hentai để xem sau ở đây.',
+    no_watch_later: 'Chưa có Hentai nào để xem sau',
+    add: 'Thêm vào danh sách xem sau',
+    remove: 'Xóa khỏi danh sách xem sau'
+  },
   menu: {
     explore: 'KHÁM PHÁ',
     airing: 'ĐANG CHIẾU',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'Thêm vào yêu thích',
     show_episodes: 'Hiển thị tập',
     comments_section_header: 'Bình luận',
-    new_badge: 'Mới'
+    new_badge: 'Mới',
+    uncensored: 'Không kiểm duyệt',
+    watch_later: 'Thêm vào danh sách xem sau'
   },
   serie: {
     synopsis: 'Tóm tắt: ',

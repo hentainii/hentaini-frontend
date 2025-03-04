@@ -66,8 +66,8 @@ export default {
       ]
     },
     status: {
-      type: Object,
-      default: () => ({})
+      type: String,
+      default: ''
     },
     url: {
       type: String,

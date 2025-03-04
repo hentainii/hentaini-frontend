@@ -14,6 +14,13 @@ export default {
     add: 'Add to Favorites',
     remove: 'Remove from Favorites'
   },
+  watch_later: {
+    title: 'Watch Later',
+    subtitle: 'You can save your Hentai to watch later here.',
+    no_watch_later: 'No Hentai to watch later yet',
+    add: 'Add to Watch Later',
+    remove: 'Remove from Watch Later'
+  },
   menu: {
     explore: 'EXPLORE',
     airing: 'AIRING',
@@ -37,7 +44,9 @@ export default {
     add_favorite: 'Add to Favorites',
     show_episodes: 'Show Episodes',
     comments_section_header: 'Comments',
-    new_badge: 'New'
+    new_badge: 'New',
+    uncensored: 'Uncensored',
+    watch_later: 'Add to Watch Later'
   },
   serie: {
     synopsis: 'Synopsis: ',
