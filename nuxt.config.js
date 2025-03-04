@@ -79,20 +79,32 @@ export default {
         file: 'es.js'
       },
       {
+        code: 'fr',
+        name: 'Français',
+        iso: 'fr-FR',
+        file: 'fr.js'
+      },
+      {
+        code: 'th',
+        name: 'ไทย',
+        iso: 'th-TH',
+        file: 'th.js'
+      },
+      {
         code: 'id',
-        name: 'Indonesia',
+        name: 'Bahasa Indonesia',
         iso: 'id-ID',
         file: 'id.js'
       },
       {
         code: 'ms',
-        name: 'Malaysia',
+        name: 'Bahasa Melayu',
         iso: 'ms',
         file: 'ms.js'
       },
       {
         code: 'tl',
-        name: 'Filipino',
+        name: 'Tagalog',
         iso: 'tl',
         file: 'tl.js'
       },
@@ -116,7 +128,7 @@ export default {
       },
       {
         code: 'vi',
-        name: 'Vietnamese',
+        name: 'Tiếng Việt',
         iso: 'vi-VN',
         file: 'vi.js'
       }
