@@ -312,7 +312,8 @@ export default {
         {
           text: 'Serie',
           to: '/',
-          disabled: false
+          disabled: false,
+          exact: true
         },
         {
           text: 'Episode',
@@ -412,7 +413,7 @@ export default {
         this.getFavorites()
         this.setUserId()
         this.addVisit()
-      }, 1000)
+      }, 100)
     },
     async getFavorites () {
       this.favorites = await this.$store.dispatch('favorite/getFavorites', {
@@ -440,7 +441,6 @@ export default {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
       this.breadcrumb[1].text = this.episode.serie.title
       this.breadcrumb[1].to = `/h/${this.episode.serie.url}`
-      this.breadcrumb[1].disabled = false
     },
     genDownloadName () {
       if (!this.areDownloadLinksGenerated) {
