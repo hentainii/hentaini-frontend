@@ -70,8 +70,8 @@ export default {
     async getFavorites () {
       const qs = require('qs')
       const query = qs.stringify({
-        user: {
-          username: this.$store.state.auth.username
+        filters: {
+          user: this.$store.state.auth.id
         },
         populate: [
           'serie',

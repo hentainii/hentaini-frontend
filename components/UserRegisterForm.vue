@@ -16,7 +16,6 @@
         />
         <v-text-field
           v-model="email"
-          :rules="emailRules"
           label="Email (Optional)"
           hint="You can't recover your account if you forgot your password if you not define an email."
         />
@@ -77,10 +76,6 @@ export default {
       v => (v && v.length <= 32) || 'Name must be less than 32 characters'
     ],
     email: '',
-    emailRules: [
-      v => !!v || 'E-mail is required',
-      v => /.+@.+\..+/.test(v) || 'E-mail must be a valid one'
-    ],
     password: '',
     passwordRules: [
       v => !!v || 'Really men?',
@@ -110,6 +105,9 @@ export default {
       this.checkbox = false
     },
     async createUser () {
+      if (!this.email) {
+        this.email = 'noemail@mail.com'
+      }
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/local/register`, {
         method: 'POST',
         headers: {
