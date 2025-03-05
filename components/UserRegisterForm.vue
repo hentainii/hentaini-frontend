@@ -2,6 +2,7 @@
   <v-card
     flat
     color="rgba(51,51,51,0.5)"
+    style="backdrop-filter:blur(5px);"
   >
     <v-card-title class="justify-center">
       Register a new Account

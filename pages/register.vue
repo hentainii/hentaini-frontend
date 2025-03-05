@@ -1,7 +1,7 @@
 <template>
   <v-img
-    src="img/login-bg.jpg"
-    style="width:100%!important;height:100vh!important;background-position:bottom!important"
+    src="img/reg-bg.jpg"
+    style="width:100%!important;height:100vh!important;background-position:bottom!important;"
   >
     <v-container>
       <v-row>
