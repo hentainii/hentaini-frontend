@@ -18,7 +18,7 @@
         <ul class="d-none d-md-flex d-lg-flex">
           <li class="mr-2">
             <nuxt-link :to="localePath('/explore')" style="color:white">
-              <v-btn elevation="0" color="grey darken-3">
+              <v-btn elevation="0" text>
                 <v-icon class="mr-2">
                   mdi-book-outline
                 </v-icon>
@@ -28,7 +28,7 @@
           </li>
           <li class="mr-2">
             <nuxt-link :to="$store.state.auth ? localePath('/watchlater') : localePath('/login')" style="color:white">
-              <v-btn elevation="0" color="grey darken-3">
+              <v-btn elevation="0" text>
                 <v-icon class="mr-2">
                   mdi-history
                 </v-icon>
@@ -38,7 +38,7 @@
           </li>
           <li class="mr-2">
             <nuxt-link :to="$store.state.auth ? localePath('/favorites') : localePath('/login')" style="color:white">
-              <v-btn elevation="0" color="red lighten-1">
+              <v-btn elevation="0" color="red lighten-1" text>
                 <v-icon class="mr-2">
                   mdi-heart
                 </v-icon>
