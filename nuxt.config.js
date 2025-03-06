@@ -54,7 +54,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    'nuxt-i18n'
+    '@nuxtjs/i18n'
   ],
 
   strapi: {

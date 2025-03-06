@@ -29,6 +29,9 @@
             :url="favorite.serie.url"
             :screenshot="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
             :placeholder="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder ? favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder : favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :favoriteid="favorite.id"
+            :removeTagF="true"
+            @refreshf="getFavorites"
           />
         </v-col>
       </v-row>

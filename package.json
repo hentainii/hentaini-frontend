@@ -17,7 +17,7 @@
     "cookieparser": "^0.1.0",
     "js-cookie": "^3.0.0",
     "nuxt": "^2.15.7",
-    "nuxt-i18n": "^6.28.1",
+    "@nuxtjs/i18n": "7.3.1",
     "postscribe": "^2.0.8",
     "qs": "^6.11.1",
     "url-parse": "^1.5.3",

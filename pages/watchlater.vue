@@ -29,6 +29,9 @@
             :url="watchlater.serie.url"
             :screenshot="`${$config.COVER_ENDPOINT}${watchlater.serie.images.find(image => image.image_type.name === 'cover').path}`"
             :placeholder="`${$config.COVER_ENDPOINT}${watchlater.serie.images.find(image => image.image_type.name === 'cover').placeholder ? watchlater.serie.images.find(image => image.image_type.name === 'cover').placeholder : watchlater.serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :watchlaterid="watchlater.id"
+            :removeTagWl="true"
+            @refreshwl="getWatchLaterSeries"
           />
         </v-col>
       </v-row>
@@ -108,7 +111,6 @@ export default {
             }
           })
           this.watchlaters = watchlaters.data
-          console.log(this.watchlaters)
         })
     }
   }

@@ -50,7 +50,7 @@
             icon
             small
             v-on="on"
-            @click="toggleWatchLater(serie)"
+            @click="isLogin ? toggleWatchLater(serie) : $router.push('/login')"
           >
             <v-icon>{{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}</v-icon>
           </v-btn>
@@ -134,6 +134,9 @@ export default {
     },
     thisWatchLater () {
       return this.watchlaters.find(watchlater => watchlater.serie.id === this.serie && watchlater.episode_number === this.episodeNumber) || null
+    },
+    isLogin () {
+      return this.$store.state.auth
     }
   },
   methods: {

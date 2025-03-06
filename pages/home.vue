@@ -73,7 +73,9 @@ export default {
   mounted () {
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
-    this.getWatchLaters()
+    if (this.$store.state.auth) {
+      this.getWatchLaters()
+    }
   },
   methods: {
     isDesktopScreen () {

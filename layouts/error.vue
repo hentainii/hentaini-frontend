@@ -1,5 +1,5 @@
 <template>
-  <v-app dark class="overflow-hidden">
+  <v-app dark class="overflow-hidden" style="height:100svh;">
     <a
       href="/"
     >
@@ -23,7 +23,7 @@ export default {
   },
   data () {
     return {
-      src404: 'img/404.jpgs'
+      src404: 'img/404.jpg'
     }
   },
   head () {
