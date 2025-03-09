@@ -131,6 +131,12 @@ export default {
         name: 'Tiếng Việt',
         iso: 'vi-VN',
         file: 'vi.js'
+      },
+      {
+        code: 'fil',
+        name: 'Filipino',
+        iso: 'fil',
+        file: 'fil.js'
       }
     ],
     defaultLocale: 'en',
