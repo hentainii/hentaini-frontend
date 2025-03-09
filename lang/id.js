@@ -45,7 +45,21 @@ export default {
     comments_section_header: 'Komentar',
     new_badge: 'Baru',
     uncensored: 'Tanpa Sensor',
-    watch_later: 'Tambahkan untuk Dit Hentai Nanti'
+    watch_later: 'Tambahkan untuk Dit Hentai Nanti',
+    report: {
+      title: 'Laporkan masalah dengan episode ini',
+      reasons: {
+        a: 'Pemutar rusak',
+        b: 'Tidak ada Subtitle',
+        c: 'Kualitas Audio Buruk'
+      },
+      details: 'Detail Tambahan',
+      submit: 'Kirim laporan',
+      info: 'Jika seseorang lain sudah melaporkan episode untuk alasan yang sama, laporan Anda mungkin diabaikan.',
+      success: 'Laporan berhasil dikirim',
+      error: 'Terjadi kesalahan saat mengirim laporan',
+      already_reported: 'Seseorang sudah melaporkan episode ini untuk alasan yang sama'
+    }
   },
   serie: {
     synopsis: 'Sinopsis: ',

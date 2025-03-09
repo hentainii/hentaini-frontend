@@ -45,7 +45,21 @@ export default {
     comments_section_header: 'Commentaires',
     new_badge: 'Nouveau',
     uncensored: 'Non censuré',
-    watch_later: 'Ajouter à regarder plus tard'
+    watch_later: 'Ajouter à regarder plus tard',
+    report: {
+      title: 'Signaler un problème avec cet épisode',
+      reasons: {
+        a: 'Lecteurs cassés',
+        b: 'Pas de Sous-titres',
+        c: 'Mauvaise Qualité Audio'
+      },
+      details: 'Détails Supplémentaires',
+      submit: 'Envoyer le rapport',
+      info: 'Si quelqu\'un d\'autre a déjà signalé l\'épisode pour la même raison, votre rapport peut être ignoré.',
+      success: 'Rapport envoyé avec succès',
+      error: 'Une erreur s\'est produite lors de l\'envoi du rapport',
+      already_reported: 'Quelqu\'un a déjà signalé cet épisode pour la même raison'
+    }
   },
   serie: {
     synopsis: 'Synopsis : ',

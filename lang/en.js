@@ -46,7 +46,21 @@ export default {
     comments_section_header: 'Comments',
     new_badge: 'New',
     uncensored: 'Uncensored',
-    watch_later: 'Add to Watch Later'
+    watch_later: 'Add to Watch Later',
+    report: {
+      title: 'Report problem with this episode',
+      reasons: {
+        a: 'Broken Players',
+        b: 'No Subtitles',
+        c: 'Bad Audio'
+      },
+      details: 'Additional Details',
+      submit: 'Send report',
+      info: 'If someone else already has reported the episode for the same reason, your report may be ignored.',
+      success: 'Report sent successfully',
+      error: 'An error occurred while sending the report',
+      already_reported: 'Someone have already reported this episode for the same reason'
+    }
   },
   serie: {
     synopsis: 'Synopsis: ',

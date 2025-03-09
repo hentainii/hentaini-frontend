@@ -46,7 +46,21 @@ export default {
     comments_section_header: 'Mga Puna',
     new_badge: 'Bago',
     uncensored: 'Walang Pagsensor',
-    watch_later: 'Idagdag sa Panoorin Mamaya'
+    watch_later: 'Idagdag sa Panoorin Mamaya',
+    report: {
+      title: 'I-report ang problema sa kabanatang ito',
+      reasons: {
+        a: 'Sira ang mga Player',
+        b: 'Walang Subtitles',
+        c: 'Masamang Kalidad ng Audio'
+      },
+      details: 'Mga Karagdagang Detalye',
+      submit: 'Ipadala ang report',
+      info: 'Kung may iba nang nag-report ng kabanata para sa parehong dahilan, maaaring hindi pansinin ang iyong report.',
+      success: 'Matagumpay na naipadala ang report',
+      error: 'May naganap na error habang ipinapadala ang report',
+      already_reported: 'Nag-report ka na ng kabanata na ito'
+    }
   },
   serie: {
     synopsis: 'Buod: ',

@@ -46,7 +46,21 @@ export default {
     comments_section_header: 'Bình luận',
     new_badge: 'Mới',
     uncensored: 'Không kiểm duyệt',
-    watch_later: 'Thêm vào danh sách xem sau'
+    watch_later: 'Thêm vào danh sách xem sau',
+    report: {
+      title: 'Báo cáo vấn đề với tập này',
+      reasons: {
+        a: 'Trình phát bị hỏng',
+        b: 'Không có phụ đề',
+        c: 'Chất lượng âm thanh kém'
+      },
+      details: 'Chi tiết bổ sung',
+      submit: 'Gửi báo cáo',
+      info: 'Nếu ai đó đã báo cáo cùng một lý do cho tập này, báo cáo của bạn có thể bị bỏ qua.',
+      success: 'Báo cáo đã được gửi thành công',
+      error: 'Đã xảy ra lỗi khi gửi báo cáo',
+      already_reported: 'Bạn đã báo cáo vấn đề này'
+    }
   },
   serie: {
     synopsis: 'Tóm tắt: ',

@@ -46,7 +46,21 @@ export default {
     comments_section_header: 'Comentarios',
     new_badge: 'Estreno',
     uncensored: 'Sin Censura',
-    watch_later: 'Ver Después'
+    watch_later: 'Ver Después',
+    report: {
+      title: 'Reportar problema con este episodio',
+      reasons: {
+        a: 'Reproductores Rotos',
+        b: 'Sin Subtítulos',
+        c: 'Mala Calidad de Audio'
+      },
+      details: 'Detalles Adicionales',
+      submit: 'Enviar reporte',
+      info: 'Si alguien más ya ha reportado el episodio por la misma razón, tu reporte puede ser ignorado.',
+      success: 'Reporte enviado exitosamente',
+      error: 'Ocurrió un error al enviar el reporte',
+      already_reported: 'Alguien ya ha reportado este episodio por la misma razón'
+    }
   },
   serie: {
     synopsis: 'Sinopsis: ',

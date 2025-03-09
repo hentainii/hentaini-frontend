@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="episode">
+  <v-container v-if="episode.id">
     <v-row class="d-none d-md-flex d-lg-flex d-xl-flex">
       <v-col style="padding-top:0">
         <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
@@ -204,6 +204,10 @@
                 </template>
                 <span>{{ $t('watch_later.add') }}</span>
               </v-tooltip>
+              <UtilsReportEpisode
+                :episode="episode"
+                v-on="on"
+              />
             </v-col>
           </v-row>
           <v-row class="mt-0">
@@ -325,7 +329,13 @@ export default {
   data () {
     return {
       CDN: process.env.CDN_URI,
-      episode: null,
+      episode: {
+        id: null,
+        players: [],
+        serie: {
+          title: ''
+        }
+      },
       rand: 1,
       downloadsName: [],
       areDownloadLinksGenerated: false,
@@ -432,7 +442,9 @@ export default {
 
     this.getEpisode()
     this.genRandNumber()
-    this.getWatchLaters()
+    if (this.$store.state.auth) {
+      this.getWatchLaters()
+    }
   },
   methods: {
     async getEpisode () {
