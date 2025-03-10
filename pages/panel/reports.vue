@@ -22,10 +22,37 @@
             :items="reports"
             class="elevation-1"
           >
+            <!-- Columna para mostrar el número de reportes -->
+            <template #[`item.reportsCount`]="{ item }">
+              <span>{{ item.reportsCount }}</span>
+            </template>
+
+            <!-- Columna para mostrar el nombre del usuario con tooltip si hay múltiples reportes -->
+            <template #[`item.username`]="{ item }">
+              <v-tooltip v-if="item.reportsCount > 1" bottom>
+                <template #activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on">{{ item.username }}</span>
+                </template>
+                <div>
+                  <strong>Reportado por:</strong>
+                  <ul style="padding-left: 16px; margin: 0;">
+                    <li v-for="(user, index) in item.usernames" :key="index">
+                      {{ user }}
+                    </li>
+                  </ul>
+                </div>
+              </v-tooltip>
+              <span v-else>
+                {{ item.username }}
+              </span>
+            </template>
+
             <!-- Columna para mostrar badge si el reporte está solucionado -->
             <template #[`item.fixed`]="{ item }">
               <div v-if="item.fixed">
-                <v-chip small color="green" text-color="white">Fixed</v-chip>
+                <v-chip small color="green" text-color="white">
+                  Fixed
+                </v-chip>
               </div>
             </template>
 
@@ -62,9 +89,9 @@
                   <v-btn
                     icon
                     v-bind="attrs"
+                    :disabled="item.fixed"
                     v-on="on"
                     @click="markAsFixed(item)"
-                    :disabled="item.fixed"
                   >
                     <v-icon>mdi-check-circle-outline</v-icon>
                   </v-btn>
@@ -131,8 +158,12 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn text color="primary" @click="confirmRecategorize">Guardar</v-btn>
-          <v-btn text color="secondary" @click="recategorizeDialog = false">Cancelar</v-btn>
+          <v-btn text color="primary" @click="confirmRecategorize">
+            Guardar
+          </v-btn>
+          <v-btn text color="secondary" @click="recategorizeDialog = false">
+            Cancelar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -152,6 +183,8 @@ export default {
         { text: 'ID', value: 'id' },
         { text: 'Serie', value: 'serieName' },
         { text: 'Episode', value: 'episodeNumber' },
+        // Columna que muestra la cantidad de reportes por capítulo
+        { text: 'N° Reportes', value: 'reportsCount' },
         { text: 'Usuario', value: 'username' },
         { text: 'Fecha Reporte', value: 'reportDate' },
         { text: 'Fecha Solucionado', value: 'fixedDate', sortable: false },
@@ -183,22 +216,49 @@ export default {
         }, { encodeValuesOnly: true })
         const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}reports?${query}`)
         const { data: reports } = await res.json()
-        // Se adapta la data a la estructura que usa la tabla
-        this.reports = reports.map(report => ({
-          id: report.id,
-          episodeId: report.episode.id || null,
-          episodeNumber: report.episode.episode_number || null,
-          serieName: report.episode.serie.title || 'No Episode',
-          serieId: report.episode.serie.id || null,
-          serieUrl: report.episode.serie.url || null,
-          reportType: report.reason,
-          fixed: report.fixed || false,
-          reportDate: report.createdAt ? new Date(report.createdAt).toLocaleString() : 'N/A',
-          fixedDate: report.fixed
-            ? (report.updatedAt ? new Date(report.updatedAt).toLocaleString() : 'Pending')
-            : 'Pending',
-          username: report.user ? report.user.username : 'No logged user'
-        }))
+        // Mapeo de cada reporte obtenido (incluyendo la fecha original para filtrar)
+        const mappedReports = reports.map((report) => {
+          const createdAt = report.createdAt
+          return {
+            id: report.id,
+            episodeId: report.episode.id || null,
+            episodeNumber: report.episode.episode_number || null,
+            serieName: report.episode.serie.title || 'No Episode',
+            serieId: report.episode.serie.id || null,
+            serieUrl: report.episode.serie.url || null,
+            reportType: report.reason,
+            fixed: report.fixed || false,
+            createdAt, // se guarda para filtrar por fecha
+            reportDate: createdAt ? new Date(createdAt).toLocaleString() : 'N/A',
+            fixedDate: report.fixed
+              ? (report.updatedAt ? new Date(report.updatedAt).toLocaleString() : 'Pending')
+              : 'Pending',
+            username: report.user ? report.user.username : 'No logged user'
+          }
+        })
+
+        // Filtrar: excluir reportes fijos creados hace más de 7 días
+        const sevenDays = 7 * 24 * 60 * 60 * 1000
+        const now = new Date()
+        const filteredReports = mappedReports.filter((item) => {
+          if (item.fixed) {
+            return (now - new Date(item.createdAt)) <= sevenDays
+          }
+          return true
+        })
+
+        // Agrupar los reportes por capítulo (episodeId) e incluir un arreglo de usernames
+        const grouped = {}
+        filteredReports.forEach((item) => {
+          const key = item.episodeId
+          if (grouped[key]) {
+            grouped[key].reportsCount += 1
+            grouped[key].usernames.push(item.username)
+          } else {
+            grouped[key] = { ...item, reportsCount: 1, usernames: [item.username] }
+          }
+        })
+        this.reports = Object.values(grouped)
         // Ordenar: los no fijos primero
         this.reports.sort((a, b) =>
           a.fixed === b.fixed ? 0 : a.fixed ? 1 : -1
@@ -221,8 +281,6 @@ export default {
         })
         if (res.status === 200) {
           report.fixed = true
-          // Aquí también podrías actualizar la fecha de solución si el API la devuelve.
-          // Por ejemplo: report.fixedAt = new Date().toISOString();
           // Reordenar la lista para mostrar los no fijos primero
           this.reports.sort((a, b) =>
             a.fixed === b.fixed ? 0 : a.fixed ? 1 : -1

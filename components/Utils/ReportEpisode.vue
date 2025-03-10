@@ -148,9 +148,9 @@ export default {
       })
         .then(res => res.json())
         .then(({ data: reports }) => {
-          if (reports.length > 0) {
+          if (reports.length > 9) {
             this.error = true
-            this.errorMessage = 'Someone else has already reported this episode for the same reason'
+            this.errorMessage = 'This episode has reached the maximum number of reports'
             return
           }
           fetch(`${this.$config.API_STRAPI_ENDPOINT}reports`, {
