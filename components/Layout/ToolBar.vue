@@ -116,9 +116,9 @@ export default {
       { id: 3, name: 'List Series', url: '/panel/serie', icon: 'mdi-format-list-bulleted-square' },
       { id: 4, name: 'Create Genre', url: '/panel/genre/create', icon: 'mdi-account-circle' },
       { id: 5, name: 'Create Player', url: '/panel/player/create', icon: 'mdi-play-circle' },
-      { id: 5, name: 'Episode Reports', url: '/panel/reports', icon: 'mdi-flag' },
-      { id: 6, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
-      { id: 7, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' }
+      { id: 6, name: 'Episode Reports', url: '/panel/reports', icon: 'mdi-flag' },
+      { id: 7, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
+      { id: 8, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' }
     ]
   })
 }

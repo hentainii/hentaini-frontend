@@ -47,16 +47,7 @@
               </span>
             </template>
 
-            <!-- Columna para mostrar badge si el reporte está solucionado -->
-            <template #[`item.fixed`]="{ item }">
-              <div v-if="item.fixed">
-                <v-chip small color="green" text-color="white">
-                  Fixed
-                </v-chip>
-              </div>
-            </template>
-
-            <!-- Columna para edición en línea del tipo de reporte -->
+            <!-- Columna para mostrar el chip del tipo de reporte con tooltip de detalles -->
             <template #[`item.reportType`]="{ item }">
               <v-edit-dialog
                 :return-value.sync="item.reportType"
@@ -67,9 +58,26 @@
                 save-text="Guardar"
                 @save="updateReportType(item)"
               >
-                <v-chip small label>
-                  {{ item.reportType }}
-                </v-chip>
+                <v-tooltip bottom>
+                  <template #activator="{ on, attrs }">
+                    <v-chip small label v-bind="attrs" v-on="on">
+                      {{ item.reportType }}
+                    </v-chip>
+                  </template>
+                  <div>
+                    <strong>Detalles:</strong>
+                    <div v-if="item.details && item.details.length">
+                      <ul style="padding-left: 16px; margin: 0;">
+                        <li v-for="(detail, index) in item.details" :key="index">
+                          {{ detail }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div v-else>
+                      Sin detalles
+                    </div>
+                  </div>
+                </v-tooltip>
                 <template #input>
                   <v-select
                     v-model="item.reportType"
@@ -79,6 +87,15 @@
                   />
                 </template>
               </v-edit-dialog>
+            </template>
+
+            <!-- Columna para mostrar badge si el reporte está solucionado -->
+            <template #[`item.fixed`]="{ item }">
+              <div v-if="item.fixed">
+                <v-chip small color="green" text-color="white">
+                  Fixed
+                </v-chip>
+              </div>
             </template>
 
             <!-- Columna de Acciones -->
@@ -216,7 +233,7 @@ export default {
         }, { encodeValuesOnly: true })
         const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}reports?${query}`)
         const { data: reports } = await res.json()
-        // Mapeo de cada reporte obtenido (incluyendo la fecha original para filtrar)
+        // Mapeo de cada reporte obtenido (incluyendo la fecha original para filtrar y detalles)
         const mappedReports = reports.map((report) => {
           const createdAt = report.createdAt
           return {
@@ -233,7 +250,9 @@ export default {
             fixedDate: report.fixed
               ? (report.updatedAt ? new Date(report.updatedAt).toLocaleString() : 'Pending')
               : 'Pending',
-            username: report.user ? report.user.username : 'No logged user'
+            username: report.user ? report.user.username : 'No logged user',
+            // Se asume que el API puede retornar detalles del reporte
+            details: report.details ? report.details : null
           }
         })
 
@@ -247,15 +266,23 @@ export default {
           return true
         })
 
-        // Agrupar los reportes por capítulo (episodeId) e incluir un arreglo de usernames
+        // Agrupar los reportes por capítulo (episodeId) e incluir un arreglo de usernames y detalles
         const grouped = {}
         filteredReports.forEach((item) => {
           const key = item.episodeId
           if (grouped[key]) {
             grouped[key].reportsCount += 1
             grouped[key].usernames.push(item.username)
+            if (item.details) {
+              grouped[key].details.push(item.details)
+            }
           } else {
-            grouped[key] = { ...item, reportsCount: 1, usernames: [item.username] }
+            grouped[key] = {
+              ...item,
+              reportsCount: 1,
+              usernames: [item.username],
+              details: item.details ? [item.details] : []
+            }
           }
         })
         this.reports = Object.values(grouped)

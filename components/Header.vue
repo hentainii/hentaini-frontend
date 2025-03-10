@@ -239,7 +239,7 @@ export default {
       navs: [
         { id: 1, name: this.$t('menu.explore'), url: '/explore', icon: 'mdi-home' },
         { id: 2, name: this.$t('favorites.title'), url: '/favorites', icon: 'mdi-heart' },
-        { id: 2, name: this.$t('watch_later.title'), url: '/watchlater', icon: 'mdi-history' }
+        { id: 3, name: this.$t('watch_later.title'), url: '/watchlater', icon: 'mdi-history' }
       ]
     }
   },
