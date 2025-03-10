@@ -12,6 +12,9 @@
       <v-col cols="6">
         <MiscUsersCard />
       </v-col>
+      <v-col cols="6">
+        <MiscReportsCard />
+      </v-col>
     </v-row>
   </v-container>
 </template>

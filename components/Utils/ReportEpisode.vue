@@ -57,6 +57,8 @@
             outlined
             rows="3"
             clearable
+            max="200"
+            :rules="rules"
           />
           <p>{{ $t('episode.report.info') }}</p>
         </v-card-text>
@@ -114,7 +116,10 @@ export default {
       details: null,
       error: false,
       errorMessage: '',
-      sent: false
+      sent: false,
+      rules: [
+        v => (v && v.length <= 200) || 'Details must be less than 200 characters'
+      ]
     }
   },
   methods: {
@@ -158,7 +163,7 @@ export default {
                 reason: this.reason,
                 details: this.details,
                 episode: this.episode.id,
-                user: this.$store.state.user.id || null
+                user: this.$store.state.auth.id || null
               }
             })
           })
