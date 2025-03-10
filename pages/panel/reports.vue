@@ -234,7 +234,9 @@ export default {
         const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}reports?${query}`)
         const { data: reports } = await res.json()
         // Mapeo de cada reporte obtenido (incluyendo la fecha original para filtrar y detalles)
-        const mappedReports = reports.map((report) => {
+        const validReports = reports.filter(report => report.episode)
+        const mappedReports = validReports.map((report) => {
+          if (!report.episode) { return null }
           const createdAt = report.createdAt
           return {
             id: report.id,
