@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="mx-auto"
+    max-width="344"
   >
     <v-img
       :src="$config.SCREENSHOT_ENDPOINT + serieImage"
@@ -8,7 +8,7 @@
     />
 
     <v-card-title>
-      {{ seriescount }} series in Hentaini
+      {{ seriescount }} series
     </v-card-title>
 
     <v-card-subtitle>

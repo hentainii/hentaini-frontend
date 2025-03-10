@@ -1,18 +1,16 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6">
+      <v-col>
         <MiscSeriesCard />
       </v-col>
-      <v-col cols="6">
+      <v-col>
         <MiscEpisodesCard />
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
+      <v-col>
         <MiscUsersCard />
       </v-col>
-      <v-col cols="6">
+      <v-col>
         <MiscReportsCard />
       </v-col>
     </v-row>

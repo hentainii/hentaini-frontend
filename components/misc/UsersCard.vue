@@ -1,13 +1,13 @@
 <template>
   <v-card
-    class="mx-auto"
+    max-width="344"
   >
     <v-img
       :src="`${$config.SCREENSHOT_ENDPOINT}usercount.jpg`"
       height="200px"
     />
     <v-card-title>
-      {{ usercount }} users registered in Hentaini
+      {{ usercount }} users registered
     </v-card-title>
 
     <v-card-subtitle>
