@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="justify-center">
       <client-only>
-        <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.bidgear.com/pubbidgear-ad.js" type="text/javascript"></script>' />
+        <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
       </client-only>
       <client-only>
         <div id="bg-ssp-10357">
