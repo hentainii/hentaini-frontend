@@ -307,7 +307,7 @@
             <client-only>
               <div id="bg-ssp-10357">
               </div>
-              <UtilsVueScriptComponent script='<script data-cfasync="false" src="../../imgsize.js" type="text/javascript"></script>' />
+              <UtilsVueScriptComponent script='<script data-cfasync="false" src="../../bg.js" type="text/javascript"></script>' />
             </client-only>
           </v-row>
         </v-container>
