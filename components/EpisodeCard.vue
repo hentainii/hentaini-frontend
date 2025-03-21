@@ -9,12 +9,12 @@
           :src="screenshot"
         >
           <!-- Badge para "new" -->
-          <div v-if="isNew" class="new-badge">
+          <div v-if="isNew && lessThan7Days(created)" class="new-badge">
             <v-icon class="text-caption mr-1">
               mdi-star
             </v-icon>{{ $t('episode.new_badge') }}
           </div>
-          <!-- Badge para "new" -->
+          <!-- Badge para "censorship" -->
           <div v-if="!censorship" class="no-censor-badge">
             <v-icon class="text-caption mr-1">
               mdi-eye
