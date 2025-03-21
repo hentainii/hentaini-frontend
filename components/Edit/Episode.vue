@@ -219,17 +219,13 @@ export default {
         token: this.$store.state.auth.token
       })
     },
-    editEpisode () {
+    async editEpisode () {
       if (this.hasCustomScreenshot && this.customScreenshot.length > 0) {
-        this.uploadImageToStrapi(this.customScreenshot[0], this.customScreenshot[1], 'image/png', this.episode.id)
-      } else {
-        this.error = true
-        this.errorMessage = 'No image selected'
-        return
+        await this.uploadImageToStrapi(this.customScreenshot[0], this.customScreenshot[1], 'screenshot', this.episode.id)
       }
       const players = JSON.stringify(this.episode.players)
       const downloads = JSON.stringify(this.episode.downloads)
-      this.$store.dispatch('episodes/editEpisode', {
+      await this.$store.dispatch('episodes/editEpisode', {
         episode: { ...this.episode, players, downloads },
         token: this.$store.state.auth.token
       })
@@ -257,6 +253,7 @@ export default {
               this.createImageComponent(strapiRes[0], episodeId)
             })
         } else {
+          console.log(input)
           throw new Error('Upload failed')
         }
       }).catch((error) => {

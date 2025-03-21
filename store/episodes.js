@@ -90,25 +90,27 @@ export const actions = {
         })
     })
   },
-  async editEpisode ({ commit }, payload) {
-    await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${payload.episode.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${payload.token}`
-      },
-      body: JSON.stringify({
-        data: payload.episode
+  editEpisode ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${payload.episode.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${payload.token}`
+        },
+        body: JSON.stringify({
+          data: payload.episode
+        })
+      }).then((response) => {
+        if (response.status === 200) {
+          this.$router.push({ path: `/panel/serie/${payload.episode.serie.id}/episodes`, query: { edited: true } })
+        } else {
+          throw new Error('Error creating serie')
+        }
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error)
       })
-    }).then((response) => {
-      if (response.status === 200) {
-        this.$router.push({ path: `/panel/serie/${payload.episode.serie.id}/episodes`, query: { edited: true } })
-      } else {
-        throw new Error('Error creating serie')
-      }
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
     })
   },
   async createEpisode ({ commit }, payload) {
