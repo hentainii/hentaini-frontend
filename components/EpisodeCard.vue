@@ -1,58 +1,62 @@
 <template>
-  <div>
-    <nuxt-link :to="localePath(`/h/${url}/${episodeNumber}`)">
+  <div class="episode-card">
+    <nuxt-link :to="localePath(`/h/${url}/${episodeNumber}`)" :title="`Watch ${title} Episode ${episodeNumber}`">
       <v-hover v-slot="{ hover }">
-        <v-img
-          class="white--text lift-image"
-          style="position:relative"
-          :aspect-ratio="16/9"
-          :src="screenshot"
-        >
-          <!-- Badge para "new" -->
-          <div v-if="isNew && lessThan7Days(created)" class="new-badge">
-            <v-icon class="text-caption mr-1">
-              mdi-star
-            </v-icon>{{ $t('episode.new_badge') }}
-          </div>
-          <!-- Badge para "censorship" -->
-          <div v-if="!censorship" class="no-censor-badge">
-            <v-icon class="text-caption mr-1">
-              mdi-eye
-            </v-icon>{{ $t('episode.uncensored') }}
-          </div>
-          <div :class="hover ? 'fill-height gradient gradient-hover' : 'fill-height gradient'" />
-          <div
-            :class="hover ? 'play-button play-hover' : 'play-button'"
-            style="position:absolute;top:50%;left:50%; transform: translate(-50%, -50%)"
+        <div class="image-container">
+          <v-img
+            class="episode-image"
+            :aspect-ratio="16/9"
+            :src="screenshot"
+            :lazy-src="placeholder"
           >
-            <v-icon style="font-size:4rem">
-              mdi-play
-            </v-icon>
-          </div>
-        </v-img>
+            <!-- Badge para "new" -->
+            <div v-if="isNew && lessThan7Days(created)" class="new-badge">
+              <v-icon class="text-caption mr-1">
+                mdi-star
+              </v-icon>{{ $t('episode.new_badge') }}
+            </div>
+            <!-- Badge para "censorship" -->
+            <div v-if="!censorship" class="no-censor-badge">
+              <v-icon class="text-caption mr-1">
+                mdi-eye
+              </v-icon>{{ $t('episode.uncensored') }}
+            </div>
+
+            <div :class="hover ? 'overlay overlay-hover' : 'overlay'">
+              <div class="play-button-container">
+                <div class="play-button">
+                  <v-icon>mdi-play</v-icon>
+                </div>
+              </div>
+            </div>
+          </v-img>
+        </div>
       </v-hover>
     </nuxt-link>
-    <div class="d-flex justify-space-between align-center">
-      <div style="display:grid;padding-right:10px;width:90%;">
-        <v-card-title class="pb-0 pt-1 mt-1 pl-1" style="white-space:nowrap;line-height:15px;">
-          <h2 style="overflow:hidden;text-overflow:ellipsis;font-size:0.8rem;width:240px;" class="pa-0 ma-0 white--text text-weight-bold">
-            {{ title }}
-          </h2>
-        </v-card-title>
-        <v-card-text class="py-0 pl-1 grey--text darken-3 text-caption">
+
+    <div class="card-content">
+      <div class="card-details">
+        <h2 class="episode-title">
+          {{ title }}
+        </h2>
+        <p class="episode-number">
           {{ $t('episode.episode_number') }} {{ episodeNumber }}
-        </v-card-text>
+        </p>
       </div>
+
       <v-tooltip left>
         <template #activator="{ on, attrs }">
           <v-btn
             v-bind="attrs"
             icon
             small
+            class="watchlater-btn"
             v-on="on"
             @click="isLogin ? toggleWatchLater(serie) : $router.push('/login')"
           >
-            <v-icon>{{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}</v-icon>
+            <v-icon :color="isInWatchLater ? 'primary' : ''">
+              {{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}
+            </v-icon>
           </v-btn>
         </template>
         <span>{{ isInWatchLater ? $t('watch_later.remove') : $t('watch_later.add') }}</span>
@@ -192,64 +196,167 @@ export default {
 </script>
 
 <style scoped>
+.episode-card {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(25, 25, 25, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.episode-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.episode-image {
+  transition: transform 0.5s ease;
+}
+
+.episode-card:hover .episode-image {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-hover {
+  opacity: 1;
+}
+
+.play-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .play-button {
-  transition: all .2s ease-in-out;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  transform: scale(0.8);
 }
 
-.play-button:not(.play-hover) {
-  opacity: 0;
-}
-.gradient {
-  transition: all .2s ease-in-out;
-  background-image: linear-gradient(to top right, rgba(93, 93, 93, 0.33), rgba(26, 26, 26, 0.7));
-}
-.gradient:not(.gradient-hover){
-  opacity: 0;
+.episode-card:hover .play-button {
+  transform: scale(1);
+  background: rgba(var(--v-primary-base), 0.8);
 }
 
-.lift-image {
-    transition: all  0.2s;
+.play-button i {
+  font-size: 2.5rem;
+  color: #fff;
 }
-.lift-image:hover {
-    transform: translate(1px, -1px);
-    box-shadow: #a08227 -2px 2px 0px 1px;
-    transition: all  0.1s;
+
+.card-content {
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  background: transparent;
+}
+
+.card-details {
+  width: 80%;
+}
+
+.episode-title {
+  color: #fff;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.episode-number {
+  color: #bbb;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.watchlater-btn {
+  transition: all 0.3s ease;
+}
+
+.watchlater-btn:hover {
+  transform: scale(1.2);
 }
 
 .new-badge {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: green;
+  top: 10px;
+  right: 10px;
+  background-color: #4CAF50;
   color: white;
-  padding: 4px 6px;
-  border-bottom-left-radius: 4px;
-  border-top-right-radius: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 0.8rem;
   font-weight: bold;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: pulse 2s infinite;
 }
-.censor-badge {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: rgb(180, 180, 30);
-  color: white;
-  padding: 2px 4px;
-  border-bottom-left-radius: 4px;
-  border-top-right-radius: 4px;
-  font-size: 0.6rem;
-  font-weight: bold;
-}
+
 .no-censor-badge {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background-color: #333333bf;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(51, 51, 51, 0.85);
   color: white;
-  padding: 2px 4px;
-  border-bottom-left-radius: 4px;
-  border-top-right-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 400;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
 }
 </style>

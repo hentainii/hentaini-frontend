@@ -157,7 +157,7 @@
                     :synopsis="serie.synopsis"
                     :genres="serie.genres"
                     :componentgenres="serie.genreList"
-                    :status="serie.status"
+                    :status="serie.status.name"
                     :url="serie.url"
                     :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
                     :visits="serie.visits"
