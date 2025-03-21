@@ -57,7 +57,30 @@
         md="12"
         lg="8"
       >
-        <VideoElement :src="currentUrl" />
+        <div v-if="!showVideo" class="screenshot-container position-relative">
+          <v-img
+            :src="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+            width="100%"
+            class="rounded-lg"
+            cover
+            :aspect-ratio="16/9"
+          >
+            <div class="play-button-overlay">
+              <v-btn
+                icon
+                x-large
+                color="primary"
+                class="play-button"
+                @click="showVideo = true"
+              >
+                <v-icon size="64">
+                  mdi-play-circle
+                </v-icon>
+              </v-btn>
+            </div>
+          </v-img>
+        </div>
+        <VideoElement v-if="showVideo" :src="currentUrl" />
         <v-container fluid>
           <v-row>
             <v-col
@@ -336,6 +359,7 @@ export default {
           title: ''
         }
       },
+      showVideo: false,
       rand: 1,
       downloadsName: [],
       areDownloadLinksGenerated: false,
@@ -483,6 +507,7 @@ export default {
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
+      this.showVideo = false
     },
     genCurrentUrl () {
       this.currentUrl = this.filteredPlayers[0].url
@@ -608,5 +633,36 @@ export default {
 </script>
 
 <style>
+.screenshot-container {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
+.play-button-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.play-button-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.play-button {
+  transform: scale(1.5);
+  transition: all 0.3s ease;
+}
+
+.play-button:hover {
+  transform: scale(1.7);
+}
 </style>

@@ -51,7 +51,8 @@ export const actions = {
         populate: [
           'serie',
           'serie.episodes',
-          'serie.status'
+          'serie.status',
+          'image'
         ],
         sort: ['createdAt:desc']
       },
