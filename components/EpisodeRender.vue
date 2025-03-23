@@ -59,7 +59,7 @@
       >
         <div v-if="!showVideo" class="screenshot-container position-relative">
           <v-img
-            :src="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+            :src="`${$config.SCREENSHOT_ENDPOINT}${serieScreenshot}`"
             width="100%"
             class="rounded-lg"
             cover
@@ -442,6 +442,9 @@ export default {
     },
     thisWatchLater () {
       return this.watchlaters.find(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber)) || null
+    },
+    serieScreenshot () {
+      return this.episode.image ? this.episode.image.path : this.episode.serie.images.find(image => image.image_type.name === 'screenshot').path
     }
   },
   mounted () {
