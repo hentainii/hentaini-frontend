@@ -50,6 +50,8 @@ export const actions = {
         },
         populate: [
           'serie',
+          'serie.images',
+          'serie.images.image_type',
           'serie.episodes',
           'serie.status',
           'image'
