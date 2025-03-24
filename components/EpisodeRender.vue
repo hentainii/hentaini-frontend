@@ -219,7 +219,7 @@
           <v-card-text class="pt-1">
             <v-slide-group
               center-active
-              show-arrows
+              :show-arrows="$isDesktop"
             >
               <v-slide-item
                 v-for="serie in similarSeries"
@@ -358,7 +358,7 @@
     >
       <v-card class="rounded-lg">
         <v-card-title
-          class="headline primary white--text"
+          class="primary white--text"
           :class="{'py-3': $vuetify.breakpoint.smAndDown}"
         >
           <span class="text-truncate">
@@ -376,7 +376,7 @@
         </v-card-title>
 
         <v-card-text :class="{'pa-2': $vuetify.breakpoint.smAndDown, 'pt-5': !$vuetify.breakpoint.smAndDown}">
-          <v-row class="justify-center">
+          <v-row class="justify-center mt-2">
             <v-btn
               v-for="link in downloadsName"
               :key="link.name"
@@ -590,8 +590,8 @@ export default {
       this.breadcrumb[1].to = `/h/${this.episode.serie.url}`
     },
     genDownloadName () {
+      this.modalDownload = true
       if (!this.areDownloadLinksGenerated) {
-        this.modalDownload = true
         for (let i = 0; i < this.episode.downloads.length; i++) {
           const regex = /([a-z0-9][a-z0-9-]*)?((\.[a-z]{2,6}))$/
           const nameDownload = parse(this.episode.downloads[i].url, true)
