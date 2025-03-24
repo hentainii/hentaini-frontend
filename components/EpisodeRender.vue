@@ -1,7 +1,7 @@
 <template>
-  <v-container v-if="episode.id" class="episode-container pa-4">
+  <v-container v-if="episode.id" class="episode-container pa-2 pa-lg-4">
     <!-- Breadcrumbs -->
-    <v-row class="d-none d-md-flex">
+    <v-row v-if="$store.state.isDesktop">
       <v-col style="padding-top:0">
         <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
       </v-col>
@@ -46,7 +46,7 @@
                 <!-- Selección de reproductor -->
                 <v-col cols="12" sm="12" md="8" class="player-selection d-flex align-center py-2">
                   <v-slide-group
-                    :show-arrows="$isDesktop"
+                    :show-arrows="$store.state.isDesktop"
                     center-active
                     mandatory
                     class="player-slide-group"
@@ -219,7 +219,7 @@
           <v-card-text class="pt-1">
             <v-slide-group
               center-active
-              :show-arrows="$isDesktop"
+              :show-arrows="$store.state.isDesktop"
             >
               <v-slide-item
                 v-for="serie in similarSeries"
@@ -541,8 +541,19 @@ export default {
       this.getFavorites()
       this.getWatchLaters()
     }
+    window.addEventListener('resize', this.isDesktopScreen)
+    this.isDesktopScreen()
   },
   methods: {
+    isDesktopScreen () {
+      const res = document.body.clientWidth
+      if (res < 960) {
+        this.isDesktop = false
+      } else {
+        this.isDesktop = true
+      }
+      this.$store.commit('isDesktop', this.isDesktop)
+    },
     async getEpisode () {
       const episode = await this.$store.dispatch('episodes/getEpisodePublic', {
         serieId: this.serieId,
