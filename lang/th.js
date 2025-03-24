@@ -4,7 +4,9 @@ export default {
     latest_episodes: 'ตอนใหม่',
     latest_series_little: 'สำรวจซีรีส์เฮ็นไทล่าสุด',
     latest_series: 'เฮ็นไทล่าสุด',
-    updated_text: 'อัปเดต '
+    updated_text: 'อัปเดต ',
+    watch_now: 'ดูตอนนี้',
+    featured: 'แนะนำ'
   },
   favorites: {
     title: 'รายการโปรดของฉัน',

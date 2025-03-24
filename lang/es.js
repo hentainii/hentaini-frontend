@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'Nuevos Capitulos',
     latest_series_little: 'Explora las últimas Series Hentai',
     latest_series: 'Últimos Hentais',
-    updated_text: 'Actualizado '
+    updated_text: 'Actualizado ',
+    watch_now: 'Ver Ahora',
+    featured: 'Destacados'
   },
   menu: {
     explore: 'EXPLORA',

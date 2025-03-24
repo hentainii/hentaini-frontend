@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'Mga Kamakailang Kaganapan',
     latest_series_little: 'Tuklasin ang Mga Kamakailang Serye ng Hentai',
     latest_series: 'Kamakailang Hentai',
-    updated_text: 'Nai-update '
+    updated_text: 'Nai-update ',
+    watch_now: 'Panoorin Ngayon',
+    featured: 'Itinatampok'
   },
   favorites: {
     title: 'Ang Aking Mga Paborito',

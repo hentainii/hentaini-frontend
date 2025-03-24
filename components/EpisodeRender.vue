@@ -750,7 +750,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .episode-container {
   background-color: rgba(0, 0, 0, 0.02);
 }

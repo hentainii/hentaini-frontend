@@ -1,62 +1,65 @@
 <template>
   <v-container class="latest-episodes-container">
-    <v-row class="justify-center">
-      <client-only>
-        <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
-      </client-only>
-      <client-only>
-        <div id="bg-ssp-10357">
-        </div>
-        <UtilsVueScriptComponent script='<script data-cfasync="false" src="bg.js" type="text/javascript"></script>' />
-      </client-only>
-    </v-row>
+    <misc-latest-episodes-skeleton v-if="loading" />
+    <template v-else>
+      <v-row class="justify-center">
+        <client-only>
+          <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
+        </client-only>
+        <client-only>
+          <div id="bg-ssp-10357">
+          </div>
+          <UtilsVueScriptComponent script='<script data-cfasync="false" src="bg.js" type="text/javascript"></script>' />
+        </client-only>
+      </v-row>
 
-    <div class="section-header">
-      <nuxt-link :to="localePath('/explore')" class="section-link">
-        <div class="header-content">
-          <span class="subtitle">
-            {{ $t('landpage.latest_episodes_little') }}
-          </span>
-          <h2 class="title">
-            {{ $t('landpage.latest_episodes') }}
-          </h2>
-        </div>
-      </nuxt-link>
-      <div class="animated-bar" />
-    </div>
+      <div class="section-header">
+        <nuxt-link :to="localePath('/explore')" class="section-link">
+          <div class="header-content">
+            <span class="subtitle">
+              {{ $t('landpage.latest_episodes_little') }}
+            </span>
+            <h2 class="title">
+              {{ $t('landpage.latest_episodes') }}
+            </h2>
+          </div>
+        </nuxt-link>
+        <div class="animated-bar" />
+      </div>
 
-    <v-row class="episodes-grid">
-      <v-col
-        v-for="(episode) in episodes"
-        :key="episode.id"
-        cols="6"
-        xl="2"
-        lg="3"
-        md="4"
-        sm="6"
-        xs="6"
-        class="episode-item"
-      >
-        <article>
-          <EpisodeCard
-            :episode="episode.id"
-            :serie="episode.serie.id"
-            :title="episode.serie.title"
-            :episodeNumber="episode.episode_number"
-            :hid="episode.serie.h_id"
-            :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
-            :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
-            :created="episode.createdAt"
-            :url="episode.serie.url"
-            :isAd="episode.isAd"
-            :isNew="episode.isNew"
-            :censorship="episode.serie.censorship"
-            :watchlaters="watchlaters"
-            @refresh="refresh"
-          />
-        </article>
-      </v-col>
-    </v-row>
+      <v-row class="episodes-grid">
+        <v-col
+          v-for="(episode) in episodes"
+          :key="episode.id"
+          cols="6"
+          xl="2"
+          lg="3"
+          md="4"
+          sm="6"
+          xs="6"
+          class="episode-item"
+        >
+          <article>
+            <EpisodeCard
+              :episode="episode.id"
+              :serie="episode.serie.id"
+              :title="episode.serie.title"
+              :episodeNumber="episode.episode_number"
+              :hid="episode.serie.h_id"
+              :screenshot="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+              :placeholder="`${$config.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
+              :created="episode.createdAt"
+              :url="episode.serie.url"
+              :isAd="episode.isAd"
+              :isNew="episode.isNew"
+              :censorship="episode.serie.censorship"
+              :watchlaters="watchlaters"
+              @refresh="refresh"
+            />
+          </article>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -71,7 +74,8 @@ export default {
   },
   data () {
     return {
-      episodes: []
+      episodes: [],
+      loading: true
     }
   },
   mounted () {
@@ -83,6 +87,7 @@ export default {
       this.$emit('refreshwatchlaters')
     },
     getLatestEpisodes () {
+      this.loading = true
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
@@ -105,12 +110,17 @@ export default {
         .then(res => res.json())
         .then((episodes) => {
           this.episodes = episodes.data
+          this.loading = false
           // const rn = Math.floor(Math.random() * 2)
           // if (rn === 0) {
           //   this.createEpisodeAd()
           // } else {
           //   this.createEpisodeAd2()
           // }
+        })
+        .catch((error) => {
+          console.error('Error loading latest episodes:', error)
+          this.loading = false
         })
     },
     createEpisodeAd () {

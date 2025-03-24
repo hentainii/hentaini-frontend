@@ -1,5 +1,5 @@
 <template>
-  <v-card class="text-center my-4 text-header-card" elevation="0">
+  <v-card class="text-center my-0 text-header-card" elevation="0">
     <v-card-text>
       <h1 class="header-title">
         <span class="gradient-text">Hentaini.</span> Watch and save your favorite Hentai online in HD for free.
@@ -14,20 +14,17 @@
   background: transparent;
   overflow: hidden;
   position: relative;
-  padding: 1rem 0;
-  margin-top: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .header-title {
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  margin-bottom: 1rem;
-  padding: 1rem;
   position: relative;
   z-index: 1;
   line-height: 1.3;
+  text-wrap: balance;
 }
 
 .gradient-text {
@@ -46,6 +43,7 @@
   margin: 0 auto;
   animation: expandLine 0.8s forwards ease-out;
   border-radius: 2px;
+  margin-bottom: 20px;
 }
 
 @keyframes gradientFlow {

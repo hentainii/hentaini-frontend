@@ -1,7 +1,7 @@
 <template>
   <section>
     <Header />
-    <Carousel v-if="$store.state.isDesktop" />
+    <Carousel />
     <TextHeader />
     <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
     <v-container><v-divider /></v-container>

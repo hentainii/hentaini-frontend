@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'সাম্প্রতিক পর্ব',
     latest_series_little: 'সাম্প্রতিক হেন্টাই সিরিজ এক্সপ্লোর করুন',
     latest_series: 'সাম্প্রতিক হেন্টাই',
-    updated_text: 'হালনাগাদ করা হয়েছে '
+    updated_text: 'হালনাগাদ করা হয়েছে ',
+    watch_now: 'এখন দেখুন',
+    featured: 'বৈশিষ্ট্যযুক্ত'
   },
   favorites: {
     title: 'আমার পছন্দ',

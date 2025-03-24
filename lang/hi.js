@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'हाल के एपिसोड',
     latest_series_little: 'हाल के हेंटाई श्रृंखलाएँ खोजें',
     latest_series: 'हाल की हेंटाई',
-    updated_text: 'अपडेट किया गया '
+    updated_text: 'अपडेट किया गया ',
+    watch_now: 'अभी देखें',
+    featured: 'विशेषताएँ'
   },
   favorites: {
     title: 'मेरे पसंदीदा',

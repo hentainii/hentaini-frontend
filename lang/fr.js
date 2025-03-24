@@ -4,7 +4,9 @@ export default {
     latest_episodes: 'Nouveaux Épisodes',
     latest_series_little: 'Découvrez les dernières séries Hentai',
     latest_series: 'Hentai Récents',
-    updated_text: 'Mis à jour '
+    updated_text: 'Mis à jour ',
+    watch_now: 'Regarder Maintenant',
+    featured: 'En Vedette'
   },
   favorites: {
     title: 'Mes Favoris',

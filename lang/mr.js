@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'अलीकडील भाग',
     latest_series_little: 'अलीकडील हेंटाई मालिका तपासणी करा',
     latest_series: 'अलीकडील हेंटाई',
-    updated_text: 'अपडेट केलेले '
+    updated_text: 'अपडेट केलेले ',
+    watch_now: 'आता पहा',
+    featured: 'विशेषताएँ'
   },
   favorites: {
     title: 'माझे आवडते',

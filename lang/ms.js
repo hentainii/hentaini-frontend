@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'Episod Terkini',
     latest_series_little: 'Terokai Siri Hentai Terkini',
     latest_series: 'Hentai Terkini',
-    updated_text: 'Dikemaskini '
+    updated_text: 'Dikemaskini ',
+    watch_now: 'Tonton Sekarang',
+    featured: 'Sorotan'
   },
   favorites: {
     title: 'Kegemaran Saya',

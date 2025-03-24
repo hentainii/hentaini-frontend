@@ -5,7 +5,9 @@ export default {
     latest_episodes: 'Tập gần đây',
     latest_series_little: 'Khám phá các bộ Hentai gần đây',
     latest_series: 'Hentai mới nhất',
-    updated_text: 'Cập nhật '
+    updated_text: 'Cập nhật ',
+    watch_now: 'Xem ngay',
+    featured: 'Nổi bật'
   },
   favorites: {
     title: 'Yêu thích của tôi',

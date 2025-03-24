@@ -1,43 +1,46 @@
 <template>
   <v-container class="latest-series-container">
-    <div class="section-header">
-      <nuxt-link :to="localePath('/explore')" class="section-link">
-        <div class="header-content">
-          <span class="subtitle">
-            {{ $t('landpage.latest_series_little') }}
-          </span>
-          <h2 class="title">
-            {{ $t('landpage.latest_series') }}
-          </h2>
-        </div>
-      </nuxt-link>
-      <div class="animated-bar" />
-    </div>
-    <v-row class="series-grid">
-      <v-col
-        v-for="(serie) in series"
-        :key="serie._id"
-        cols="6"
-        lg="2"
-        md="4"
-        sm="4"
-        xs="4"
-        class="serie-item"
-      >
-        <article>
-          <SerieCard
-            :title="serie.title"
-            :synopsis="serie.synopsis"
-            :genres="serie.genres"
-            :componentgenres="serie.genreList"
-            :status="serie.status.name"
-            :url="serie.url"
-            :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-            :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
-          />
-        </article>
-      </v-col>
-    </v-row>
+    <misc-latest-series-skeleton v-if="loading" />
+    <template v-else>
+      <div class="section-header">
+        <nuxt-link :to="localePath('/explore')" class="section-link">
+          <div class="header-content">
+            <span class="subtitle">
+              {{ $t('landpage.latest_series_little') }}
+            </span>
+            <h2 class="title">
+              {{ $t('landpage.latest_series') }}
+            </h2>
+          </div>
+        </nuxt-link>
+        <div class="animated-bar" />
+      </div>
+      <v-row class="series-grid">
+        <v-col
+          v-for="(serie) in series"
+          :key="serie._id"
+          cols="6"
+          lg="2"
+          md="4"
+          sm="4"
+          xs="4"
+          class="serie-item"
+        >
+          <article>
+            <SerieCard
+              :title="serie.title"
+              :synopsis="serie.synopsis"
+              :genres="serie.genres"
+              :componentgenres="serie.genreList"
+              :status="serie.status.name"
+              :url="serie.url"
+              :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+              :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
+            />
+          </article>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -45,7 +48,8 @@
 export default {
   data () {
     return {
-      series: []
+      series: [],
+      loading: true
     }
   },
   mounted () {
@@ -53,6 +57,7 @@ export default {
   },
   methods: {
     getLatestSeries () {
+      this.loading = true
       const qs = require('qs')
       const query = qs.stringify({
         populate: [
@@ -77,6 +82,11 @@ export default {
             return serie
           })
           this.series = series.data
+          this.loading = false
+        })
+        .catch((error) => {
+          console.error('Error loading latest series:', error)
+          this.loading = false
         })
     }
   }

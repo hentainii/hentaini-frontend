@@ -4,7 +4,9 @@ export default {
     latest_episodes: 'Episode Terbaru',
     latest_series_little: 'Jelajahi Serie Hentai Terbaru',
     latest_series: 'Serie Hentai Terbaru',
-    updated_text: 'Diperbarui '
+    updated_text: 'Diperbarui ',
+    watch_now: 'Tonton Sekarang',
+    featured: 'Fitur Unggulan'
   },
   menu: {
     explore: 'JELAJAHI',

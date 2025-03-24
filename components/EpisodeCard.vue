@@ -201,17 +201,15 @@ export default {
   transition: all 0.3s ease;
   border-radius: 2px;
   overflow: hidden;
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .episode-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }
 
 .image-container {
@@ -223,10 +221,11 @@ export default {
 
 .episode-image {
   transition: transform 0.5s ease;
+  border-radius: 10px;
 }
 
-.episode-card:hover .episode-image {
-  transform: scale(1.05);
+.episode-card:hover .episode-image:hover {
+  border-radius: 10px;
 }
 
 .overlay {
@@ -305,6 +304,7 @@ export default {
   color: #bbb;
   font-size: 0.75rem;
   margin: 0;
+  display:flex;
 }
 
 .watchlater-btn {
