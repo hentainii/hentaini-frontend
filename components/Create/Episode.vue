@@ -298,13 +298,12 @@ export default {
             createdEpisode.id
           )
         }
-        this.$router.push({ path: `/panel/serie/${this.episode.serie.id}/episodes`, query: { created: true } })
+        this.$router.push({ path: `/panel/serie/${this.serie.id}/episodes`, query: { created: true } })
       } catch (error) {
         this.alertBox = true
         this.alertBoxColor = 'red'
         this.errorMessage = 'Error creating episode: ' + error.message
-      } finally {
-        this.isSubmitting = false
+        this.isSubmitting = !this.isSubmitting
       }
     },
     async getSerie () {
