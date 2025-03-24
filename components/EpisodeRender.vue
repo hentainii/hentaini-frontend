@@ -232,7 +232,7 @@
                   <SerieCard
                     :title="serie.title"
                     :synopsis="serie.synopsis"
-                    :genres="serie.genres"
+                    :genres="JSON.parse(serie.genres)"
                     :componentgenres="serie.genreList"
                     :status="serie.status.name"
                     :url="serie.url"
