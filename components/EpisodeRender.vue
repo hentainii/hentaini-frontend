@@ -46,7 +46,7 @@
                 <!-- Selección de reproductor -->
                 <v-col cols="12" sm="12" md="8" class="player-selection d-flex align-center py-2">
                   <v-slide-group
-                    show-arrows
+                    :show-arrows="$isDesktop"
                     center-active
                     mandatory
                     class="player-slide-group"
