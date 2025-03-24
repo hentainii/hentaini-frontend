@@ -1,20 +1,22 @@
 <template>
   <v-container
-    class="grey darken-4"
+    class="transparent"
     fluid
     style="position:relative; z-index:9999;"
   >
     <v-row>
-      <v-col class="d-flex align-center" style="height:72px;">
-        <v-app-bar-nav-icon
-          class="d-flex d-md-none d-lg-none d-lx-flex"
-          @click="nav = !nav"
-        />
-        <v-toolbar-title>
-          <nuxt-link :to="localePath('/')">
-            <LayoutLogo />
-          </nuxt-link>
-        </v-toolbar-title>
+      <v-col class="d-flex align-center justify-space-between" style="height:72px;">
+        <div class="d-flex align-center">
+          <v-app-bar-nav-icon
+            class="d-flex d-md-none d-lg-none d-lx-flex"
+            @click="nav = !nav"
+          />
+          <v-toolbar-title>
+            <nuxt-link :to="localePath('/')">
+              <LayoutLogo />
+            </nuxt-link>
+          </v-toolbar-title>
+        </div>
         <ul class="d-none d-md-flex d-lg-flex">
           <li class="mr-2">
             <nuxt-link :to="localePath('/explore')" style="color:white">
@@ -71,92 +73,94 @@
         <v-row class="mr-2 d-none d-md-flex d-lg-flex d-lx-flex">
           <UtilsSearch />
         </v-row>
-        <v-menu offset-y :close-on-click="true">
-          <template #activator="{ on: onMenu }">
-            <v-tooltip bottom>
-              <template #activator="{ on: onTooltip }">
-                <v-btn
-                  icon
-                  large
-                  dark
-                  v-on="{ ...onMenu, ...onTooltip }"
-                >
-                  <v-icon>
-                    mdi-translate
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('menu.change_language') }}</span>
-            </v-tooltip>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="lang in availableLocales"
-              :key="lang.code"
-              :to="switchLocalePath(lang.code)"
-            >
-              <v-list-item-title>{{ lang.name }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-tooltip v-if="!$store.state.auth" bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              icon
-              large
-              to="/login"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>mdi-account</v-icon>
-            </v-btn>
-          </template>
-          <span>Login</span>
-        </v-tooltip>
-        <div v-else class="d-none d-sm-flex d-md-flex d-lg-flex">
-          <v-tooltip bottom>
+        <div>
+          <v-menu offset-y :close-on-click="true">
+            <template #activator="{ on: onMenu }">
+              <v-tooltip bottom>
+                <template #activator="{ on: onTooltip }">
+                  <v-btn
+                    icon
+                    large
+                    dark
+                    v-on="{ ...onMenu, ...onTooltip }"
+                  >
+                    <v-icon>
+                      mdi-translate
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t('menu.change_language') }}</span>
+              </v-tooltip>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="lang in availableLocales"
+                :key="lang.code"
+                :to="switchLocalePath(lang.code)"
+              >
+                <v-list-item-title>{{ lang.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-tooltip v-if="!$store.state.auth" bottom>
             <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 large
-                color="blue"
+                to="/login"
                 v-bind="attrs"
-                :to="localePath('/favorites')"
                 v-on="on"
               >
                 <v-icon>mdi-account</v-icon>
               </v-btn>
             </template>
-            <span>{{ $t('menu.user_profile') }}</span>
+            <span>Login</span>
           </v-tooltip>
-          <v-tooltip v-if="$store.state.auth.level === 2" bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                large
-                v-bind="attrs"
-                to="/panel"
-                v-on="on"
-              >
-                <v-icon>mdi-cog</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('menu.admin_panel_button') }}</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                large
-                v-bind="attrs"
-                v-on="on"
-                @click="logout"
-              >
-                <v-icon>mdi-exit-to-app</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('menu.logout_text') }}</span>
-          </v-tooltip>
+          <div v-else class="d-none d-sm-flex d-md-flex d-lg-flex">
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  large
+                  color="blue"
+                  v-bind="attrs"
+                  :to="localePath('/favorites')"
+                  v-on="on"
+                >
+                  <v-icon>mdi-account</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('menu.user_profile') }}</span>
+            </v-tooltip>
+            <v-tooltip v-if="$store.state.auth.level === 2" bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  large
+                  v-bind="attrs"
+                  to="/panel"
+                  v-on="on"
+                >
+                  <v-icon>mdi-cog</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('menu.admin_panel_button') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  large
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="logout"
+                >
+                  <v-icon>mdi-exit-to-app</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('menu.logout_text') }}</span>
+            </v-tooltip>
+          </div>
         </div>
       </v-col>
     </v-row>

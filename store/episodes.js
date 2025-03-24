@@ -52,6 +52,7 @@ export const actions = {
           'serie',
           'serie.images',
           'serie.images.image_type',
+          'serie.genreList',
           'serie.episodes',
           'serie.status',
           'image'

@@ -2,8 +2,8 @@
   <v-container v-if="episode.id" class="episode-container pa-2 pa-lg-4">
     <!-- Breadcrumbs -->
     <v-row v-if="$store.state.isDesktop">
-      <v-col style="padding-top:0">
-        <v-breadcrumbs :items="breadcrumb" divider="•" class="pl-0 pb-0" />
+      <v-col class="py-0">
+        <v-breadcrumbs :items="breadcrumb" divider="•" class="pa-0" />
       </v-col>
     </v-row>
 
@@ -186,6 +186,7 @@
                 class="px-3"
               >
                 <v-icon>mdi-view-list</v-icon>
+                {{ $t('episode.list') }}
               </v-btn>
               <v-btn
                 v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
@@ -203,7 +204,7 @@
         <!-- Sección de comentarios -->
         <v-card class="mb-4 rounded-lg elevation-3">
           <v-card-text>
-            <Comments />
+            <LayoutComments />
           </v-card-text>
         </v-card>
       </v-col>
@@ -236,12 +237,8 @@
                     :componentgenres="serie.genreList"
                     :status="serie.status.name"
                     :url="serie.url"
-                    :screenshot="`
-                      ${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-                    :placeholder="`
-                      ${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder
-                    ? serie.images.find(image => image.image_type.name === 'cover').placeholder
-                    : serie.images.find(image => image.image_type.name === 'cover').path}`"
+                    :screenshot="resolveImages('screenshot', serie)"
+                    :placeholder="resolveImages('placeholder', serie)"
                   />
                 </article>
               </v-slide-item>
@@ -404,18 +401,13 @@
       </v-card>
     </v-dialog>
   </v-container>
+  <MiscEpisodeRenderSkeleton v-else />
 </template>
 
 <script>
 
 import parse from 'url-parse'
-import VideoElement from './VideoElement'
-import Comments from './Layout/Comments'
 export default {
-  components: {
-    VideoElement,
-    Comments
-  },
   data () {
     return {
       CDN: process.env.CDN_URI,
@@ -545,6 +537,18 @@ export default {
     this.isDesktopScreen()
   },
   methods: {
+    resolveImages (type, serie) {
+      if (type === 'screenshot') {
+        return `${this.$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`
+      } else if (type === 'placeholder') {
+        return `${this.$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder
+          ? serie.images.find(image => image.image_type.name === 'cover').placeholder
+          : serie.images.find(image => image.image_type.name === 'cover').path}`
+      } else if (type === 'background') {
+        return `${this.$config.COVER_ENDPOINT}${serie.background_coverUrl}`
+      }
+      return ''
+    },
     isDesktopScreen () {
       const res = document.body.clientWidth
       if (res < 960) {
@@ -713,7 +717,7 @@ export default {
         })
     },
     getSimilarSeries () {
-      const currentGenres = JSON.parse(this.episode.serie.genres).map(g => g.text || g.name)
+      const currentGenres = this.episode.serie.genreList.map(g => g.text || g.name)
       const qs = require('qs')
       const query = qs.stringify({
         populate: [
