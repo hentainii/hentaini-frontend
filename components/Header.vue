@@ -73,7 +73,7 @@
         <v-row class="mr-2 d-none d-md-flex d-lg-flex d-lx-flex">
           <UtilsSearch />
         </v-row>
-        <div>
+        <div class="d-flex align-center">
           <v-menu offset-y :close-on-click="true">
             <template #activator="{ on: onMenu }">
               <v-tooltip bottom>
