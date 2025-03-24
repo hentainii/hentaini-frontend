@@ -106,9 +106,6 @@ export default {
       this.checkbox = false
     },
     async createUser () {
-      if (!this.email) {
-        this.email = 'noemail@mail.com'
-      }
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/local/register`, {
         method: 'POST',
         headers: {
@@ -116,7 +113,7 @@ export default {
         },
         body: JSON.stringify({
           username: this.username,
-          email: this.email,
+          email: this.email || 'no@email.com',
           password: this.password
         })
       }).then((input) => {
