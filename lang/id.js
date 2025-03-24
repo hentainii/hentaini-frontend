@@ -59,13 +59,22 @@ export default {
       success: 'Laporan berhasil dikirim',
       error: 'Terjadi kesalahan saat mengirim laporan',
       already_reported: 'Seseorang sudah melaporkan episode ini untuk alasan yang sama'
-    }
+    },
+    previous: 'Episode Sebelumnya',
+    next: 'Episode Berikutnya',
+    list: 'Daftar Episode',
+    download: 'Unduh Episode',
+    comments: 'Komentar',
+    genres: 'Genre',
+    serie_info: 'Informasi Seri',
+    close: 'Tutup'
   },
   serie: {
     synopsis: 'Sinopsis: ',
     genres: 'Genres ',
     loginToSave: 'Simpan',
-    noEpísodes: 'Belum ada episode'
+    noEpísodes: 'Belum ada episode',
+    similar_series: 'Seri Serupa'
   },
   explore: {
     title: 'Jelajahi katalog kami.',

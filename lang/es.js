@@ -60,13 +60,22 @@ export default {
       success: 'Reporte enviado exitosamente',
       error: 'Ocurrió un error al enviar el reporte',
       already_reported: 'Alguien ya ha reportado este episodio por la misma razón'
-    }
+    },
+    previous: 'Episodio Anterior',
+    next: 'Siguiente Episodio',
+    list: 'Lista de Episodios',
+    download: 'Descargar Episodio',
+    comments: 'Comentarios',
+    genres: 'Géneros',
+    serie_info: 'Información de la Serie',
+    close: 'Cerrar'
   },
   serie: {
     synopsis: 'Sinopsis: ',
     genres: 'Géneros ',
     loginToSave: 'Guardar',
-    noEpísodes: 'No hay episodios aún'
+    noEpísodes: 'No hay episodios aún',
+    similar_series: 'Series Similares'
   },
   explore: {
     title: '¿Ella no te ama? Explora nuestro catálogo.',

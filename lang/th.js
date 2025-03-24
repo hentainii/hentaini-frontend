@@ -59,13 +59,22 @@ export default {
       success: 'ส่งรายงานสำเร็จ',
       error: 'เกิดข้อผิดพลาดขณะส่งรายงาน',
       already_reported: 'มีคนอื่นรายงานตอนนี้เพราะเหตุผลเดียวกันแล้ว'
-    }
+    },
+    previous: 'ตอนก่อนหน้า',
+    next: 'ตอนถัดไป',
+    list: 'รายการตอน',
+    download: 'ดาวน์โหลดตอน',
+    comments: 'ความคิดเห็น',
+    genres: 'ประเภท',
+    serie_info: 'ข้อมูลซีรีส์',
+    close: 'ปิด'
   },
   serie: {
     synopsis: 'เรื่องย่อ: ',
     genres: 'แนว ',
     loginToSave: 'บันทึก',
-    noEpísodes: 'ยังไม่มีตอน'
+    noEpísodes: 'ยังไม่มีตอน',
+    similar_series: 'ซีรีส์ที่คล้ายกัน'
   },
   explore: {
     title: 'สำรวจแคตตาล็อกของเรา',

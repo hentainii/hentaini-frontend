@@ -60,13 +60,22 @@ export default {
       success: 'Laporan berjaya dihantar',
       error: 'Kesalahan semasa menghantar laporan',
       already_reported: 'Anda sudah melaporkan episod ini. Terima kasih!'
-    }
+    },
+    previous: 'Episod Sebelumnya',
+    next: 'Episod Seterusnya',
+    list: 'Senarai Episod',
+    download: 'Muat Turun Episod',
+    comments: 'Komen',
+    genres: 'Genre',
+    serie_info: 'Maklumat Siri',
+    close: 'Tutup'
   },
   serie: {
     synopsis: 'Sinopsis: ',
     genres: 'Genre ',
     loginToSave: 'Simpan',
-    noEpísodes: 'Tiada episod lagi'
+    noEpísodes: 'Tiada episod lagi',
+    similar_series: 'Siri Serupa'
   },
   explore: {
     title: 'Terokai katalog kami.',

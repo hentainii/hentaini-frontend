@@ -60,13 +60,22 @@ export default {
       success: 'Báo cáo đã được gửi thành công',
       error: 'Đã xảy ra lỗi khi gửi báo cáo',
       already_reported: 'Bạn đã báo cáo vấn đề này'
-    }
+    },
+    previous: 'Tập Trước',
+    next: 'Tập Tiếp Theo',
+    list: 'Danh Sách Tập',
+    download: 'Tải Tập',
+    comments: 'Bình Luận',
+    genres: 'Thể Loại',
+    serie_info: 'Thông Tin Series',
+    close: 'Đóng'
   },
   serie: {
     synopsis: 'Tóm tắt: ',
     genres: 'Thể loại ',
     loginToSave: 'Lưu',
-    noEpísodes: 'Chưa có tập nào'
+    noEpísodes: 'Chưa có tập nào',
+    similar_series: 'Các Series Tương Tự'
   },
   explore: {
     title: 'Khám phá danh mục của chúng tôi.',

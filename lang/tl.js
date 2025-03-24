@@ -60,13 +60,22 @@ export default {
       success: 'Matagumpay na naipadala ang report',
       error: 'May naganap na error habang ipinapadala ang report',
       already_reported: 'Nag-report ka na ng kabanata na ito'
-    }
+    },
+    previous: 'Nakaraang Kabanata',
+    next: 'Susunod na Kabanata',
+    list: 'Listahan ng Kabanata',
+    download: 'I-download ang Kabanata',
+    comments: 'Mga Puna',
+    genres: 'Mga Uri',
+    serie_info: 'Impormasyon sa Serye',
+    close: 'Isara'
   },
   serie: {
     synopsis: 'Buod: ',
     genres: 'Mga Uri ',
     loginToSave: 'I-save',
-    noEpísodes: 'Walang kabanata pa'
+    noEpísodes: 'Walang kabanata pa',
+    similar_series: 'Magkakatulad na Serye'
   },
   explore: {
     title: 'Tuklasin ang aming katalogo.',

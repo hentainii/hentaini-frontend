@@ -60,7 +60,15 @@ export default {
       success: 'रिपोर्ट यशस्वीरित्या पाठविली',
       error: 'रिपोर्ट पाठवताना त्रुटी आली',
       already_reported: 'कोणी आधीच या एपिसोडसाठी एकाच कारणाने रिपोर्ट केले आहे'
-    }
+    },
+    previous: 'मागील भाग',
+    next: 'पुढील भाग',
+    list: 'भाग यादी',
+    download: 'भाग डाउनलोड करा',
+    comments: 'टिप्पण्या',
+    genres: 'प्रकार',
+    serie_info: 'मालिका माहिती',
+    close: 'बंद करा'
   },
   serie: {
     synopsis: 'सारांश: ',
@@ -87,5 +95,6 @@ export default {
       low_views: 'नवीनतम'
     },
     genres: 'हेंटाई श्रेण्या'
-  }
+  },
+  similar_series: 'समान मालिका'
 }

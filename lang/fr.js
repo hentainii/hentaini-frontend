@@ -59,13 +59,22 @@ export default {
       success: 'Rapport envoyé avec succès',
       error: 'Une erreur s\'est produite lors de l\'envoi du rapport',
       already_reported: 'Quelqu\'un a déjà signalé cet épisode pour la même raison'
-    }
+    },
+    previous: 'Épisode Précédent',
+    next: 'Épisode Suivant',
+    list: 'Liste des Épisodes',
+    download: 'Télécharger l’Épisode',
+    comments: 'Commentaires',
+    genres: 'Genres',
+    serie_info: 'Informations sur la Série',
+    close: 'Fermer'
   },
   serie: {
     synopsis: 'Synopsis : ',
     genres: 'Genres ',
     loginToSave: 'Sauvegarder',
-    noEpísodes: 'Aucun épisode pour le moment'
+    noEpísodes: 'Aucun épisode pour le moment',
+    similar_series: 'Séries Similaires'
   },
   explore: {
     title: 'Explorez notre catalogue.',

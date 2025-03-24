@@ -8,7 +8,9 @@
         <v-tooltip bottom>
           <template #activator="{ on: onTootip }">
             <v-btn
-              color="red lighten-2 ml-2 mt-2"
+              color="red lighten-2"
+              small
+              fab
               v-bind="attrs"
               v-on="{...onDialog, ...onTootip}"
             >

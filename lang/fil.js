@@ -59,7 +59,16 @@ export default {
       success: 'Matagumpay na naipadala ang report',
       error: 'May naganap na error habang ipinapadala ang report',
       already_reported: 'May iba nang nag-report ng episode na ito para sa parehong dahilan'
-    }
+    },
+    previous: 'Nakaraang Episode',
+    next: 'Susunod na Episode',
+    list: 'Listahan ng Episode',
+    download: 'I-download ang Episode',
+    comments: 'Mga Komento',
+    genres: 'Mga Genre',
+    serie_info: 'Impormasyon sa Serye',
+    close: 'Isara',
+    similar_series: 'Magkakatulad na Serye'
   },
   serie: {
     synopsis: 'Sinopsis: ',

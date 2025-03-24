@@ -60,13 +60,22 @@ export default {
       success: 'Report sent successfully',
       error: 'An error occurred while sending the report',
       already_reported: 'Someone have already reported this episode for the same reason'
-    }
+    },
+    previous: 'Previous Episode',
+    next: 'Next Episode',
+    list: 'Episode List',
+    download: 'Download Episode',
+    comments: 'Comments',
+    genres: 'Genres',
+    serie_info: 'Series Information',
+    close: 'Close'
   },
   serie: {
     synopsis: 'Synopsis: ',
     genres: 'Genres ',
     loginToSave: 'Save',
-    noEpísodes: 'No episodes yet'
+    noEpísodes: 'No episodes yet',
+    similar_series: 'Similar Series'
   },
   explore: {
     title: 'Explore our catalog.',
