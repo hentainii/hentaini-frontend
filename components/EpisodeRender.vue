@@ -82,7 +82,7 @@
                         fab
                         class="mr-2"
                         v-on="on"
-                        @click="genDownloadName; modalDownload = true"
+                        @click="genDownloadName"
                       >
                         <v-icon>mdi-download</v-icon>
                       </v-btn>
@@ -382,13 +382,9 @@
               :key="link.name"
               :href="link.url.url"
               target="_blank"
-              color="primary"
-              :block="$vuetify.breakpoint.xsOnly"
-              :class="{'mb-2': $vuetify.breakpoint.xsOnly, 'mx-2 my-2': !$vuetify.breakpoint.xsOnly}"
-              elevation="2"
-              outlined
+              color="primary mr-2"
+              class="p-3"
             >
-              <v-icon left>mdi-download</v-icon>
               {{ link.name }}
             </v-btn>
           </v-row>
@@ -595,6 +591,7 @@ export default {
     },
     genDownloadName () {
       if (!this.areDownloadLinksGenerated) {
+        this.modalDownload = true
         for (let i = 0; i < this.episode.downloads.length; i++) {
           const regex = /([a-z0-9][a-z0-9-]*)?((\.[a-z]{2,6}))$/
           const nameDownload = parse(this.episode.downloads[i].url, true)
