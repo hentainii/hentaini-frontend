@@ -211,7 +211,7 @@ export default {
       featured: false,
       hasEpisodes: false,
       h_id: null,
-      genreList: null,
+      genreList: [],
       status: null,
       language: 1,
       serie_type: 1
