@@ -275,15 +275,37 @@ export default {
         this.isSubmitting = !this.isSubmitting
         return
       }
-      // Convertimos los arrays a JSON para enviarlos
-      this.episode.players = JSON.stringify(this.episode.players)
-      this.episode.downloads = JSON.stringify(this.episode.downloads)
-      this.episode.serie = this.serie.id
-      this.episode.image = this.serie.images.find(image => image.image_type.name === 'screenshot').id
-      await this.$store.dispatch('episodes/createEpisode', {
-        episode: this.episode,
-        token: this.$store.state.auth.token
-      })
+
+      try {
+        // Convertimos los arrays a JSON para enviarlos
+        this.episode.players = JSON.stringify(this.episode.players)
+        this.episode.downloads = JSON.stringify(this.episode.downloads)
+        this.episode.serie = this.serie.id
+        this.episode.image = this.serie.images.find(image => image.image_type.name === 'screenshot').id
+
+        const { data: createdEpisode } = await this.$store.dispatch('episodes/createEpisode', {
+          episode: this.episode,
+          token: this.$store.state.auth.token
+        })
+        console.log('Created episode:', createdEpisode)
+        // Si tiene imagen personalizada, primero subimos la imagen
+        if (this.episode.hasCustomScreenshot && this.episode.customScreenshot.length > 0) {
+          await this.uploadImageToStrapi(
+            this.episode.customScreenshot[0],
+            this.serie.title,
+            'screenshot',
+            this.episode.episode_number,
+            createdEpisode.id
+          )
+        }
+        this.$router.push({ path: `/panel/serie/${this.episode.serie.id}/episodes`, query: { created: true } })
+      } catch (error) {
+        this.alertBox = true
+        this.alertBoxColor = 'red'
+        this.errorMessage = 'Error creating episode: ' + error.message
+      } finally {
+        this.isSubmitting = false
+      }
     },
     async getSerie () {
       await this.$store.dispatch('series/getSerie', {
@@ -313,12 +335,13 @@ export default {
     screenshotSelected () {
       this.episode.customScreenshot = []
       this.episode.customScreenshot.push(this.$refs.screenshot.$refs.input.files[0])
-      this.episode.customScreenshot.push(this.episode.serie_title)
+      this.episode.customScreenshot.push(this.serie.title)
       this.episode.customScreenshot.push(this.episode.episode_number)
       this.screenshotPreview = URL.createObjectURL(this.$refs.screenshot.$refs.input.files[0])
     },
     detectNewImage () {
       this.episode.customScreenshot = []
+      this.screenshotPreview = ''
     },
     addPlayerSlot () {
       this.episode.players.push({
@@ -351,6 +374,64 @@ export default {
         { name: 'Mega', url: '' },
         { name: 'TERA', url: '' }
       ]
+    },
+    async uploadImageToStrapi (imageBlob, imageName, imageType, episodeNumber, createdEpisodeId) {
+      console.log('Uploading image to Strapi:', imageBlob, imageName, imageType, episodeNumber, createdEpisodeId)
+      const formData = new FormData()
+      formData.append('files', imageBlob, `${imageName}_${imageType}`)
+
+      try {
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}upload`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: formData
+        })
+
+        if (response.status === 200) {
+          const strapiRes = await response.json()
+          // Guardamos el ID del episodio para poder asociarlo con la imagen
+          await this.createImageComponent(strapiRes[0], createdEpisodeId)
+          return strapiRes[0]
+        } else {
+          const strapiRes = await response.json()
+          console.error('Upload failed:', strapiRes)
+          throw new Error('Upload failed', strapiRes)
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error)
+        throw error
+      }
+    },
+    async createImageComponent (image, createdEpisodeId) {
+      try {
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: JSON.stringify({
+            data: {
+              path: `${image.hash}${image.ext}`,
+              placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+              image_type: 2,
+              episodes: [createdEpisodeId]
+            }
+          })
+        })
+
+        if (response.ok) {
+          const imageData = await response.json()
+          return imageData.data.id
+        } else {
+          throw new Error('Failed to create image component')
+        }
+      } catch (error) {
+        console.error('Error creating image component:', error)
+        throw error
+      }
     }
   }
 }

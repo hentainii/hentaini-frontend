@@ -16,6 +16,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    'no-console': 'off',
     'nuxt/no-cjs-in-config': 'off',
     'vue/attribute-hyphenation': 'off'
   }

@@ -117,25 +117,25 @@ export const actions = {
       })
     })
   },
-  async createEpisode ({ commit }, payload) {
-    await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${payload.token}`
-      },
-      body: JSON.stringify({
-        data: payload.episode
+  createEpisode ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${payload.token}`
+        },
+        body: JSON.stringify({
+          data: payload.episode
+        })
       })
-    }).then((response) => {
-      if (response.status === 200) {
-        this.$router.push({ path: `/panel/serie/${payload.episode.serie}/episodes`, query: { created: true } })
-      } else {
-        throw new Error('Error creating serie')
-      }
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
+        .then(res => res.json())
+        .then((episode) => {
+          resolve(episode)
+        }).catch((error) => {
+          reject(error)
+          console.error(error)
+        })
     })
   },
   async deleteEpisode ({ commit }, payload) {
