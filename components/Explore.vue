@@ -1,141 +1,176 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-container class="pb-0">
-        <v-row>
-          <v-col v-if="$route.query.genre" cols="12" class="mt-4 px-2">
-            <h1>{{ $t('explore.on_genre_title_part_1') }} <strong class="blue--text darken-4"> {{ prettyGenre }} </strong> {{ $t('explore.on_genre_title_part_2') }}</h1>
-          </v-col>
-          <v-col v-else cols="12" class="mt-4 px-2">
-            <h1>{{ $t('explore.title') }}</h1>
-          </v-col>
-          <v-col v-if="$route.query.genre" cols="12" class="px-2 pb-0">
-            <p>{{ $t('explore.on_genre_suntitle_part_1') }} {{ prettyGenre }} {{ $t('explore.on_genre_suntitle_part_2') }}</p>
-          </v-col>
-          <v-col v-else cols="12" class="px-2 pb-0">
-            <p>{{ $t('explore.subtitle') }}</p>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-row>
-    <v-row>
-      <v-container class="px-0">
-        <v-row>
-          <v-col
-            cols="12"
-            xs="12"
-            sm="12"
-            md="12"
-            lg="3"
-          >
-            <v-expansion-panels
-              v-model="expandedFilterBy"
-              multiple
-              tile
-              flat
+  <div>
+    <!-- Skeleton loader while loading -->
+    <ExploreSkeleton v-if="loading" />
+
+    <!-- Main content after loading -->
+    <v-container v-else fluid>
+      <v-row>
+        <v-container class="pb-0">
+          <v-row>
+            <v-col v-if="$route.query.genre" cols="12" class="mt-4 px-4">
+              <h1 class="text-h4 font-weight-medium">{{ $t('explore.on_genre_title_part_1') }} <span class="primary--text font-weight-bold">{{ prettyGenre }}</span> {{ $t('explore.on_genre_title_part_2') }}</h1>
+              <p class="text-subtitle-1 mt-2">{{ $t('explore.on_genre_suntitle_part_1') }} {{ prettyGenre }} {{ $t('explore.on_genre_suntitle_part_2') }}</p>
+            </v-col>
+            <v-col v-else cols="12" class="mt-4 px-4">
+              <h1 class="text-h4 font-weight-medium">{{ $t('explore.title') }}</h1>
+              <p class="text-subtitle-1 mt-2">{{ $t('explore.subtitle') }}</p>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-row>
+
+      <v-row>
+        <v-container>
+          <v-row>
+            <!-- Sidebar filters - will be in a bottom sheet on mobile -->
+            <v-col
+              cols="12"
+              lg="3"
+              class="pr-lg-6"
             >
-              <v-expansion-panel>
-                <v-expansion-panel-header>{{ $t('explore.filter.title') }}</v-expansion-panel-header>
-                <v-expansion-panel-content class="px-0">
-                  <v-list
-                    rounded
-                    :subheader="false"
-                    class="transparent"
-                  >
-                    <v-list-item-group
-                      color="primary"
-                    >
-                      <v-list-item
-                        v-for="(filter, index) in filtersUI"
-                        :key="filter.id"
-                        @click="selectFilter(index)"
-                      >
-                        <v-list-item-icon>
-                          <v-icon>mdi-filter</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title v-text="filter.name" />
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-            <v-expansion-panels
-              v-model="expandedOrderBy"
-              multiple
-              tile
-              flat
-            >
-              <v-expansion-panel>
-                <v-expansion-panel-header>{{ $t('explore.order_by.title') }}</v-expansion-panel-header>
-                <v-expansion-panel-content class="px-0">
-                  <v-list
-                    rounded
-                    :subheader="false"
-                    class="transparent px-0"
-                  >
-                    <v-list-item-group
-                      color="primary"
-                    >
-                      <v-list-item
-                        v-for="(order, index) in orderUI"
-                        :key="order.id"
-                        @click="selectOrder(index)"
-                      >
-                        <v-list-item-icon>
-                          <v-icon>mdi-filter</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title v-text="order.name" />
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-            <v-expansion-panels
-              v-model="expanded"
-              multiple
-              tile
-              flat
-            >
-              <v-expansion-panel>
-                <v-expansion-panel-header>{{ $t('explore.genres') }}</v-expansion-panel-header>
-                <v-expansion-panel-content class="px-0">
-                  <v-list
-                    rounded
-                    class="px-0 transparent"
-                  >
+              <div class="d-none d-lg-block sticky-sidebar">
+                <v-card class="mb-6 rounded-lg elevation-1">
+                  <v-card-title class="subtitle-1 font-weight-bold">
+                    {{ $t('explore.filter.title') }}
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-list dense class="py-0">
                     <v-list-item
-                      v-for="genre in genres"
-                      :key="genre.name"
-                      :to="localePath(`/explore?genre=${genre.url}`)"
+                      v-for="(filter, index) in filtersUI"
+                      :key="filter.id"
+                      @click="selectFilter(index)"
+                      :class="lastFilter === index ? 'selected-item' : ''"
                     >
-                      <v-list-item-icon>
-                        <v-icon>mdi-folder-search-outline</v-icon>
+                      <v-list-item-icon class="mr-2">
+                        <v-icon small>mdi-filter-outline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-content>
-                        <v-list-item-title v-text="genre.name" />
+                        <v-list-item-title class="body-2" v-text="filter.name" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-col>
-          <v-col
-            cols="12"
-            xs="12"
-            sm="12"
-            md="12"
-            lg="9"
-            class="pa-0"
-          >
-            <v-container class="pa-0">
-              <v-row class="justify-center">
+                </v-card>
+
+                <v-card class="mb-6 rounded-lg elevation-1">
+                  <v-card-title class="subtitle-1 font-weight-bold">
+                    {{ $t('explore.order_by.title') }}
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-list dense class="py-0">
+                    <v-list-item
+                      v-for="(order, index) in orderUI"
+                      :key="order.id"
+                      @click="selectOrder(index)"
+                      :class="lastOrder === index ? 'selected-item' : ''"
+                    >
+                      <v-list-item-icon class="mr-2">
+                        <v-icon small>mdi-sort</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title class="body-2" v-text="order.name" />
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+
+                <v-card class="rounded-lg elevation-1">
+                  <v-card-title class="subtitle-1 font-weight-bold">
+                    {{ $t('explore.genres') }}
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-list dense class="py-0 genre-list">
+                    <v-list-item
+                      v-for="genre in genres"
+                      :key="genre.name"
+                      :to="$route.query.genre !== genre.url ? localePath(`/explore?genre=${genre.url}`) : undefined"
+                      @click="handleGenreSelection(genre)"
+                      :class="$route.query.genre === genre.url ? 'selected-item' : ''"
+                    >
+                      <v-list-item-icon class="mr-2">
+                        <v-icon small>mdi-tag</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title class="body-2" v-text="genre.name" />
+                      </v-list-item-content>
+                      <v-list-item-action v-if="$route.query.genre === genre.url">
+                        <v-btn icon x-small @click.stop.prevent="$router.push('/explore')">
+                          <v-icon small>mdi-close</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+              </div>
+            </v-col>
+
+            <!-- Mobile filter buttons -->
+            <v-col cols="12" class="d-lg-none px-4 mb-3">
+              <v-row class="mx-n1 mb-2">
+                <v-col cols="6" class="pa-1">
+                  <v-btn
+                    block
+                    color="grey darken-3"
+                    depressed
+                    @click="showFilterSheet = true"
+                    class="rounded-lg text-capitalize py-2 px-2"
+                    height="42"
+                  >
+                    <v-icon left size="18">mdi-filter-outline</v-icon>
+                    <span class="text-truncate">{{ $t('explore.filter.title') }}</span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="6" class="pa-1">
+                  <v-btn
+                    block
+                    color="grey darken-3"
+                    depressed
+                    @click="showOrderSheet = true"
+                    class="rounded-lg text-capitalize py-2 px-2"
+                    height="42"
+                  >
+                    <v-icon left size="18">mdi-sort</v-icon>
+                    <span class="text-truncate">{{ $t('explore.order_by.title') }}</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row class="mx-n1">
+                <v-col cols="12" class="pa-1">
+                  <v-btn
+                    block
+                    color="grey darken-3"
+                    depressed
+                    @click="showGenreSheet = true"
+                    class="rounded-lg text-capitalize py-2 px-2"
+                    height="42"
+                  >
+                    <div class="d-flex align-center justify-space-between w-100">
+                      <div class="d-flex align-center">
+                        <v-icon left size="18" class="mr-2">mdi-tag-multiple</v-icon>
+                        <span class="text-truncate">{{ $t('explore.genres') }}</span>
+                      </div>
+                      <v-chip
+                        v-if="$route.query.genre"
+                        x-small
+                        color="primary"
+                        outlined
+                        class="ml-2"
+                      >
+                        {{ prettyGenre }}
+                      </v-chip>
+                    </div>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+
+            <!-- Series grid -->
+            <v-col
+              cols="12"
+              lg="9"
+            >
+              <!-- Series grid pagination -->
+              <v-row class="justify-center mb-4">
                 <v-pagination
                   v-model="pagination.page"
                   :length="pagination.pageCount"
@@ -143,14 +178,59 @@
                   circle
                 />
               </v-row>
+
+              <!-- Active filters chips (mobile) -->
+              <v-row v-if="lastFilter !== null || lastOrder !== null || $route.query.genre" class="px-4 d-lg-none mb-2">
+                <v-col cols="12" class="pa-0">
+                  <v-chip
+                    v-if="lastFilter !== null"
+                    class="mr-2 mb-2"
+                    small
+                    outlined
+                    close
+                    color="primary"
+                    @click:close="selectFilter(lastFilter)"
+                  >
+                    <v-icon left x-small>mdi-filter-outline</v-icon>
+                    {{ filtersUI[lastFilter].name }}
+                  </v-chip>
+                  <v-chip
+                    v-if="lastOrder !== null"
+                    class="mr-2 mb-2"
+                    small
+                    outlined
+                    close
+                    color="primary"
+                    @click:close="selectOrder(lastOrder)"
+                  >
+                    <v-icon left x-small>mdi-sort</v-icon>
+                    {{ orderUI[lastOrder].name }}
+                  </v-chip>
+                  <v-chip
+                    v-if="$route.query.genre"
+                    class="mr-2 mb-2"
+                    small
+                    outlined
+                    close
+                    color="primary"
+                    @click:close="$router.push('/explore')"
+                  >
+                    <v-icon left x-small>mdi-tag</v-icon>
+                    {{ prettyGenre }}
+                  </v-chip>
+                </v-col>
+              </v-row>
+
+              <!-- Series grid -->
               <v-row>
                 <v-col
                   v-for="serie in series"
                   :key="serie.id"
                   cols="6"
-                  lg="3"
-                  md="3"
                   sm="4"
+                  md="4"
+                  lg="3"
+                  class="pa-2"
                 >
                   <SerieCard
                     :title="serie.title"
@@ -164,7 +244,33 @@
                   />
                 </v-col>
               </v-row>
-              <v-row class="justify-center mb-5">
+
+              <!-- Loading more content indicator -->
+              <v-row v-if="loadingMore" class="justify-center py-4">
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+              </v-row>
+
+              <!-- No results message -->
+              <v-row v-else-if="series.length === 0" class="justify-center py-8">
+                <v-col cols="12" class="text-center">
+                  <v-icon size="64" color="grey lighten-1">mdi-emoticon-sad-outline</v-icon>
+                  <h3 class="mt-4 grey--text text--darken-1">{{ $t('explore.no_results') || 'No series found' }}</h3>
+                  <v-btn
+                    text
+                    color="primary"
+                    class="mt-2"
+                    @click="resetFilters"
+                  >
+                    {{ $t('explore.reset_filters') || 'Reset filters' }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+              <!-- Bottom pagination -->
+              <v-row class="justify-center mt-6 mb-8">
                 <v-pagination
                   v-model="pagination.page"
                   :length="pagination.pageCount"
@@ -172,17 +278,114 @@
                   circle
                 />
               </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-row>
-  </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-row>
+
+      <!-- Mobile bottom sheets -->
+      <v-bottom-sheet v-model="showFilterSheet" inset>
+        <v-sheet class="rounded-t-lg pa-4" height="auto">
+          <div class="d-flex align-center mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.filter.title') }}</h3>
+            <v-spacer></v-spacer>
+            <v-btn icon small @click="showFilterSheet = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+          <v-list class="pa-0">
+            <v-list-item
+              v-for="(filter, index) in filtersUI"
+              :key="filter.id"
+              @click="selectFilter(index); showFilterSheet = false"
+              :class="lastFilter === index ? 'selected-item' : ''"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-filter-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="filter.name" />
+              </v-list-item-content>
+              <v-list-item-action v-if="lastFilter === index">
+                <v-icon color="primary">mdi-check</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
+      </v-bottom-sheet>
+
+      <v-bottom-sheet v-model="showOrderSheet" inset>
+        <v-sheet class="rounded-t-lg pa-4" height="auto">
+          <div class="d-flex align-center mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.order_by.title') }}</h3>
+            <v-spacer></v-spacer>
+            <v-btn icon small @click="showOrderSheet = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+          <v-list class="pa-0">
+            <v-list-item
+              v-for="(order, index) in orderUI"
+              :key="order.id"
+              @click="selectOrder(index); showOrderSheet = false"
+              :class="lastOrder === index ? 'selected-item' : ''"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-sort</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="order.name" />
+              </v-list-item-content>
+              <v-list-item-action v-if="lastOrder === index">
+                <v-icon color="primary">mdi-check</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
+      </v-bottom-sheet>
+
+      <v-bottom-sheet v-model="showGenreSheet" inset>
+        <v-sheet class="rounded-t-lg pa-4" height="auto" max-height="70vh">
+          <div class="d-flex align-center mb-4">
+            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.genres') }}</h3>
+            <v-spacer></v-spacer>
+            <v-btn icon small @click="showGenreSheet = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+          <v-list class="pa-0">
+            <v-list-item
+              v-for="genre in genres"
+              :key="genre.name"
+              :to="$route.query.genre !== genre.url ? localePath(`/explore?genre=${genre.url}`) : undefined"
+              @click="handleGenreSelection(genre)"
+              :class="$route.query.genre === genre.url ? 'selected-item' : ''"
+            >
+              <v-list-item-icon class="mr-2">
+                <v-icon small>mdi-tag</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="body-2" v-text="genre.name" />
+              </v-list-item-content>
+              <v-list-item-action v-if="$route.query.genre === genre.url">
+                <v-btn icon x-small @click.stop.prevent="$router.push('/explore')">
+                  <v-icon small>mdi-close</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
+      </v-bottom-sheet>
+    </v-container>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'Explore',
+  components: {
+    ExploreSkeleton: () => import('@/components/misc/ExploreSkeleton')
+  },
   data () {
     return {
       expanded: [0],
@@ -194,6 +397,11 @@ export default {
       seriesCount: 0,
       lastFilter: null,
       lastOrder: null,
+      showFilterSheet: false,
+      showOrderSheet: false,
+      showGenreSheet: false,
+      loading: true,
+      loadingMore: false,
       genres: {
         episodes: {
           urlName: ''
@@ -242,6 +450,7 @@ export default {
     },
     'pagination.page': {
       handler () {
+        this.loadingMore = true
         this.getSeries()
       },
       deep: false
@@ -259,9 +468,11 @@ export default {
     }
   },
   async mounted () {
-    await this.getSeries()
+    this.loading = true
     await this.getGenres()
+    await this.getSeries()
     await this.prettyGenreName()
+    this.loading = false
   },
   beforeMount () {
     this.getSize()
@@ -299,6 +510,11 @@ export default {
             }
           })
           this.series = resSerie
+          this.loadingMore = false
+        })
+        .catch((error) => {
+          console.error('Error fetching series:', error)
+          this.loadingMore = false
         })
     },
     async getGenres () {
@@ -319,6 +535,9 @@ export default {
         .then(res => res.json())
         .then((genres) => {
           this.genres = genres.data
+        })
+        .catch((error) => {
+          console.error('Error fetching genres:', error)
         })
     },
     selectFilter (filter) {
@@ -390,9 +609,96 @@ export default {
     prettyGenreName () {
       if (this.$route.query.genre) {
         const g = this.genres.find(genre => genre.url === this.$route.query.genre)
-        this.prettyGenre = g.name
+        if (g) {
+          this.prettyGenre = g.name
+        }
       }
+    },
+    resetFilters () {
+      this.filters = {}
+      this.sort = ['visits:desc']
+      this.lastFilter = null
+      this.lastOrder = null
+      if (this.$route.query.genre) {
+        this.$router.push('/explore')
+      } else {
+        this.getSeries()
+      }
+    },
+    handleGenreSelection (genre) {
+      if (this.$route.query.genre === genre.url) {
+        this.$router.push('/explore')
+      } else {
+        this.$router.push({ path: '/explore', query: { genre: genre.url } })
+      }
+      this.showGenreSheet = false
     }
   }
 }
 </script>
+
+<style scoped>
+.selected-item {
+  background-color: rgba(var(--v-primary-base), 0.1) !important;
+}
+
+.v-list-item {
+  min-height: 40px !important;
+}
+
+.v-card {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.v-card .v-card-title {
+  padding: 12px 16px;
+}
+
+.v-sheet.v-bottom-sheet {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.sticky-sidebar {
+  position: sticky;
+  top: 16px;
+  height: calc(100vh - 32px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  padding-right: 8px;
+}
+
+.sticky-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.genre-list {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.genre-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.genre-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.genre-list::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+</style>
