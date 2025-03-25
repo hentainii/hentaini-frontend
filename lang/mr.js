@@ -96,7 +96,9 @@ export default {
       most_views: 'सर्वाधिक दृश्ये',
       low_views: 'नवीनतम'
     },
-    genres: 'हेंटाई श्रेण्या'
+    genres: 'हेंटाई श्रेण्या',
+    no_results: 'कोणतीही मालिका सापडली नाही',
+    reset_filters: 'फिल्टर रीसेट करा'
   },
   similar_series: 'समान मालिका'
 }

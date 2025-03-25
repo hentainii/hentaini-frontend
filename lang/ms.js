@@ -81,22 +81,24 @@ export default {
   },
   explore: {
     title: 'Terokai katalog kami.',
-    subtitle: 'Anda boleh mencari Hentai terbaik di sini.',
-    on_genre_title_part_1: 'Tiada GF? Tiada masalah. Terokai',
+    subtitle: 'Anda boleh mencari Hentai terbaik di halaman ini.',
+    on_genre_title_part_1: 'Tiada teman wanita? Tak mengapa. Terokai',
     on_genre_title_part_2: 'katalog kami',
-    on_genre_suntitle_part_1: 'Anda boleh mencari yang terbaik',
-    on_genre_suntitle_part_2: 'Hentai di sini.',
+    on_genre_suntitle_part_1: 'Anda boleh mencari',
+    on_genre_suntitle_part_2: 'Hentai terbaik di halaman ini.',
     filter: {
       title: 'TAPIS',
-      airing: 'Penayangan',
-      finalized: 'Diselesaikan',
-      censorship: 'Tanpa Sensor'
+      airing: 'Sedang Disiarkan',
+      finalized: 'Tamat',
+      censorship: 'Tanpa Penapisan'
     },
     order_by: {
-      title: 'URUT MENGIKUT',
-      most_views: 'Tontonan Tertinggi',
+      title: 'SUSUN MENGIKUT',
+      most_views: 'Paling Banyak Ditonton',
       low_views: 'Terbaru'
     },
-    genres: 'GENRE HENTAI'
+    genres: 'GENRE HENTAI',
+    no_results: 'Tiada siri dijumpai',
+    reset_filters: 'Set semula penapis'
   }
 }

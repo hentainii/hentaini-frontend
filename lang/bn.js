@@ -97,6 +97,8 @@ export default {
       most_views: 'সবচেয়ে দেখা',
       low_views: 'নতুনতম'
     },
-    genres: 'হেন্টাই জেনার'
+    genres: 'হেন্টাই জেনার',
+    no_results: 'কোনো সিরিজ পাওয়া যায়নি',
+    reset_filters: 'ফিল্টার রিসেট করুন'
   }
 }

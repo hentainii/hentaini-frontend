@@ -97,6 +97,8 @@ export default {
       most_views: 'Most Views',
       low_views: 'Newest'
     },
-    genres: 'HENTAI GENRES'
+    genres: 'HENTAI GENRES',
+    no_results: 'No series found',
+    reset_filters: 'Reset filters'
   }
 }

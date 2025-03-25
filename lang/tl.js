@@ -81,22 +81,24 @@ export default {
   },
   explore: {
     title: 'Tuklasin ang aming katalogo.',
-    subtitle: 'Maaari kang maghanap ng pinakamahusay na Hentai dito.',
-    on_genre_title_part_1: 'Walang GF? Walang problema. Tuklasin ang aming',
+    subtitle: 'Maaari kang maghanap ng pinakamagandang Hentai dito sa pahinang ito.',
+    on_genre_title_part_1: 'Walang kasintahan? Walang problema. Tuklasin ang aming',
     on_genre_title_part_2: 'katalogo',
-    on_genre_suntitle_part_1: 'Maaari kang maghanap ng pinakamahusay',
+    on_genre_suntitle_part_1: 'Maaari kang maghanap ng pinakamagandang',
     on_genre_suntitle_part_2: 'Hentai dito sa pahinang ito.',
     filter: {
-      title: 'FILTRAHIN',
-      airing: 'Nagpapalabas',
-      finalized: 'Natapos na',
-      censorship: 'Walang Pagsensor'
+      title: 'SALAIN',
+      airing: 'Kasalukuyang Palabas',
+      finalized: 'Tapos Na',
+      censorship: 'Walang Sensura'
     },
     order_by: {
-      title: 'IAYOS NG',
-      most_views: 'Pinakamaraming Pananaw',
-      low_views: 'Pinakabagong'
+      title: 'AYUSIN AYON SA',
+      most_views: 'Pinakamaraming Panonood',
+      low_views: 'Pinakabago'
     },
-    genres: 'MGA URI NG HENTAI'
+    genres: 'MGA GENRE NG HENTAI',
+    no_results: 'Walang nahanap na serye',
+    reset_filters: 'I-reset ang mga filter'
   }
 }

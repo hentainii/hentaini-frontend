@@ -96,6 +96,8 @@ export default {
       most_views: 'Pinakamaraming Tingin',
       low_views: 'Pinakabago'
     },
-    genres: 'Mga Genre ng Hentai'
+    genres: 'Mga Genre ng Hentai',
+    no_results: 'Walang nahanap na serye',
+    reset_filters: 'I-reset ang mga filter'
   }
 }

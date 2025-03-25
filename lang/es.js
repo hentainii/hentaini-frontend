@@ -80,23 +80,25 @@ export default {
     similar_series: 'Series Similares'
   },
   explore: {
-    title: '¿Ella no te ama? Explora nuestro catálogo.',
-    subtitle: 'En esta página puedes buscar el mejor Hentai que hay.',
-    on_genre_title_part_1: '¿Ella no te ama? Explora nuestro catálogo de Hentai',
-    on_genre_title_part_2: 'aquí.',
-    on_genre_suntitle_part_1: 'Puedes buscar el mejor Hentai',
-    on_genre_suntitle_part_2: 'en esta página.',
+    title: 'Explora nuestro catálogo.',
+    subtitle: 'Puedes buscar el mejor Hentai disponible en esta página.',
+    on_genre_title_part_1: '¿Sin novia? No hay problema. Explora nuestro',
+    on_genre_title_part_2: 'catálogo',
+    on_genre_suntitle_part_1: 'Puedes buscar el mejor',
+    on_genre_suntitle_part_2: 'Hentai disponible en esta página.',
     filter: {
-      title: 'FILTRA',
-      airing: 'En Emisión',
+      title: 'FILTRAR',
+      airing: 'En emisión',
       finalized: 'Finalizado',
-      censorship: 'Sin Censura'
+      censorship: 'Sin censura'
     },
     order_by: {
       title: 'ORDENAR POR',
-      most_views: 'Mas Vistos',
-      low_views: 'Nuevos'
+      most_views: 'Más vistos',
+      low_views: 'Más recientes'
     },
-    genres: 'BUSCAR POR GÉNERO'
+    genres: 'GÉNEROS HENTAI',
+    no_results: 'No se encontraron series',
+    reset_filters: 'Restablecer filtros'
   }
 }

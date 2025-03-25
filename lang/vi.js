@@ -81,22 +81,24 @@ export default {
   },
   explore: {
     title: 'Khám phá danh mục của chúng tôi.',
-    subtitle: 'Bạn có thể tìm kiếm Hentai hay nhất trên trang này.',
-    on_genre_title_part_1: 'Không có bạn gái? Không thành vấn đề. Khám phá',
+    subtitle: 'Bạn có thể tìm kiếm Hentai hay nhất tại đây.',
+    on_genre_title_part_1: 'Không có bạn gái? Không sao. Khám phá',
     on_genre_title_part_2: 'danh mục của chúng tôi',
-    on_genre_suntitle_part_1: 'Bạn có thể tìm kiếm những bộ',
-    on_genre_suntitle_part_2: 'Hentai hay nhất trên trang này.',
+    on_genre_suntitle_part_1: 'Bạn có thể tìm kiếm',
+    on_genre_suntitle_part_2: 'Hentai hay nhất tại đây.',
     filter: {
-      title: 'BỘ LỌC',
-      airing: 'Đang chiếu',
-      finalized: 'Hoàn thành',
-      censorship: 'Không kiểm duyệt'
+      title: 'LỌC',
+      airing: 'Đang Phát Sóng',
+      finalized: 'Đã Hoàn Thành',
+      censorship: 'Không Kiểm Duyệt'
     },
     order_by: {
       title: 'SẮP XẾP THEO',
-      most_views: 'Xem nhiều nhất',
-      low_views: 'Mới nhất'
+      most_views: 'Xem Nhiều Nhất',
+      low_views: 'Mới Nhất'
     },
-    genres: 'THỂ LOẠI HENTAI'
+    genres: 'THỂ LOẠI HENTAI',
+    no_results: 'Không tìm thấy series nào',
+    reset_filters: 'Đặt lại bộ lọc'
   }
 }

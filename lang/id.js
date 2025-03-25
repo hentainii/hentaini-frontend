@@ -81,10 +81,10 @@ export default {
   explore: {
     title: 'Jelajahi katalog kami.',
     subtitle: 'Anda dapat mencari Hentai terbaik di halaman ini.',
-    on_genre_title_part_1: 'Tidak punya GF? Tidak masalah. Jelajahi',
+    on_genre_title_part_1: 'Tidak punya pacar? Tidak masalah. Jelajahi',
     on_genre_title_part_2: 'katalog kami',
-    on_genre_suntitle_part_1: 'Anda dapat mencari Hentai terbaik',
-    on_genre_suntitle_part_2: 'di halaman ini.',
+    on_genre_suntitle_part_1: 'Anda dapat mencari',
+    on_genre_suntitle_part_2: 'Hentai terbaik di halaman ini.',
     filter: {
       title: 'FILTER',
       airing: 'Sedang Tayang',
@@ -92,10 +92,12 @@ export default {
       censorship: 'Tanpa Sensor'
     },
     order_by: {
-      title: 'URUTKAN BERDASARKAN',
-      most_views: 'Paling Dilihat',
+      title: 'URUTKAN',
+      most_views: 'Paling Banyak Dilihat',
       low_views: 'Terbaru'
     },
-    genres: 'GENRE HENTAI'
+    genres: 'GENRE HENTAI',
+    no_results: 'Tidak ada seri yang ditemukan',
+    reset_filters: 'Atur ulang filter'
   }
 }

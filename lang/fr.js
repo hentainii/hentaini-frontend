@@ -65,7 +65,7 @@ export default {
     previous: 'Épisode Précédent',
     next: 'Épisode Suivant',
     list: 'Liste des Épisodes',
-    download: 'Télécharger l’Épisode',
+    download: "Télécharger l'Épisode",
     comments: 'Commentaires',
     genres: 'Genres',
     serie_info: 'Informations sur la Série',
@@ -80,22 +80,24 @@ export default {
   },
   explore: {
     title: 'Explorez notre catalogue.',
-    subtitle: 'Recherchez les meilleurs Hentai disponibles sur cette page.',
+    subtitle: 'Vous pouvez rechercher les meilleurs Hentai disponibles sur cette page.',
     on_genre_title_part_1: 'Pas de copine ? Pas de problème. Explorez notre',
     on_genre_title_part_2: 'catalogue',
-    on_genre_suntitle_part_1: 'Recherchez les meilleurs',
+    on_genre_suntitle_part_1: 'Vous pouvez rechercher les meilleurs',
     on_genre_suntitle_part_2: 'Hentai disponibles sur cette page.',
     filter: {
       title: 'FILTRER',
-      airing: 'En Diffusion',
-      finalized: 'Finalisé',
-      censorship: 'Sans Censure'
+      airing: 'En cours',
+      finalized: 'Terminé',
+      censorship: 'Sans censure'
     },
     order_by: {
       title: 'TRIER PAR',
-      most_views: 'Les Plus Vus',
-      low_views: 'Les Plus Récents'
+      most_views: 'Plus vus',
+      low_views: 'Plus récents'
     },
-    genres: 'GENRES HENTAI'
+    genres: 'GENRES HENTAI',
+    no_results: 'Aucune série trouvée',
+    reset_filters: 'Réinitialiser les filtres'
   }
 }

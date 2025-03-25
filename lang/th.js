@@ -80,22 +80,24 @@ export default {
   },
   explore: {
     title: 'สำรวจแคตตาล็อกของเรา',
-    subtitle: 'ค้นหาเฮ็นไทที่ดีที่สุดที่นี่',
+    subtitle: 'คุณสามารถค้นหาเฮนไตที่ดีที่สุดได้ที่นี่',
     on_genre_title_part_1: 'ไม่มีแฟน? ไม่เป็นไร สำรวจ',
     on_genre_title_part_2: 'แคตตาล็อกของเรา',
-    on_genre_suntitle_part_1: 'ค้นหาเฮ็นไทที่ดีที่สุด',
-    on_genre_suntitle_part_2: 'ที่นี่',
+    on_genre_suntitle_part_1: 'คุณสามารถค้นหา',
+    on_genre_suntitle_part_2: 'เฮนไตที่ดีที่สุดได้ที่นี่',
     filter: {
-      title: 'ตัวกรอง',
-      airing: 'กำลังออกอากาศ',
+      title: 'กรอง',
+      airing: 'กำลังฉาย',
       finalized: 'จบแล้ว',
-      censorship: 'ไม่มีเซ็นเซอร์'
+      censorship: 'ไม่เซ็นเซอร์'
     },
     order_by: {
       title: 'เรียงตาม',
       most_views: 'ยอดวิวสูงสุด',
-      low_views: 'ล่าสุด'
+      low_views: 'ใหม่ล่าสุด'
     },
-    genres: 'ประเภทเฮ็นไท'
+    genres: 'หมวดหมู่เฮนไต',
+    no_results: 'ไม่พบซีรีส์',
+    reset_filters: 'รีเซ็ตตัวกรอง'
   }
 }

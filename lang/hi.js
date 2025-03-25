@@ -80,23 +80,25 @@ export default {
     similar_series: 'समान श्रृंखला'
   },
   explore: {
-    title: 'हमारे कैटलॉग की खोज करें।',
-    subtitle: 'आप इस पृष्ठ पर सर्वश्रेष्ठ हेंटाई खोज सकते हैं।',
-    on_genre_title_part_1: 'GF नहीं? कोई समस्या नहीं। हमारे',
-    on_genre_title_part_2: 'कैटलॉग का अन्वेषण करें',
-    on_genre_suntitle_part_1: 'आप सर्वश्रेष्ठ के लिए खोज सकते हैं',
-    on_genre_suntitle_part_2: 'इस पृष्ठ पर हेंटाई।',
+    title: 'हमारी सूची का अन्वेषण करें।',
+    subtitle: 'आप इस पेज पर सर्वश्रेष्ठ हेंताई ढूंढ सकते हैं।',
+    on_genre_title_part_1: 'गर्लफ्रेंड नहीं है? कोई बात नहीं। हमारी',
+    on_genre_title_part_2: 'सूची का अन्वेषण करें',
+    on_genre_suntitle_part_1: 'आप सर्वश्रेष्ठ',
+    on_genre_suntitle_part_2: 'हेंताई यहाँ ढूंढ सकते हैं।',
     filter: {
       title: 'फ़िल्टर',
-      airing: 'प्रसारण',
-      finalized: 'पूर्ण',
-      censorship: 'कोई सेंसरशिप नहीं'
+      airing: 'प्रसारण में',
+      finalized: 'समाप्त',
+      censorship: 'बिना सेंसर'
     },
     order_by: {
       title: 'क्रमबद्ध करें',
-      most_views: 'सबसे ज्यादा दृश्य',
+      most_views: 'सबसे अधिक देखा गया',
       low_views: 'नवीनतम'
     },
-    genres: 'हेंटाई श्रेणियाँ'
+    genres: 'हेंताई श्रेणियाँ',
+    no_results: 'कोई श्रृंखला नहीं मिली',
+    reset_filters: 'फ़िल्टर रीसेट करें'
   }
 }
