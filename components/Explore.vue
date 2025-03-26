@@ -175,6 +175,7 @@
                   v-model="pagination.page"
                   :length="pagination.pageCount"
                   :total-visible="6"
+                  :disabled="loadingMore"
                   circle
                 />
               </v-row>
@@ -275,6 +276,7 @@
                   v-model="pagination.page"
                   :length="pagination.pageCount"
                   :total-visible="6"
+                  :disabled="loadingMore"
                   circle
                 />
               </v-row>
