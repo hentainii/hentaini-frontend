@@ -140,14 +140,6 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-row class="justify-center">
-        <div>
-          <v-img
-            width="400px"
-            :src="`/img/ads2/${rand}.gif`"
-          />
-        </div>
-      </v-row>
     </v-container>
     <v-container>
       <v-row>
@@ -161,7 +153,6 @@ export default {
   data () {
     return {
       serie: null,
-      rand: 1,
       head: 'Loading you serie...',
       favorites: [],
       breadcrumb: [
@@ -206,7 +197,6 @@ export default {
     }
 
     this.getSerie()
-    this.genRandNumber()
   },
   methods: {
     async getSerie () {
@@ -305,9 +295,6 @@ export default {
         token: this.$store.state.auth.token
       })
       this.favorites = this.favorites.filter(favorite => favorite.url !== this.serie.url)
-    },
-    genRandNumber () {
-      this.rand = Math.floor(Math.random() * 6)
     }
   }
 }
