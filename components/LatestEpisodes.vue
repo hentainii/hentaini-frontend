@@ -111,51 +111,11 @@ export default {
         .then((episodes) => {
           this.episodes = episodes.data
           this.loading = false
-          // const rn = Math.floor(Math.random() * 2)
-          // if (rn === 0) {
-          //   this.createEpisodeAd()
-          // } else {
-          //   this.createEpisodeAd2()
-          // }
         })
         .catch((error) => {
           console.error('Error loading latest episodes:', error)
           this.loading = false
         })
-    },
-    createEpisodeAd () {
-      const ad = {
-        id: -1,
-        created_at: `${new Date()}`,
-        episode_number: 1,
-        image: {
-          placeholder: 'default.png',
-          path: `img/${Math.floor(Math.random() * 2)}.gif`
-        },
-        url: 'https://tm-offers.gamingadult.com/?offer=47&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
-        serie: {
-          title: 'Tentacle Fantasy'
-        },
-        isAd: true
-      }
-      this.episodes.unshift(ad)
-    },
-    createEpisodeAd2 () {
-      const ad = {
-        id: -2,
-        created_at: `${new Date()}`,
-        episode_number: 1,
-        image: {
-          placeholder: 'default.png',
-          path: `img/psh${Math.floor(Math.random() * 5)}.gif`
-        },
-        url: 'https://tm-offers.gamingadult.com/?offer=2565&uid=d1c53b21-f8cb-414d-a456-2f0643c82204',
-        serie: {
-          title: 'Pornstar Harem RPG'
-        },
-        isAd: true
-      }
-      this.episodes.unshift(ad)
     }
   }
 }
