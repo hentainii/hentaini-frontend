@@ -331,14 +331,6 @@
         </v-card>
 
         <!-- Anuncios -->
-        <v-row class="justify-center">
-          <div>
-            <v-img
-              :src="`/img/ads/${rand}.gif`"
-              class="rounded-lg overflow-hidden mb-4"
-            />
-          </div>
-        </v-row>
         <v-row class="mt-3 justify-center">
           <client-only>
             <div id="bg-ssp-10357" />
@@ -419,7 +411,6 @@ export default {
         }
       },
       showVideo: false,
-      rand: 1,
       downloadsName: [],
       areDownloadLinksGenerated: false,
       currentUrl: '',
@@ -528,7 +519,6 @@ export default {
     }
 
     this.getEpisode()
-    this.genRandNumber()
     if (this.$store.state.auth) {
       this.getFavorites()
       this.getWatchLaters()
@@ -588,9 +578,6 @@ export default {
         serieId: this.episode.serie.id,
         visits: this.episode.serie.visits + 1
       })
-    },
-    genRandNumber () {
-      this.rand = Math.floor(Math.random() * 17)
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
