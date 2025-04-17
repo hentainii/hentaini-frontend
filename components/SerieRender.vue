@@ -132,6 +132,12 @@
               {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
+          <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2">
+            <span style="color:#b9b9b9;">
+              Studio:
+              {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
+            </span>
+          </v-row>
           <v-row v-if="serie.episodes.length > 0" class="mt-10 mb-5">
             <SerieEpisodeList :serie="serie" :episodes="serie.episodes" />
           </v-row>
@@ -210,7 +216,8 @@ export default {
           'images.image_type',
           'status',
           'episodes',
-          'genreList'
+          'genreList',
+          'studio'
         ]
       },
       {

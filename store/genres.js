@@ -49,5 +49,44 @@ export const actions = {
       // eslint-disable-next-line no-console
       console.error(error)
     })
+  },
+  async editGenre ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres/${payload.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      },
+      body: JSON.stringify({
+        data: payload.genre
+      })
+    }).then((response) => {
+      if (response.status === 200) {
+        // Género editado correctamente
+      } else {
+        throw new Error('Error editing genre')
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
+  },
+  async deleteGenre ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}genres/${payload.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    }).then((response) => {
+      if (response.status === 200) {
+        // Género borrado correctamente
+      } else {
+        throw new Error('Error deleting genre')
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
   }
 }

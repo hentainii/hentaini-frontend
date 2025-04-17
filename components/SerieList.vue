@@ -1,17 +1,11 @@
 <template>
-  <v-container v-if="series" fluid>
+  <v-card class="glass-card pa-6 ma-4" elevation="10">
     <v-row>
       <v-col cols="12">
-        <v-alert
-          v-if="alertBox"
-          type="info"
-          :class="alertBoxColor"
-          tile
-          dismissible
-        >
-          {{ createdMessage }}
-        </v-alert>
-        <v-card-title>
+        <v-card-title class="headline font-weight-bold mb-4">
+          <v-icon left color="primary">
+            mdi-view-list
+          </v-icon>
           All Series
           <v-spacer />
           <v-text-field
@@ -22,10 +16,19 @@
             outlined
             dense
             hide-details="auto"
-            class="white--text"
+            class="search-bar"
             @keyup.enter="getSeries"
           />
         </v-card-title>
+        <v-alert
+          v-if="alertBox"
+          type="info"
+          :class="alertBoxColor"
+          tile
+          dismissible
+        >
+          {{ createdMessage }}
+        </v-alert>
         <client-only>
           <v-data-table
             :headers="headers"
@@ -34,10 +37,9 @@
             :options.sync="options"
             :items-per-page="itemsPerPage"
             hide-default-footer
-            class="elevation-1"
+            class="elevation-2 modern-table"
             @page-count="pageCount = $event"
           >
-            <!-- ########################### -->
             <template #[`item.status`]="{ item }">
               <v-edit-dialog
                 :return-value.sync="item.status"
@@ -66,13 +68,14 @@
                 </template>
               </v-edit-dialog>
             </template>
-            <!-- ########################### -->
             <template #[`item.featured`]="{ item }">
               <v-tooltip top>
                 <template #activator="{ on, attrs }">
                   <v-btn
                     v-bind="attrs"
                     :class="{ 'primary': item.featured }"
+                    icon
+                    class="rounded-xl"
                     v-on="on"
                     @click="setFeatured(item.id, series.map(function(x) {return x.id; }).indexOf(item.id))"
                   >
@@ -90,6 +93,8 @@
                   <v-btn
                     :to="'/panel/serie/' + item.id + '/episode/create'"
                     v-bind="attrs"
+                    icon
+                    class="rounded-xl"
                     v-on="on"
                   >
                     <v-icon>
@@ -104,6 +109,8 @@
                   <v-btn
                     :to="'/panel/serie/' + item.id + '/episodes'"
                     v-bind="attrs"
+                    icon
+                    class="rounded-xl"
                     v-on="on"
                   >
                     <v-icon>
@@ -118,6 +125,8 @@
                   <v-btn
                     :to="'/panel/serie/' + item.id + '/edit'"
                     v-bind="attrs"
+                    icon
+                    class="rounded-xl"
                     v-on="on"
                   >
                     <v-icon>
@@ -127,7 +136,6 @@
                 </template>
                 <span>Edit Serie</span>
               </v-tooltip>
-              <!-- <DeleteModalDeleteSerie :title="item.title" :serieid="item.id" /> -->
             </template>
           </v-data-table>
         </client-only>
@@ -139,6 +147,7 @@
         :length="pagination.pageCount"
         :total-visible="6"
         circle
+        class="modern-pagination"
       />
     </v-row>
     <v-snackbar
@@ -149,14 +158,13 @@
       vertical
     >
       {{ snackText }}
-
       <template #action="{ attrs }">
         <v-btn v-bind="attrs" text @click="snack = false">
           Close
         </v-btn>
       </template>
     </v-snackbar>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -290,6 +298,27 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.glass-card {
+  background: rgba(255,255,255,0.12);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.search-bar {
+  max-width: 350px;
+  margin-left: 2rem;
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+}
+.modern-table {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+}
+.modern-pagination {
+  margin-top: 2rem;
+}
 </style>

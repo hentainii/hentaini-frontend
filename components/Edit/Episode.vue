@@ -1,41 +1,59 @@
 <template>
-  <v-container v-if="episode">
-    <v-row v-if="error">
-      <v-alert
-        type="error"
-        dismissible
-      >
-        {{ errorMessage }}
-      </v-alert>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-card elevation>
-          <v-card-title>
+  <v-card class="glass-card pa-6 ma-4" elevation="10">
+    <v-container v-if="episode">
+      <v-row v-if="error">
+        <v-alert
+          type="error"
+          dismissible
+        >
+          {{ errorMessage }}
+        </v-alert>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-card-title class="headline font-weight-bold mb-4">
+            <v-icon left color="primary">
+              mdi-pencil
+            </v-icon>
             Edit Episode {{ episode.episode_number }} for: {{ episode.serie.title }}
           </v-card-title>
-          <v-container>
+          <v-form>
             <v-text-field
               v-model="episode.serie.id"
               disabled
               label="Episode From"
               readonly
               required
+              prepend-inner-icon="mdi-identifier"
+              class="mb-3"
             />
             <v-text-field
               v-model.number="episode.episode_number"
               label="Episode Number"
               type="number"
               required
+              prepend-inner-icon="mdi-numeric"
+              class="mb-3"
             />
             <v-switch
               v-model="episode.visible"
               label="Is Visible?"
+              inset
+              color="primary"
+              class="mb-3"
+            />
+            <v-switch
+              v-model="episode.isNew"
+              label="Is Premiere?"
+              inset
+              color="deep-purple accent-4"
+              class="mb-3"
             />
             <v-switch
               v-model="hasCustomScreenshot"
               label="Change Custom Image?"
               prepend-icon="mdi-image"
+              class="mb-3"
               @change="detectNewImage"
             />
             <v-file-input
@@ -43,16 +61,21 @@
               ref="screenshot"
               accept="image/*"
               label="Select a Custom Image"
+              prepend-icon="mdi-image"
               @change="screenshotSelected"
             />
             <v-btn
-              class="mr-4 primary"
+              class="mt-4 primary rounded-xl"
               large
+              block
               @click="editEpisode"
             >
-              submit
+              <v-icon left>
+                mdi-content-save
+              </v-icon>
+              Save Changes
             </v-btn>
-          </v-container>
+          </v-form>
           <v-container v-if="!hasCustomScreenshot">
             <v-row>
               <h2>Current Screenshot Image</h2>
@@ -60,6 +83,7 @@
             <v-row v-if="episode.image">
               <v-img
                 :src="`${$config.SCREENSHOT_ENDPOINT}${episode.image.path}`"
+                class="rounded-xl"
               />
             </v-row>
             <p v-else class="mt-3">
@@ -71,103 +95,115 @@
             <v-row class="mt-2">
               <v-img
                 :src="screenshotPreview"
+                class="rounded-xl"
               />
             </v-row>
           </v-container>
-        </v-card>
-      </v-col>
-      <v-col cols="6">
-        <v-card elevation>
-          <v-card-title>
-            Player Information
-          </v-card-title>
-          <v-container>
-            <!-- Envolvemos la lista de players con draggable -->
-            <draggable
-              v-model="episode.players"
-              tag="div"
-              :options="{ handle: '.drag-handle', animation: 200 }"
-            >
-              <div v-for="(player, index) in episode.players" :key="player.id || index">
-                <TemplatePlayerInput :index="index">
-                  <!-- Slot para el handle de arrastre -->
-                  <template #dragHandle>
-                    <v-icon class="drag-handle" style="cursor: move;">
-                      mdi-drag
-                    </v-icon>
-                  </template>
-                  <!-- Slot para el selector de player -->
-                  <template #playerList>
-                    <v-select
-                      :id="'list'+index"
-                      v-model="player.name"
-                      :items="players"
-                      :item-text="episode.id > 741 ? 'name' : 'short_name'"
-                      label="Player Select"
-                      hide-details
-                      solo
-                      @change="calculatePlayerUrl(episode.id, index)"
-                    />
-                  </template>
-                  <!-- Slot para el campo de código -->
-                  <template #playerCode>
-                    <v-text-field
-                      :id="'code'+index"
-                      v-model="player.code"
-                      label="Player Code"
-                      hide-details
-                      solo
-                      @input="calculatePlayerUrl(episode.id, index)"
-                    />
-                  </template>
-                  <!-- Slot para el botón de borrar -->
-                  <template #playerDeleteItem>
-                    <v-btn @click="removePlayerSlot(index)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </template>
-                </TemplatePlayerInput>
-              </div>
-            </draggable>
-            <v-btn class="mr-4 primary" large @click="addPlayerSlot">
-              Add Player
-            </v-btn>
-          </v-container>
-        </v-card>
-        <v-card elevation>
-          <v-card-title>
-            Download Links
-          </v-card-title>
-          <v-container>
-            <TemplateDownloadInput
-              v-for="(download, index) in episode.downloads"
-              :id="'container'+index"
-              :key="index"
-              :index="index"
-            >
-              <v-text-field
-                :id="'code'+index"
-                slot="downloadCode"
-                v-model="download.url"
-                label="Download URL"
-                hide-details
-                solo
-              />
-              <v-btn
-                slot="downloadDeleteItem"
-                @click="removeDownloadSlot(index)"
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card class="glass-card pa-4 mb-4" elevation="6">
+            <v-card-title class="subtitle-1 font-weight-bold mb-2">
+              <v-icon left color="primary">
+                mdi-play-circle
+              </v-icon>
+              Player Information
+            </v-card-title>
+            <v-container>
+              <draggable
+                v-model="episode.players"
+                tag="div"
+                :options="{ handle: '.drag-handle', animation: 200 }"
               >
-                <v-icon>mdi-delete</v-icon>
+                <div v-for="(player, index) in episode.players" :key="player.id || index">
+                  <TemplatePlayerInput :index="index">
+                    <template #dragHandle>
+                      <v-icon class="drag-handle" style="cursor: move;">
+                        mdi-drag
+                      </v-icon>
+                    </template>
+                    <template #playerList>
+                      <v-select
+                        :id="'list'+index"
+                        v-model="player.name"
+                        :items="players"
+                        :item-text="episode.id > 741 ? 'name' : 'short_name'"
+                        label="Player Select"
+                        prepend-inner-icon="mdi-play-circle"
+                        hide-details
+                        solo
+                        @change="calculatePlayerUrl(episode.id, index)"
+                      />
+                    </template>
+                    <template #playerCode>
+                      <v-text-field
+                        :id="'code'+index"
+                        v-model="player.code"
+                        label="Player Code"
+                        prepend-inner-icon="mdi-code-tags"
+                        hide-details
+                        solo
+                        @input="calculatePlayerUrl(episode.id, index)"
+                      />
+                    </template>
+                    <template #playerDeleteItem>
+                      <v-btn @click="removePlayerSlot(index)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </template>
+                  </TemplatePlayerInput>
+                </div>
+              </draggable>
+              <v-btn class="mr-4 primary rounded-xl mt-2" large @click="addPlayerSlot">
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
+                Add Player
               </v-btn>
-            </TemplateDownloadInput>
-            <v-btn class="mr-4 primary" large @click="addDownloadSlot">
-              Add Download
-            </v-btn>
-          </v-container>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+            </v-container>
+          </v-card>
+          <v-card class="glass-card pa-4 mb-4" elevation="6">
+            <v-card-title class="subtitle-1 font-weight-bold mb-2">
+              <v-icon left color="primary">
+                mdi-download
+              </v-icon>
+              Download Links
+            </v-card-title>
+            <v-container>
+              <TemplateDownloadInput
+                v-for="(download, index) in episode.downloads"
+                :id="'container'+index"
+                :key="index"
+                :index="index"
+              >
+                <v-text-field
+                  :id="'code'+index"
+                  slot="downloadCode"
+                  v-model="download.url"
+                  label="Download URL"
+                  prepend-inner-icon="mdi-link"
+                  hide-details
+                  solo
+                />
+                <v-btn
+                  slot="downloadDeleteItem"
+                  class="rounded-xl"
+                  @click="removeDownloadSlot(index)"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </TemplateDownloadInput>
+              <v-btn class="mr-4 primary rounded-xl mt-2" large @click="addDownloadSlot">
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
+                Add Download
+              </v-btn>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -312,7 +348,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.glass-card {
+  background: rgba(255,255,255,0.12);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
 .drag-handle {
   margin-right: 8px;
 }

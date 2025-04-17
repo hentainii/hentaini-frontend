@@ -1,167 +1,172 @@
 <template>
-  <v-container v-if="serieData" fluid>
+  <v-card v-if="serieData" class="glass-card pa-6 ma-4" elevation="10">
     <v-row>
-      <!-- Sección de información básica -->
-      <v-col cols="6">
-        <v-card class="rounded-xl elevation-0" style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;">
-          <v-card-title>Edit basic Hentai information</v-card-title>
-          <v-container>
-            <v-text-field
-              v-model="serieData.id"
-              label="Serie ID"
-              readonly
-              disabled
-              dense
-              outlined
-              rounded
-            />
-            <v-text-field
-              v-model="serieData.title"
-              label="Serie Name"
-              required
-              outlined
-              dense
-            />
-            <v-text-field
-              v-model="serieData.title_english"
-              label="Serie English Name"
-              required
-              dense
-              outlined
-            />
-            <v-textarea
-              v-model="serieData.synopsis"
-              name="synopsis"
-              label="Synopsis"
-              hint="Describe the Hentai"
-              outlined
-              dense
-            />
-            <v-autocomplete
-              v-model="serieData.genreList"
-              :items="genreList"
-              label="Hentai Genres"
-              item-text="name"
-              item-value="id"
-              multiple
-              outlined
-              dense
-              clearable
-              deletable-chips
-              chips
-              :return-object="true"
-            />
-            <v-select
-              v-model="serieData.language"
-              :items="languageList"
-              item-text="name"
-              item-value="id"
-              outlined
-              dense
-              label="Language"
-            />
-            <v-select
-              v-model="serieData.serie_type"
-              :items="serie_typeList"
-              outlined
-              dense
-              label="Serie Type"
-              item-text="name"
-              item-value="id"
-              return-object
-            />
-            <v-select
-              v-model="serieData.status"
-              :items="statusList"
-              outlined
-              dense
-              label="Status"
-              item-text="name"
-              item-value="id"
-              return-object
-            />
-            <v-switch
-              v-model="serieData.censorship"
-              label="Censorship"
-            />
-          </v-container>
-        </v-card>
+      <v-col cols="12" md="6">
+        <v-card-title class="headline font-weight-bold mb-4">
+          <v-icon left color="primary">
+            mdi-pencil
+          </v-icon>
+          Edit Hentai Serie
+        </v-card-title>
+        <v-form>
+          <v-text-field
+            v-model="serieData.title"
+            label="Title"
+            prepend-inner-icon="mdi-format-title"
+            outlined
+            dense
+            class="mb-3"
+          />
+          <v-text-field
+            v-model="serieData.title_english"
+            label="English Title"
+            prepend-inner-icon="mdi-translate"
+            outlined
+            dense
+            class="mb-3"
+          />
+          <v-textarea
+            v-model="serieData.synopsis"
+            label="Synopsis"
+            prepend-inner-icon="mdi-text"
+            outlined
+            dense
+            class="mb-3"
+          />
+          <v-autocomplete
+            v-model="serieData.genreList"
+            :items="genreList"
+            label="Genres"
+            item-text="name"
+            item-value="id"
+            multiple
+            chips
+            deletable-chips
+            outlined
+            dense
+            prepend-inner-icon="mdi-tag-multiple"
+            class="mb-3"
+            :return-object="true"
+          />
+          <StudioAutocomplete v-model="serieData.studio" class="mb-3" />
+          <v-row>
+            <v-col cols="6">
+              <v-select
+                v-model="serieData.serie_type"
+                :items="serie_typeList"
+                label="Type"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+                prepend-inner-icon="mdi-shape"
+                return-object
+              />
+            </v-col>
+            <v-col cols="6">
+              <v-select
+                v-model="serieData.status"
+                :items="statusList"
+                label="Status"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+                prepend-inner-icon="mdi-check-circle"
+                return-object
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-select
+                v-model="serieData.language"
+                :items="languageList"
+                label="Language"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+                prepend-inner-icon="mdi-earth"
+              />
+            </v-col>
+            <v-col cols="6" class="d-flex align-center">
+              <v-switch
+                v-model="serieData.censorship"
+                label="Censorship"
+                inset
+                color="red"
+                class="ml-2"
+              />
+            </v-col>
+          </v-row>
+        </v-form>
       </v-col>
-      <!-- Sección de imágenes -->
-      <v-col cols="6">
-        <v-card class="rounded-xl elevation-0" style="box-shadow: #7b1fa2 2px 2px 0px 1px !important;">
-          <v-card-title>Image Settings</v-card-title>
-          <v-container>
-            <!-- Input para actualizar la imagen cover -->
-            <v-file-input
-              ref="cover"
-              show-size
-              label="Cover Image"
-              outlined
-              dense
-              @change="coverSelected"
-              @click="initialCoverClear"
-            />
-            <!-- Input para actualizar la imagen screenshot -->
-            <v-file-input
-              ref="screenshot"
-              show-size
-              label="Screenshot Image"
-              outlined
-              dense
-              @change="screenshotSelected"
-              @click="initialScreenshotClear"
-            />
-          </v-container>
-          <v-container>
-            <v-menu
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template #activator="{ on }">
-                <v-text-field
-                  v-model="serieData.next_episode"
-                  label="Next episode on"
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  outlined
-                  dense
-                  v-on="on"
-                />
-              </template>
-              <v-date-picker v-model="serieData.next_episode" />
-            </v-menu>
-          </v-container>
-          <v-container>
-            <v-btn
-              class="mr-4 primary rounded-xl"
-              large
-              block
-              :loading="loading"
-              @click.once="editSerie"
-            >
-              submit
-            </v-btn>
-          </v-container>
-          <v-container>
-            <v-row>
-              <!-- Preview para cover -->
-              <v-col v-if="coverPreview" cols="6">
-                <v-img :src="`${coverPreview}`" />
-              </v-col>
-              <!-- Preview para screenshot -->
-              <v-col v-if="screenshotPreview" cols="6">
-                <v-img :src="`${screenshotPreview}`" />
-              </v-col>
-            </v-row>
-          </v-container>
+      <v-col cols="12" md="6">
+        <v-card class="glass-card pa-4" elevation="6">
+          <v-card-title class="subtitle-1 font-weight-bold mb-2">
+            <v-icon left color="primary">
+              mdi-image
+            </v-icon>
+            Images
+          </v-card-title>
+          <v-file-input
+            ref="cover"
+            show-size
+            label="Cover Image"
+            prepend-icon="mdi-image"
+            outlined
+            dense
+            class="mb-3"
+            @change="coverSelected"
+            @click="initialCoverClear"
+          />
+          <v-file-input
+            ref="screenshot"
+            show-size
+            label="Screenshot Image"
+            prepend-icon="mdi-image-multiple"
+            outlined
+            dense
+            class="mb-3"
+            @change="screenshotSelected"
+            @click="initialScreenshotClear"
+          />
+          <v-row>
+            <v-col v-if="coverPreview" cols="6">
+              <v-img :src="coverPreview" class="rounded-lg" max-width="100%" />
+              <v-chip class="mt-2" color="primary" text-color="white" small>
+                <v-icon left>
+                  mdi-image
+                </v-icon> Cover
+              </v-chip>
+            </v-col>
+            <v-col v-if="screenshotPreview" cols="6">
+              <v-img :src="screenshotPreview" class="rounded-lg" max-width="100%" />
+              <v-chip class="mt-2" color="primary" text-color="white" small>
+                <v-icon left>
+                  mdi-image-multiple
+                </v-icon> Screenshot
+              </v-chip>
+            </v-col>
+          </v-row>
         </v-card>
+        <v-btn
+          class="mt-6 primary rounded-xl"
+          :loading="loading"
+          :disabled="loading"
+          large
+          block
+          @click.once="editSerie"
+        >
+          <v-icon left>
+            mdi-content-save
+          </v-icon>
+          Save Changes
+        </v-btn>
       </v-col>
     </v-row>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -200,9 +205,12 @@ export default {
     async getSerie () {
       await this.$store.dispatch('series/getSerie', {
         serieId: this.$route.params.id,
-        populate: ['genreList', 'status', 'language', 'serie_type', 'images', 'images.image_type']
+        populate: [
+          'genreList', 'status', 'language', 'serie_type', 'images', 'images.image_type', 'studio'
+        ]
       })
-      this.serieData = { ...this.$store.state.series.currentSerie }
+      const serie = { ...this.$store.state.series.currentSerie }
+      this.serieData = serie
       // Asumimos que la imagen actual se guarda en serieData.images:
       // el primer elemento es cover y el segundo (si existe) es screenshot
       if (this.serieData.images && this.serieData.images.length) {
@@ -336,6 +344,13 @@ export default {
 }
 </script>
 
-<style>
-/* Estilos personalizados si se requieren */
+<style scoped>
+.glass-card {
+  background: rgba(255,255,255,0.12);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
 </style>
