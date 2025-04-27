@@ -37,7 +37,7 @@
   })
 
   onMounted(() => {
-    router.replace('/home')
+    navigateTo('/home')
   })
   </script>
   

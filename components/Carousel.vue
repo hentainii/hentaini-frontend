@@ -41,8 +41,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watchEffect } from 'vue'
-import { useLocalePath, useRuntimeConfig, useFetch } from '#imports'
+import { ref, onMounted, watchEffect } from 'vue'
+import { useLocalePath, useRuntimeConfig } from '#imports'
 
 const featuredSeries = ref([])
 const model = ref(0)
@@ -77,19 +77,20 @@ onMounted(async () => {
     sort: ['createdAt:desc']
   }, { encodeValuesOnly: true })
 
-  const { data, status } = await useFetch(() => `${apiEndpoint}series?${query}`)
-
-  watchEffect(() => {
-    loading.value = status.value === 'pending'
-    if (data.value && data.value.data) {
-      data.value.data.forEach(serie => {
+  loading.value = true
+  try {
+    const response = await $fetch(`${apiEndpoint}series?${query}`)
+    if (response && response.data) {
+      response.data.forEach(serie => {
         if (typeof serie.genres === 'string') {
           try { serie.genres = JSON.parse(serie.genres) } catch (e) { serie.genres = [] }
         }
       })
-      featuredSeries.value = data.value.data
+      featuredSeries.value = response.data
     }
-  })
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
