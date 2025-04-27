@@ -3,16 +3,30 @@
       <Header />
       <Carousel />
       <TextHeader />
-      <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
+      <ClientOnly>
+        <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
+        <template #fallback>
+          <div class="w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 pt-2 pb-5">
+            <MiscLatestEpisodesSkeleton />
+          </div>
+        </template>
+      </ClientOnly>
       <div class="my-4"><hr class="border-neutral-700" /></div>
-      <LatestSeries />
+      <ClientOnly>
+        <LatestSeries />
+        <template #fallback>
+          <div class="w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 pt-2 pb-5">
+            <MiscLatestSeriesSkeleton />
+          </div>
+        </template>
+      </ClientOnly>
       <!-- <LayoutPreFooter /> -->
       <!-- <MobileHeader /> -->
     </section>
   </template>
   
   <script setup>
-  import { ref, onMounted, computed, watchEffect } from 'vue'
+  import { ref, computed, watchEffect } from 'vue'
   import { useHead, useRuntimeConfig } from '#imports'
   import qs from 'qs'
 
@@ -81,14 +95,14 @@
         'Content-Type': 'application/json',
         Authorization: user.value?.token ? `Bearer ${user.value.token}` : ''
       })),
-      immediate: true,
-      default: () => []
+      key: 'home-watchlaters',
+      default: () => ({ data: [] })
     }
   )
 
   watchEffect(() => {
-    if (data.value) {
-      watchlaters.value = data.value.data || []
+    if (data.value && data.value.data) {
+      watchlaters.value = data.value.data
     }
   })
 

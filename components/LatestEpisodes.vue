@@ -1,18 +1,7 @@
 <template>
   <div class="latest-episodes-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 pt-2 pb-5">
-    <Misc.LatestEpisodesSkeleton v-if="status === 'pending'" />
+    <MiscLatestEpisodesSkeleton v-if="status === 'pending'" />
     <template v-else>
-      <!-- <v-row class="justify-center">
-        <client-only>
-          <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
-        </client-only>
-        <client-only>
-          <div id="bg-ssp-10357">
-          </div>
-          <UtilsVueScriptComponent script='<script data-cfasync="false" src="bg.js" type="text/javascript"></script>' />
-        </client-only>
-      </v-row> -->
-
       <div class="section-header mb-5 relative">
         <NuxtLink :to="localePath('/explore')" class="section-link no-underline">
           <div class="header-content flex flex-col">
@@ -41,8 +30,8 @@
               :title="episode.serie.title"
               :episodeNumber="episode.episode_number"
               :hid="episode.serie.h_id"
-              :screenshot="`${config.public.SCREENSHOT_ENDPOINT}${episode.image.path}`"
-              :placeholder="`${config.public.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`"
+              :screenshot="getScreenshotImage(episode)"
+              :placeholder="getPlaceholderImage(episode)"
               :created="episode.createdAt"
               :url="episode.serie.url"
               :isAd="episode.isAd"
@@ -59,19 +48,23 @@
 </template>
 
 <script setup>
+import { ref, watchEffect } from 'vue'
 import { useFetch, useRuntimeConfig } from '#app'
 import { useLocalePath } from '#imports'
 import qs from 'qs'
+
 const props = defineProps({
   watchlaters: {
     type: Array,
     default: () => []
   }
 })
+
 const emit = defineEmits(['refreshwatchlaters'])
 const localePath = useLocalePath()
 const config = useRuntimeConfig()
 const episodes = ref([])
+
 const query = qs.stringify({
   filters: { visible: true },
   populate: [
@@ -85,8 +78,31 @@ const query = qs.stringify({
   sort: ['createdAt:desc'],
   pagination: { limit: 24 }
 }, { encodeValuesOnly: true })
-const { data, status, refresh } = useFetch(() => `${config.public.API_STRAPI_ENDPOINT}episodes?${query}`, { default: () => [] })
-episodes.value = data.value.data
+
+const { data, status, refresh } = useFetch(
+  () => `${config.public.API_STRAPI_ENDPOINT}episodes?${query}`, 
+  { 
+    key: 'latest-episodes',
+    default: () => ({ data: [] }) 
+  }
+)
+
+watchEffect(() => {
+  if (data.value && data.value.data) {
+    episodes.value = data.value.data
+  }
+})
+
+function getScreenshotImage(episode) {
+  if (!episode.image || !episode.image.path) return ''
+  return `${config.public.SCREENSHOT_ENDPOINT}${episode.image.path}`
+}
+
+function getPlaceholderImage(episode) {
+  if (!episode.image) return ''
+  return `${config.public.SCREENSHOT_ENDPOINT}${episode.image.placeholder ? episode.image.placeholder : episode.image.path}`
+}
+
 function refreshEpisodes() {
   refresh()
   emit('refreshwatchlaters')

@@ -1,5 +1,5 @@
 <template>
-  <div class="latest-series-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 py-2"">
+  <div class="latest-series-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 py-2">
     <MiscLatestSeriesSkeleton v-if="status === 'pending'" />
     <template v-else>
       <div class="section-header">
@@ -30,8 +30,8 @@
               :componentgenres="serie.genreList"
               :status="serie.status.name"
               :url="serie.url"
-              :screenshot="`${config.public.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-              :placeholder="`${config.public.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
+              :screenshot="getCoverImage(serie)"
+              :placeholder="getPlaceholderImage(serie)"
             />
           </article>
         </div>
@@ -41,12 +41,15 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { useFetch, useRuntimeConfig } from '#app'
 import { useLocalePath } from '#imports'
 import qs from 'qs'
+
 const localePath = useLocalePath()
 const config = useRuntimeConfig()
+const series = ref([])
+
 const query = qs.stringify({
   populate: [
     'status',
@@ -57,23 +60,43 @@ const query = qs.stringify({
   sort: ['createdAt:desc'],
   pagination: { limit: 24 }
 }, { encodeValuesOnly: true })
-const { data, status } = useFetch(() => `${config.public.API_STRAPI_ENDPOINT}series?${query}`, { default: () => [] })
-const series = ref([])
-series.value = data.value.data
-// Parsear genres si es necesario
+
+const { data, status } = useFetch(
+  () => `${config.public.API_STRAPI_ENDPOINT}series?${query}`, 
+  { 
+    key: 'latest-series',
+    default: () => ({ data: [] }) 
+  }
+)
+
 watchEffect(() => {
-  if (series.value) {
-    series.value.forEach(serie => {
-      if (typeof serie.genres === 'string') {
+  if (data.value && data.value.data) {
+    series.value = data.value.data.map(serie => {
+      // Parsear genres si es necesario
+      if (typeof serie.genres === 'string' && serie.genres) {
         try {
           serie.genres = JSON.parse(serie.genres)
         } catch (e) {
           serie.genres = []
         }
       }
+      return serie
     })
   }
 })
+
+function getCoverImage(serie) {
+  if (!serie.images || !serie.images.length) return ''
+  const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+  return coverImage ? `${config.public.COVER_ENDPOINT}${coverImage.path}` : ''
+}
+
+function getPlaceholderImage(serie) {
+  if (!serie.images || !serie.images.length) return ''
+  const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+  if (!coverImage) return ''
+  return `${config.public.COVER_ENDPOINT}${coverImage.placeholder || coverImage.path}`
+}
 </script>
 
 <style scoped>
