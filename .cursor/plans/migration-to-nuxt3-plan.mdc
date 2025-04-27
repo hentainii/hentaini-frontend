@@ -25,29 +25,29 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
     # Estando fuera de la carpeta del proyecto
     cp -r tu-proyecto-nuxt2 __nuxt2
     ```
-- [ ] **Crear Nuevo Proyecto Nuxt 3:**
-  - [ ] Inicializar un nuevo proyecto Nuxt 3 en la ubicación deseada (puedes usar el nombre original del proyecto).
+- [X] **Crear Nuevo Proyecto Nuxt 3:**
+  - [X] Inicializar un nuevo proyecto Nuxt 3 en la ubicación deseada (puedes usar el nombre original del proyecto).
     ```bash
     npx nuxi@latest init tu-proyecto-nuxt3
     cd tu-proyecto-nuxt3
     ```
-  - [ ] Instalar dependencias iniciales.
+  - [X] Instalar dependencias iniciales.
     ```bash
     npm install # o yarn install / pnpm install
     ```
-  - [ ] Iniciar el servidor de desarrollo para confirmar que el proyecto base funciona.
+  - [X] Iniciar el servidor de desarrollo para confirmar que el proyecto base funciona.
     ```bash
     npm run dev
     ```
-- [ ] **Revisar Dependencias:**
-  - [ ] Compara el `package.json` de `__nuxt2` con el del nuevo proyecto.
-  - [ ] Identifica dependencias clave de Nuxt 2 (módulos Nuxt, librerías UI, etc.) que necesitarás en Nuxt 3.
-  - [ ] Busca versiones compatibles con Nuxt 3/Vue 3 para esas dependencias e instálalas en el nuevo proyecto.
+- [X] **Revisar Dependencias:**
+  - [X] Compara el `package.json` de `__nuxt2` con el del nuevo proyecto.
+  - [X] Identifica dependencias clave de Nuxt 2 (módulos Nuxt, librerías UI, etc.) que necesitarás en Nuxt 3.
+  - [X] Busca versiones compatibles con Nuxt 3/Vue 3 para esas dependencias e instálalas en el nuevo proyecto.
     - *Ejemplo:* Para Pinia: `npm install pinia @pinia/nuxt`
     - *Ejemplo:* Para Tailwind: `npm install -D @nuxtjs/tailwindcss`
     - *Ejemplo:* Para Nuxt Image: `npm install @nuxt/image` (o la versión edge si es necesaria)
     - *Ejemplo:* Para i18n: `npm install -D @nuxtjs/i18n@next` (verifica la versión recomendada)
-  - [ ] Elimina dependencias obsoletas de Nuxt 2 (ej. `@nuxtjs/axios`, `@nuxtjs/auth-next`, `vuex`).
+  - [X] Elimina dependencias obsoletas de Nuxt 2 (ej. `@nuxtjs/axios`, `@nuxtjs/auth-next`, `vuex`).
 
 ## 2. Configuración Fundamental (`nuxt.config.ts`, `.env`)
 
@@ -211,6 +211,7 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
   - [ ] Ejecuta `npm run build` y `npm run start` (o `npm run preview`) para probar el build de producción.
 
 --- 
+
 
 
 
