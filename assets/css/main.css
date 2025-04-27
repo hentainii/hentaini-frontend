@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    --color-primary: rgb(255, 209, 31);
+    --color-primary: #f9a825;
     --color-dark-bg: #202020;
     --color-card-bg: rgb(24, 24, 27); /* zinc-900 */
   }

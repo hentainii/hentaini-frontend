@@ -1,19 +1,17 @@
 <template>
-  <div v-if="episode" class="episode-container p-2 md:p-4 bg-gray-100 dark:bg-zinc-800 min-h-screen">
+  <div v-if="episode" class="episode-container p-2 md:p-4 bg-gray-100 dark:bg-zinc-900 min-h-screen">
     <!-- Breadcrumbs mejorados -->
-    <div v-if="isDesktop" class="mb-4">
-      <nav class="flex items-center space-x-2 bg-white dark:bg-zinc-900 rounded-lg shadow p-2 border-b border-black/10">
-        <NuxtLink v-for="(item, i) in breadcrumb" :key="i" :to="item.to" :class="{'text-primary font-bold': !item.disabled, 'text-gray-400 dark:text-gray-500': item.disabled, 'text-black dark:text-white': true}">
-          <span>{{ item.text }}</span>
-          <span v-if="i < breadcrumb.length - 1" class="mx-2 text-lg font-bold">•</span>
-        </NuxtLink>
-      </nav>
+    <div v-if="isDesktop" class="mb-2">
+      <NuxtLink v-for="(item, i) in breadcrumb" :key="i" :to="item.to" :class="{'text-primary font-bold': !item.disabled, 'text-gray-400 dark:text-gray-500': item.disabled, 'text-black dark:text-white': true}">
+        <span>{{ item.text }}</span>
+        <span v-if="i < breadcrumb.length - 1" class="mx-2 text-lg font-bold">•</span>
+      </NuxtLink>
     </div>
 
     <div class="flex flex-col md:flex-row gap-6">
       <!-- Columna principal con el reproductor -->
       <div class="w-full md:w-2/3 space-y-6">
-        <div class="overflow-hidden rounded-lg shadow-2xl bg-white dark:bg-zinc-900 border border-black/10">
+        <div class="overflow-hidden rounded-lg shadow-2xl bg-white dark:bg-zinc-800 border border-black/10">
           <!-- Imagen de portada con botón de reproducción -->
           <div v-if="!showVideo" class="relative w-full aspect-video bg-gray-200 dark:bg-gray-800">
             <img :src="`${config.public.SCREENSHOT_ENDPOINT}${serieScreenshot}`" class="object-cover w-full h-full" alt="Preview" />
@@ -89,7 +87,7 @@
       <!-- Columna lateral con información y episodios -->
       <div class="w-full md:w-1/3 flex flex-col gap-6">
         <!-- Series Similares -->
-        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-black/10">
+        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-800 border border-black/10">
           <div class="flex items-center gap-2 text-primary font-semibold p-4 border-b border-black/10 text-lg">
             <Icon name="mdi:video-vintage" />
             {{ $t('serie.similar_series') }}
@@ -112,7 +110,7 @@
           </div>
         </div>
         <!-- Información de la serie -->
-        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-black/10">
+        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-800 border border-black/10">
           <div class="flex items-center gap-2 text-primary font-semibold p-4 border-b border-black/10 text-lg">
             <Icon name="mdi:information" />
             {{ $t('episode.serie_info') }}
@@ -129,7 +127,7 @@
           </div>
         </div>
         <!-- Lista de episodios -->
-        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-900 border border-black/10">
+        <div class="rounded-lg shadow-lg bg-white dark:bg-zinc-800 border border-black/10">
           <div class="flex items-center justify-between p-4 border-b border-black/10">
             <div class="flex items-center gap-2 text-primary font-semibold text-lg">
               <Icon name="mdi:format-list-numbered" />
