@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: rgb(255, 209, 31);
+    --color-dark-bg: #202020;
+    --color-card-bg: rgb(24, 24, 27); /* zinc-900 */
+  }
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.hover\:bg-primary:hover {
+  background-color: var(--color-primary);
+}
+
+.hover\:bg-primary\/80:hover {
+  background-color: rgb(255, 209, 31, 0.8);
+}
+
+.hover\:bg-primary\/90:hover {
+  background-color: rgb(255, 209, 31, 0.9);
+}
+
+.animate-fadeUpSimilar {
+  animation: fadeUpSimilar 0.3s forwards;
+}
+
+@keyframes fadeUpSimilar {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
