@@ -12,18 +12,18 @@
         />
         <!-- Badge para "new" -->
         <div v-if="isNew && lessThan7Days(created)" class="new-badge absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow animate-pulse z-10">
-          <NuxtIcon name="mdi:star" class="text-xs mr-1" />
+          <Icon name="mdi:star" class="text-xs mr-1" />
           {{ t('episode.new_badge') }}
         </div>
         <!-- Badge para "censorship" -->
         <div v-if="!censorship" class="no-censor-badge absolute bottom-2 right-2 bg-neutral-800/90 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1 shadow z-10">
-          <NuxtIcon name="mdi:eye" class="text-xs mr-1" />
+          <Icon name="mdi:eye" class="text-xs mr-1" />
           {{ t('episode.uncensored') }}
         </div>
         <!-- Overlay Play -->
         <div class="overlay absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-black/40 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div class="play-button w-16 h-16 rounded-full border-4 border-white bg-white/20 flex items-center justify-center scale-90 group-hover:scale-100 transition-transform duration-300">
-            <NuxtIcon name="mdi:play" class="text-white text-3xl" />
+            <Icon name="mdi:play" class="text-white text-3xl" />
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
           :aria-label="isInWatchLater ? t('watch_later.remove') : t('watch_later.add')"
           @click.stop="isLogin ? toggleWatchLater(serie) : $router.push('/login')"
         >
-          <NuxtIcon :name="isInWatchLater ? 'mdi:eye-off-outline' : 'mdi:eye-plus-outline'" :class="isInWatchLater ? 'text-primary-500' : 'text-gray-300'" class="text-xl" />
+          <Icon :name="isInWatchLater ? 'mdi:eye-off-outline' : 'mdi:eye-plus-outline'" :class="isInWatchLater ? 'text-primary-500' : 'text-gray-300'" class="text-xl" />
         </button>
         <div v-if="showTooltip" class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-neutral-800 text-white text-xs rounded shadow z-20 whitespace-nowrap">
           {{ isInWatchLater ? t('watch_later.remove') : t('watch_later.add') }}

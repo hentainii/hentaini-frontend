@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="pb-5">
       <Header />
       <Carousel />
       <TextHeader />

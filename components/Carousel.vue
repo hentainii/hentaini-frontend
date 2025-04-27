@@ -11,7 +11,7 @@
           class="object-cover w-full h-full"
         />
         <div class="carousel-gradient absolute inset-0 z-10"></div>
-        <div class="absolute bottom-0 left-0 p-8 z-20 max-w-xl">
+        <div class="absolute left-0 bottom-0 top-0 p-8 lg:pl-24 z-20 max-w-2xl overflow-y-auto flex flex-col justify-end">
           <div class="flex items-center mb-2">
             <Icon name="mdi:star" size="18" class="text-yellow-400 mr-1" />
             <span class="uppercase text-xs font-bold tracking-widest text-yellow-300">{{ $t('landpage.featured') || 'Featured' }}</span>

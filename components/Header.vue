@@ -38,7 +38,7 @@
       </ul>
       <!-- Search y acciones -->
       <div class="hidden md:flex items-center space-x-2">
-        <UtilsSearch />
+        <UtilsSearch class="max-h-10" />
         <!-- Idiomas -->
         <div class="relative group">
           <button class="p-2 rounded hover:bg-neutral-800" aria-label="Change language">
@@ -51,17 +51,17 @@
           </div>
         </div>
         <!-- Login/Profile -->
-        <NuxtLink v-if="!user" to="/login" class="p-2 rounded hover:bg-neutral-800" aria-label="Login">
+        <NuxtLink v-if="!user" to="/login" class="h-10 w-10 flex items-center justify-center rounded hover:bg-neutral-800" aria-label="Login">
           <Icon name="mdi:account" size="22" />
         </NuxtLink>
         <div v-else class="flex items-center space-x-1">
-          <NuxtLink :to="localePath('/favorites')" class="p-2 rounded hover:bg-neutral-800" aria-label="Profile">
+          <NuxtLink :to="localePath('/favorites')" class="h-10 w-10 flex items-center justify-center rounded hover:bg-neutral-800" aria-label="Profile">
             <Icon name="mdi:account" size="22" class="text-blue-400" />
           </NuxtLink>
-          <NuxtLink v-if="user.level === 2" to="/panel" class="p-2 rounded hover:bg-neutral-800" aria-label="Admin panel">
+          <NuxtLink v-if="user.level === 2" to="/panel" class="h-10 w-10 flex items-center justify-center rounded hover:bg-neutral-800" aria-label="Admin panel">
             <Icon name="mdi:cog" size="22" />
           </NuxtLink>
-          <button @click="logout" class="p-2 rounded hover:bg-neutral-800" aria-label="Logout">
+          <button @click="logout" class="h-10 w-10 flex items-center justify-center rounded hover:bg-neutral-800" aria-label="Logout">
             <Icon name="mdi:exit-to-app" size="22" />
           </button>
         </div>
