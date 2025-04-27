@@ -1,83 +1,70 @@
 <template>
-  <div class="serie-card">
-    <nuxt-link :to="localePath(`/h/${url}`)" :title="`Watch ${title}`">
-      <v-hover v-slot="{ hover }">
-        <div class="card-container">
-          <v-img
-            :aspect-ratio="9/14"
-            :src="screenshot"
-            :lazy-src="placeholder"
-            class="card-image"
-          >
-            <div v-if="visits" class="visits-chip">
-              <v-icon small>
-                mdi-eye
-              </v-icon>
-              <span class="ml-1">{{ visits.toLocaleString() }}</span>
-            </div>
-
-            <div class="card-gradient" />
-
-            <div
-              v-if="synopsis"
-              :class="hover ? 'card-overlay card-overlay-hover' : 'card-overlay'"
-            >
-              <div class="synopsis-container">
-                <p class="synopsis-text">
-                  {{ synopsis.substr(0,180) + '...' }}
-                </p>
-                <div v-if="componentgenres && componentgenres.length > 0" class="genres-container">
-                  <v-chip
-                    v-for="(genre, index) in componentgenres.slice(0, 3)"
-                    :key="index"
-                    x-small
-                    class="genre-chip mr-1 mb-1"
-                    color="rgba(255, 255, 255, 0.1)"
-                    text-color="white"
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-title-container">
-              <h3 class="card-title">{{ title }}</h3>
-              <div v-if="status" class="status-indicator">
-                <span class="status-dot" :class="statusClass" />
-                <span class="status-text">{{ status }}</span>
-              </div>
-            </div>
-          </v-img>
+  <div class="serie-card group relative" @mouseenter="hover = true" @mouseleave="hover = false">
+    <nuxt-link :to="localePath(`/h/${url}`)" :title="`Watch ${title}`" class="block">
+      <div class="card-container relative overflow-hidden rounded-xl shadow-lg h-full">
+        <img
+          :src="screenshot"
+          :alt="title"
+          :loading="'lazy'"
+          class="card-image object-cover w-full h-full transition-transform duration-700 ease-in-out"
+          :style="{ aspectRatio: '9/14' }"
+        />
+        <div v-if="visits" class="visits-chip flex items-center absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-full text-xs z-10">
+          <Icon name="mdi:eye" class="w-4 h-4" />
+          <span class="ml-1">{{ visits.toLocaleString() }}</span>
         </div>
-      </v-hover>
+        <div class="card-gradient absolute bottom-0 left-0 w-full h-[70%] z-1 pointer-events-none" />
+        <div
+          v-if="synopsis"
+          :class="['card-overlay absolute top-0 left-0 w-full h-full flex flex-col justify-center p-5 z-20 transition-opacity duration-300', hover ? 'opacity-100 bg-black/80' : 'opacity-0 pointer-events-none']"
+        >
+          <div class="synopsis-container overflow-hidden">
+            <p class="synopsis-text text-white/90 text-sm leading-snug mb-3">
+              {{ synopsis.substr(0,180) + '...' }}
+            </p>
+            <div v-if="componentgenres && componentgenres.length > 0" class="genres-container flex flex-wrap mt-auto">
+              <span
+                v-for="(genre, index) in componentgenres.slice(0, 3)"
+                :key="index"
+                class="genre-chip mr-1 mb-1 px-2 py-0.5 rounded bg-white/15 text-white text-xs hover:bg-white/25 transition"
+              >
+                {{ genre.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-title-container absolute bottom-0 left-0 w-full p-4 z-10">
+          <h3 class="card-title text-white text-base font-bold m-0 truncate-2-lines drop-shadow">
+            {{ title }}
+          </h3>
+          <div v-if="status" class="status-indicator flex items-center mt-1">
+            <span class="status-dot mr-2" :class="statusClass" />
+            <span class="status-text text-white/80 text-xs uppercase tracking-wide">{{ status }}</span>
+          </div>
+        </div>
+      </div>
     </nuxt-link>
-    <v-btn
+    <button
       v-if="removeTagWl"
-      class="remove-btn"
-      color="red"
-      fab
-      small
-      @click="removeWatchLaters"
+      class="remove-btn absolute right-2 top-2 z-20 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 shadow transition-transform duration-200 hover:scale-110"
+      @click.stop="removeWatchLaters"
+      aria-label="Remove from Watch Later"
     >
-      <v-icon>mdi-close</v-icon>
-    </v-btn>
-
-    <v-btn
+      <Icon name="mdi:close" class="w-4 h-4" />
+    </button>
+    <button
       v-if="removeTagF"
-      class="remove-btn"
-      color="red"
-      fab
-      small
-      @click="removeFavorites"
+      class="remove-btn absolute right-2 top-2 z-20 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 shadow transition-transform duration-200 hover:scale-110"
+      @click.stop="removeFavorites"
+      aria-label="Remove from Favorites"
     >
-      <v-icon>mdi-close</v-icon>
-    </v-btn>
+      <Icon name="mdi:close" class="w-4 h-4" />
+    </button>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useLocalePath } from '#imports'
 import { useI18n } from 'vue-i18n'
 import { useRuntimeConfig } from '#app'
@@ -105,17 +92,19 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 // const userStore = useUserStore() // Descomentar si tienes un store de usuario
 
+const hover = ref(false)
+
 const statusClass = computed(() => {
   if (!props.status) return ''
   const statusLower = props.status.toLowerCase()
   if (statusLower.includes('ongoing') || statusLower.includes('airing')) {
-    return 'status-ongoing'
+    return 'bg-green-500 shadow-green-500/60'
   } else if (statusLower.includes('completed') || statusLower.includes('finished')) {
-    return 'status-completed'
+    return 'bg-blue-500 shadow-blue-500/60'
   } else if (statusLower.includes('hiatus') || statusLower.includes('paused')) {
-    return 'status-hiatus'
+    return 'bg-yellow-400 shadow-yellow-400/60'
   } else {
-    return 'status-default'
+    return 'bg-gray-400'
   }
 })
 
@@ -148,167 +137,24 @@ async function removeFavorites() {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   height: 100%;
 }
-
 .serie-card:hover {
   transform: translateY(-8px);
 }
-
-.card-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  height: 100%;
-}
-
-.card-image {
-  transition: transform 0.7s ease;
-}
-
-.serie-card:hover .card-image {
-  transform: scale(1.03);
-}
-
 .card-gradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 70%;
   background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%);
-  z-index: 1;
 }
-
-.card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px;
-}
-
-.card-overlay-hover {
-  opacity: 1;
-}
-
-.synopsis-container {
-  overflow: hidden;
-}
-
-.synopsis-text {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
-
-.genres-container {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: auto;
-}
-
-.genre-chip {
-  background-color: rgba(255, 255, 255, 0.15);
-  transition: all 0.3s ease;
-}
-
-.genre-chip:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-}
-
-.card-title-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px;
-  z-index: 2;
-}
-
-.card-title {
-  color: white;
-  font-size: 1rem;
-  font-weight: 700;
-  margin: 0;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-  overflow: hidden;
+.truncate-2-lines {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  margin-top: 5px;
-}
-
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  margin-right: 5px;
-}
-
-.status-ongoing {
-  background-color: #4CAF50;
-  box-shadow: 0 0 8px #4CAF50;
-}
-
-.status-completed {
-  background-color: #2196F3;
-  box-shadow: 0 0 8px #2196F3;
-}
-
-.status-hiatus {
-  background-color: #FFC107;
-  box-shadow: 0 0 8px #FFC107;
-}
-
-.status-default {
-  background-color: #9E9E9E;
-}
-
-.status-text {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.visits-chip {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  z-index: 3;
-}
-
-.remove-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  z-index: 4;
-  transition: all 0.3s ease;
-}
-
-.remove-btn:hover {
-  transform: scale(1.1);
+  display: inline-block;
+  box-shadow: 0 0 8px;
 }
 </style>

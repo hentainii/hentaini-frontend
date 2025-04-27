@@ -1,5 +1,5 @@
 <template>
-  <div class="latest-episodes-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 py-2">
+  <div class="latest-episodes-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 pt-2 pb-5">
     <Misc.LatestEpisodesSkeleton v-if="status === 'pending'" />
     <template v-else>
       <!-- <v-row class="justify-center">

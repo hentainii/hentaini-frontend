@@ -1,6 +1,6 @@
 <template>
-  <v-container class="latest-series-container">
-    <misc-latest-series-skeleton v-if="true" />
+  <div class="latest-series-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 py-2"">
+    <MiscLatestSeriesSkeleton v-if="status === 'pending'" />
     <template v-else>
       <div class="section-header">
         <nuxt-link :to="localePath('/explore')" class="section-link">
@@ -15,16 +15,12 @@
         </nuxt-link>
         <div class="animated-bar" />
       </div>
-      <v-row class="series-grid">
-        <v-col
-          v-for="(serie) in series"
-          :key="serie._id"
-          cols="6"
-          lg="2"
-          md="4"
-          sm="4"
-          xs="4"
+      <div class="series-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-3">
+        <div
+          v-for="(serie, idx) in series"
+          :key="serie.id"
           class="serie-item"
+          :style="{ animationDelay: `${0.05 + idx * 0.03}s` }"
         >
           <article>
             <SerieCard
@@ -34,25 +30,23 @@
               :componentgenres="serie.genreList"
               :status="serie.status.name"
               :url="serie.url"
-              :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-              :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
+              :screenshot="`${config.public.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+              :placeholder="`${config.public.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
             />
           </article>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </template>
-  </v-container>
+  </div>
 </template>
 
 <script setup>
 import { ref, watchEffect } from 'vue'
 import { useFetch, useRuntimeConfig } from '#app'
 import { useLocalePath } from '#imports'
-import { useI18n } from 'vue-i18n'
+import qs from 'qs'
 const localePath = useLocalePath()
-const { t } = useI18n()
 const config = useRuntimeConfig()
-const qs = require('qs')
 const query = qs.stringify({
   populate: [
     'status',
@@ -63,7 +57,9 @@ const query = qs.stringify({
   sort: ['createdAt:desc'],
   pagination: { limit: 24 }
 }, { encodeValuesOnly: true })
-const { data: series, status } = useFetch(() => `${config.public.API_STRAPI_ENDPOINT}series?${query}`, { default: () => [] })
+const { data, status } = useFetch(() => `${config.public.API_STRAPI_ENDPOINT}series?${query}`, { default: () => [] })
+const series = ref([])
+series.value = data.value.data
 // Parsear genres si es necesario
 watchEffect(() => {
   if (series.value) {
@@ -192,18 +188,4 @@ watchEffect(() => {
     transform: translateX(100%);
   }
 }
-
-/* Staggered animation for series items */
-.serie-item:nth-child(1) { animation-delay: 0.05s; }
-.serie-item:nth-child(2) { animation-delay: 0.08s; }
-.serie-item:nth-child(3) { animation-delay: 0.11s; }
-.serie-item:nth-child(4) { animation-delay: 0.14s; }
-.serie-item:nth-child(5) { animation-delay: 0.17s; }
-.serie-item:nth-child(6) { animation-delay: 0.2s; }
-.serie-item:nth-child(7) { animation-delay: 0.23s; }
-.serie-item:nth-child(8) { animation-delay: 0.26s; }
-.serie-item:nth-child(9) { animation-delay: 0.29s; }
-.serie-item:nth-child(10) { animation-delay: 0.32s; }
-.serie-item:nth-child(11) { animation-delay: 0.35s; }
-.serie-item:nth-child(12) { animation-delay: 0.38s; }
 </style>

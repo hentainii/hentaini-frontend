@@ -4,9 +4,9 @@
       <Carousel />
       <TextHeader />
       <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
-      <!-- <div class="my-4"><hr class="border-neutral-700" /></div>
+      <div class="my-4"><hr class="border-neutral-700" /></div>
       <LatestSeries />
-      <LayoutPreFooter /> -->
+      <!-- <LayoutPreFooter /> -->
       <!-- <MobileHeader /> -->
     </section>
   </template>
