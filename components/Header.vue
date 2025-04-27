@@ -1,6 +1,6 @@
 <template>
   <header class="w-full bg-neutral-950 text-white shadow relative z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4">
+    <div class="max-w-[calc(100%-32px)] mx-auto flex items-center justify-between h-16 px-4">
       <!-- Logo y menú móvil -->
       <div class="flex items-center">
         <button class="md:hidden mr-2" @click="nav = !nav" aria-label="Open menu">

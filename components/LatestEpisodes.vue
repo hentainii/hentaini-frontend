@@ -1,6 +1,6 @@
 <template>
-  <div class="latest-episodes-container w-full max-w-7xl mx-auto px-2 md:px-6 py-2">
-    <p v-if="status === 'pending'">Loading...</p>
+  <div class="latest-episodes-container w-full max-w-[calc(100%-32px)] mx-auto px-2 md:px-6 py-2">
+    <Misc.LatestEpisodesSkeleton v-if="status === 'pending'" />
     <template v-else>
       <!-- <v-row class="justify-center">
         <client-only>
@@ -27,7 +27,7 @@
         <div class="animated-bar w-10 h-1 bg-gradient-to-r from-yellow-400 to-indigo-500 rounded mb-3 relative overflow-hidden animate-expandWidth" />
       </div>
 
-      <div class="episodes-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-3 mt-3">
+      <div class="episodes-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-3 mt-3">
         <div
           v-for="(episode, idx) in episodes"
           :key="episode.id"

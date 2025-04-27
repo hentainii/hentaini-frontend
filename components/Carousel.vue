@@ -1,5 +1,5 @@
 <template>
-  <div class="carousel-container max-w-7xl mx-auto mb-4">
+  <div class="carousel-container max-w-[calc(100%-32px)] mx-auto mb-4">
     <div v-if="loading" class="h-96 flex items-center justify-center bg-neutral-900 rounded-xl">
       <span class="text-neutral-400">Loading...</span>
     </div>
