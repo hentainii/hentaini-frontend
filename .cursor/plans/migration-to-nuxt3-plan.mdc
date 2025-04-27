@@ -13,6 +13,13 @@ Este plan detalla la migración de tu aplicación Nuxt 2 a Nuxt 3 utilizando el 
 
 Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso implica copiar código de tu proyecto Nuxt 2 (en `__nuxt2`) y adaptarlo al nuevo proyecto Nuxt 3.
 
+# A tener en cuenta
+
+* Usa siempre tailwind 4 a la hora de migrar un componente
+* Usa siempre useFetch o useAsyncFetch segun sea necesario. No utilices fetch o $fetch ya que no deduplican las queries
+* Usa siempre Nuxt Icon para reemplazar mdi-icon
+* Usar NuxtImg para reemplazar v-img
+
 ---
 
 ## 1. Preparativos Iniciales y Nuevo Proyecto
@@ -120,8 +127,8 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
 
 ## 6. Migración de Componentes (`components/`)
 
-- [ ] **Crear Carpeta `components/`:**
-  - [ ] Crea la carpeta `components/` en el nuevo proyecto.
+- [X] **Crear Carpeta `components/`:**
+  - [X] Crea la carpeta `components/` en el nuevo proyecto.
 - [ ] **Migrar Componentes Gradualmente:**
   - [ ] Empieza por los componentes más simples o base.
   - [ ] Copia un componente (ej. `SerieCard.vue`) de `__nuxt2/components/` a `components/` en el nuevo proyecto.

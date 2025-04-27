@@ -8,7 +8,7 @@ export const useStudiosStore = defineStore('studios', () => {
   const studioList = ref([])
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
+  const apiBase = config.public.API_STRAPI_ENDPOINT
   const token = ref(null) // Assuming token is managed elsewhere
 
   // Helper to set token

@@ -41,16 +41,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useLocalePath } from '#imports'
+import { ref, onMounted, computed, watchEffect } from 'vue'
+import { useLocalePath, useRuntimeConfig, useFetch } from '#imports'
 
 const featuredSeries = ref([])
 const model = ref(0)
-const loading = ref(true)
-const screenshotEndpoint = '/uploads/' // Ajusta según tu config
+const config = useRuntimeConfig()
+const screenshotEndpoint = config.public.SCREENSHOT_ENDPOINT
+const apiEndpoint = config.public.API_STRAPI_ENDPOINT.endsWith('/') ? config.public.API_STRAPI_ENDPOINT : config.public.API_STRAPI_ENDPOINT + '/'
 const localePath = useLocalePath()
-
-// Simula isDesktop, reemplaza por tu lógica real si tienes
 const isDesktop = true
 
 function trimTextToLength (text, length) {
@@ -66,27 +65,31 @@ function next () {
   model.value = (model.value + 1) % featuredSeries.value.length
 }
 
-async function getFeaturedSeries () {
-  loading.value = true
-  const qs = (await import('qs')).default
+const qsPromise = import('qs').then(mod => mod.default)
+
+const loading = ref(true)
+
+onMounted(async () => {
+  const qs = await qsPromise
   const query = qs.stringify({
     filters: { featured: true },
     populate: ['images', 'images.image_type', 'status', 'genreList'],
     sort: ['createdAt:desc']
   }, { encodeValuesOnly: true })
-  const res = await fetch(`/api/series?${query}`) // Ajusta endpoint según tu config
-  const series = await res.json()
-  series.data.forEach(serie => {
-    if (typeof serie.genres === 'string') {
-      try { serie.genres = JSON.parse(serie.genres) } catch (e) { serie.genres = [] }
+
+  const { data, status } = await useFetch(() => `${apiEndpoint}series?${query}`)
+
+  watchEffect(() => {
+    loading.value = status.value === 'pending'
+    if (data.value && data.value.data) {
+      data.value.data.forEach(serie => {
+        if (typeof serie.genres === 'string') {
+          try { serie.genres = JSON.parse(serie.genres) } catch (e) { serie.genres = [] }
+        }
+      })
+      featuredSeries.value = data.value.data
     }
   })
-  featuredSeries.value = series.data
-  loading.value = false
-}
-
-onMounted(() => {
-  getFeaturedSeries()
 })
 </script>
 

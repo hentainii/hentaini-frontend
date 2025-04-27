@@ -12,7 +12,6 @@ export const useSeriesStore = defineStore('series', () => {
   const panelSerieListPagination = ref({})
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
   const token = ref(null) // Assuming token management will be handled, maybe in user store or passed directly
 
   // Actions (incorporating mutations logic)
@@ -28,7 +27,7 @@ export const useSeriesStore = defineStore('series', () => {
       return false;
     }
     try {
-      await $fetch(`${apiBase}images/${imageId}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}images/${imageId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -47,7 +46,7 @@ export const useSeriesStore = defineStore('series', () => {
       return;
     }
     try {
-      await $fetch(`${apiBase}series/${serieData.id}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}series/${serieData.id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -70,7 +69,7 @@ export const useSeriesStore = defineStore('series', () => {
       encodeValuesOnly: true
     })
     try {
-      const response = await $fetch(`${apiBase}series/${serieId}?${query}`)
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}series/${serieId}?${query}`)
       currentSerie.value = response.data // Assuming response structure { data: {...} }
     } catch (error) {
       console.error(`Error fetching serie ${serieId}:`, error)
@@ -114,7 +113,7 @@ export const useSeriesStore = defineStore('series', () => {
         if (token.value && options.requiresAuth) {
             headers.Authorization = `Bearer ${token.value}`;
         }
-        const response = await $fetch(`${apiBase}series?${query}`, { headers });
+        const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}series?${query}`, { headers });
 
       if (response.data) {
         panelSerieList.value = response.data
@@ -136,7 +135,7 @@ export const useSeriesStore = defineStore('series', () => {
       return;
     }
     try {
-      await $fetch(`${apiBase}series/${serieId}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}series/${serieId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -164,7 +163,7 @@ export const useSeriesStore = defineStore('series', () => {
     // Assuming status IDs: 1 for 'Airing', 2 for 'Finished' (adjust as needed)
     const statusId = statusName === 'Airing' ? 1 : 2;
     try {
-      const updatedSerie = await $fetch(`${apiBase}series/${serieId}`, {
+      const updatedSerie = await $fetch(`${config.public.API_STRAPI_ENDPOINT}series/${serieId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -196,6 +195,29 @@ export const useSeriesStore = defineStore('series', () => {
   //   }
   // }
 
+  async function fetchLatestSeriesPublic(limit = 24) {
+    const query = qs.stringify({
+      populate: [
+        'status',
+        'images',
+        'images.image_type',
+        'genreList'
+      ],
+      sort: ['createdAt:desc'],
+      pagination: {
+        limit
+      }
+    }, {
+      encodeValuesOnly: true
+    })
+    try {
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}series?${query}`)
+      return response.data || []
+    } catch (error) {
+      console.error('Error fetching latest series public:', error)
+      return []
+    }
+  }
 
   // Exposed state and actions
   return {
@@ -208,7 +230,8 @@ export const useSeriesStore = defineStore('series', () => {
     fetchSerie,
     fetchPanelSerieList,
     setFeatured,
-    saveStatus
+    saveStatus,
+    fetchLatestSeriesPublic
     // updateLocalStatus // Expose if needed
   }
 }) 

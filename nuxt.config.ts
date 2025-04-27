@@ -26,10 +26,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      COVER_ENDPOINT: process.env.NUXT_PUBLIC_CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
-      SCREENSHOT_ENDPOINT: process.env.NUXT_PUBLIC_CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/uploads/',
-      CDN_ENDPOINT: process.env.NUXT_PUBLIC_CDN_ENDPOINT || 'http://localhost:1337/uploads/',
-      API_STRAPI_ENDPOINT: process.env.NUXT_PUBLIC_STRAPI_ENDPOINT || 'http://localhost:1337/'
+      COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
+      SCREENSHOT_ENDPOINT: process.env.CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/uploads/',
+      CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/uploads/',
+      API_STRAPI_ENDPOINT: process.env.API_STRAPI_ENDPOINT || 'http://localhost:1337/'
     }
   },
   modules: [

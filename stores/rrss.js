@@ -7,7 +7,7 @@ export const useRrssStore = defineStore('rrss', () => {
   const rrss = ref([])
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
+  const apiBase = config.public.API_STRAPI_ENDPOINT
   // Removed token ref - assuming this should be public data
   // If auth IS required, add token management back
 

@@ -10,7 +10,7 @@ export const useFavoriteStore = defineStore('favorite', () => {
   const userFavorites = ref([]) // Holds the list of favorite entries for the current user
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
+  const apiBase = config.public.API_STRAPI_ENDPOINT
   const token = ref(null) // Assuming token is managed elsewhere (e.g., user store)
   const userId = ref(null) // Assuming user ID is managed elsewhere
 

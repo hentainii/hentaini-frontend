@@ -10,7 +10,7 @@ export const useUserStore = defineStore('userAdmin', () => { // Renamed store ID
 
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
+  const apiBase = config.public.API_STRAPI_ENDPOINT
 
   // Actions for Admin Panel
 

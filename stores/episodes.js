@@ -8,8 +8,6 @@ export const useEpisodesStore = defineStore('episodes', () => {
   const currentEpisode = ref(null)
   const { $fetch } = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = config.public.strapiEndpoint
-  const token = ref(null) // Assuming token is managed elsewhere (e.g., user store)
 
   // Helper to set token
   function setAuthToken(newToken) {
@@ -20,7 +18,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
   async function addVisit(serieId, visits) {
     // Consider moving this to seriesStore if it makes more sense semantically
     try {
-      await $fetch(`${apiBase}series/${serieId}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}series/${serieId}`, {
         method: 'PUT',
         body: {
           data: { visits }
@@ -59,7 +57,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
     })
 
     try {
-      const response = await $fetch(`${apiBase}episodes?${query}`)
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes?${query}`)
       if (response.data && response.data.length > 0) {
         const episodeData = response.data[0]
         // Safely parse players JSON
@@ -95,7 +93,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
         encodeValuesOnly: true
       })
     try {
-      const response = await $fetch(`${apiBase}episodes/${episodeId}?${query}`, {
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes/${episodeId}?${query}`, {
         headers: {
           Authorization: `Bearer ${token.value}`
         }
@@ -138,7 +136,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
     };
 
     try {
-      await $fetch(`${apiBase}episodes/${episodeData.id}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes/${episodeData.id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -168,7 +166,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
     };
 
     try {
-      const response = await $fetch(`${apiBase}episodes`, {
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -191,7 +189,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
       return false;
     }
     try {
-      await $fetch(`${apiBase}episodes/${episodeId}`, {
+      await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes/${episodeId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token.value}`
@@ -205,6 +203,35 @@ export const useEpisodesStore = defineStore('episodes', () => {
     }
   }
 
+  async function fetchLatestEpisodesPublic(limit = 24) {
+    const query = qs.stringify({
+      filters: {
+        visible: true
+      },
+      populate: [
+        'serie',
+        'image',
+        'serie.status',
+        'serie.genreList',
+        'serie.images',
+        'serie.images.image_type'
+      ],
+      sort: ['createdAt:desc'],
+      pagination: {
+        limit
+      }
+    }, {
+      encodeValuesOnly: true
+    })
+    try {
+      const response = await $fetch(`${config.public.API_STRAPI_ENDPOINT}episodes?${query}`)
+      return response.data || []
+    } catch (error) {
+      console.error('Error fetching latest episodes public:', error)
+      return []
+    }
+  }
+
   // Exposed state and actions
   return {
     currentEpisode,
@@ -214,6 +241,7 @@ export const useEpisodesStore = defineStore('episodes', () => {
     fetchEpisode,
     editEpisode,
     createEpisode,
-    deleteEpisode
+    deleteEpisode,
+    fetchLatestEpisodesPublic
   }
 }) 

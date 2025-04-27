@@ -4,16 +4,17 @@
       <Carousel />
       <TextHeader />
       <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
-      <div class="my-4"><hr class="border-neutral-700" /></div>
+      <!-- <div class="my-4"><hr class="border-neutral-700" /></div>
       <LatestSeries />
-      <LayoutPreFooter />
+      <LayoutPreFooter /> -->
       <!-- <MobileHeader /> -->
     </section>
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, computed, watchEffect } from 'vue'
   import { useHead, useRuntimeConfig } from '#imports'
+  import qs from 'qs'
 
   // SEO
   useHead({
@@ -64,30 +65,35 @@
 
   const config = useRuntimeConfig()
   const watchlaters = ref([])
-
-  // Simula auth, reemplaza por tu store/composable real
   const user = ref({ id: 1, token: 'demo-token' })
 
-  async function getWatchLaters () {
-    if (!user.value?.id || !user.value?.token) return
-    const qs = (await import('qs')).default
-    const query = qs.stringify({
-      filters: { user: { id: user.value.id } },
-      populate: ['serie']
-    }, { encodeValuesOnly: true })
+  const query = computed(() => qs.stringify({
+    filters: { user: { id: user.value.id } },
+    populate: ['serie']
+  }, { encodeValuesOnly: true }))
 
-    const res = await fetch(`${config.public.API_STRAPI_ENDPOINT}watchlaters?${query}`, {
-      headers: {
+  const { data, status, refresh } = useFetch(
+    () => user.value?.id && user.value?.token
+      ? `${config.public.API_STRAPI_ENDPOINT}watchlaters?${query.value}`
+      : null,
+    {
+      headers: computed(() => ({
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.value.token}`
-      }
-    })
-    const { data } = await res.json()
-    watchlaters.value = data
-  }
+        Authorization: user.value?.token ? `Bearer ${user.value.token}` : ''
+      })),
+      immediate: true,
+      default: () => []
+    }
+  )
 
-  onMounted(() => {
-    getWatchLaters()
+  watchEffect(() => {
+    if (data.value) {
+      watchlaters.value = data.value.data || []
+    }
   })
+
+  function getWatchLaters() {
+    refresh()
+  }
   </script>
   
