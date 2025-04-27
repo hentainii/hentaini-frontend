@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Actualiza esta regla si el usuario lo solicita.
+## Project Overview
+
+* **Type:** Sitio de visualizado de series Hentai / Animacion para adultos japonesa
+* **Description:** Hentaini es un sitio que conecta personas con sus series Hentai favoritas en una app rapida y elegante para buscar informacion
+* **Primary Goal:** Darle a la gente de internet un lugar donde buscar informacion de series Hentai forma rapida y concisa
+
+## Project Structura
+
+### Framework-Specific Routing
+
+* **Directory Rules:**
+    * **NuxtJS 3:** Usa la ruta `/pages` con carpetas anidadas. Por ejemplo, sigue las convenciones de `pages/h/_episode/index.vue` asegurando cuando sea necesario la toma correcta de parametros
+    * Ejemplo 1: `pages/h/_episode/index.vue` para tomar el parametro del capitulo
+    * Ejemplo 2: `/home` solo cargara el home sin mas no es necesaria la toma de parametros
+
+### Core Directories
+
+ * **Versioned Structure:**
+
+    * **components/[concept]** aqui separaras por concepto los subdirectorios de los componentes
+    * **lang/[concept]** Se usara como directorio de los archivos del plugin i18n para internacionalizacion
+    * **layouts/[concept]** Si es necesaria una layout aqui deberas colocarla
+    * **middleware** Aqui estaran los middleware que se involucran en la carga de la pagina con sus seguros de autenticacion
+    * **store** Aqui se procesa el estado compartido de la app y las llamadas a la base de datos
+    * **plugins/[concept]** Aqui almacenaras los plugins o toda la logica que debamos crear para ejecutar en la app
+
+
+## Best Practices
+
+* **Nuxt 3**
+    * Utiliza los composables siempre que sea posible para extraer logica que se repita
+    * Usa plugins o middlewares para hacer verificaciones antes de la carga de una pagina
+    * Usa los componentes <client-only> cuando debas hacer una tarea que solo se ejecute del lado del cliente, asi como la funcion onMounted
+    * No importes componentes ni funciones dentro del <setup> como vue, ref, onMounted, ya que su importancion es automatica en todo Nuxt3
+    * Utiliza siempre <script setup>
+    * Primero va <template>, luego <script> y por ultimo <style scoped>
+    * Manten el lintado acorde a los estandares de Nuxt 3
+* **TailwindCSS 4**
+    * Usa utility-first clases para implementar diseños mobile-friendly
+    * Optimiza para tamaños de build y porga las configuraciones no usadas en produccion.

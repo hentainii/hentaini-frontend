@@ -1,0 +1,79 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Actualiza esta regla si el usuario lo solicita.
+# Documento de requisitos del proyecto (PRD): Cuevana Movies
+
+## 0. File creations & Max Line count
+Antes de crear cualquier archivo, verifica antes que este mismo no exista ya en el proyecto, o alguno similar. Esto evitara choques con lo que ya hay hecho en este proyecto. Si tienes que crear un archivo antes o modificar uno muy grande, pregunta primero al usuario.
+Intenta que cada archivo o componente no supere las 300 linea de codigo, si ves que se acerca a este limite, refactoriza en sub-archivos.
+
+
+
+## 1. Proyect Overview
+
+Cuevana movies es una plataforma web hecha con Nuxt3 y tailwind 4 para el frontend y STRAPI headless CMS para el backend, donde los usuarios podran consultan las ultimas peliculas del mundo del entretenimiento estadounidense en una interfaz moderna, simple, rapida, amigable y sin ahogo visual. Podran explorar una amplia variedad de peliculas en la seccion home, buscar su pelicula preferida en la seccion search y visualizar su informacion unicamente en la pagina movie. La pagina busca ser un top-tier de SEO donde cada pelicula tenga su presentacion hacia los motores de busqueda bien definida, siguiendo las reglas mas modernas y de vanguardia en optimizacion para motores de busqueda. Ademas siguiendo las practicas de Schema y HTML semantico, con una estructura simple y concisa.
+
+##2. In-Scope vs. Out-of-Scope
+
+**In-Scope:**
+
+* Implementacion de una pagina home.vue donde se visualize una landing page con las secciones de peliculas tipo netflix
+* Implementacion de una pagina index.vue donde se visualize un buscador simple, y un FAQ, asi como el nombre de la pagina.
+* Un buscador search.vue que lleve al usuario a una pagina donde se visualizen resultados de busqueda
+* Una seccion navegar por generos que el usuario pueda explorar para filtrar de forma comoda
+* Un side-bar simple con filtros de rapido acceso en la pagina de resultados de busqueda
+* Visualizar la informacion de la pelicula con una pagina movie.vue, esta usara el sistema de paginas dinamicas de Nuxt /movies/\[slug\].vue
+* Optimizacion responsive para correcto visualizado en moviles para TODAS las paginas
+* Sistema de conexion con la API de IMDb para complementar la informacion de las peliculas en la base de datos propia
+
+**Out-of-Scope:**
+* Sistema de registro de usuarios, sera agregado despues
+* Sistema de estadisticas y "Hot" para las peliculas mas vistas
+* Recomendaciones personalizadas basadas en gustos
+
+## 3. User Flow
+
+Un nuevo usuario llegara a index.vue o a home.vue y empezara una busqueda por texto o navegando a los titulos mas recientes. Dara click en uno, y este sera llevado a la pagina de informacion de la pelicula, donde podra reproducir su trailer y consultar informacion relevante de la pelicula.
+
+## 4. Core Features
+
+**Busqueda De Peliculas**
+* El usuario podra buscar peliculas con un buscador de texto
+
+**Buscador por generos**
+* El usuario podra entrar a la seccion generos y filtrar las peliculas por genero
+**Filtros**
+* El usuario podra ordenar por mayor cantidad de vistas o por mas recientes, asi como por puntuacion en IMDb (esto sera un dato guardado en cada pelicula)
+
+## 5. Tech Stack & Tools
+
+**Frontend:**
+* Nuxt 3 para generar toda la estructura web
+* Nuxt Icons para los iconos
+* Nuxt Image para las imagenes 
+* i18n con @nuxtjs/i18n para traducciones en tiempo real de la interfaz con selector de lenguajes
+* Tailwind 4 para los estilos con la nueva sintaxis en el archivo /assets/css/main.css
+* Nuxt fonts para manejo de fuentes
+* Nuxt Eslint para el lintado del codigo
+
+**Backend:**
+* Strapi 5 con la estrucutra de respuesta sin el uso de la subclave "attributes"
+
+**Starter Kit & Project Structure:**
+* Actualmente el proyecto ya cuenta con trabajo iniciado realizado donde esta el esqueleto de la interfaz. Hay (posiblemente, depende de cuando se lea esto) que implementar la conexion con la base de datos y las funcionalidades de busqueda, asi como los filtros y la pagina de busqueda por generos.
+
+## 6. Non-Functional Requirements
+
+**Compilance & Usability:**
+
+* Utiliza Skeleton Loaders para mostrar contenido antes que la respuessta de la base de datos llegue
+* Maneja todos los elementos de usabilidad modernos como alts, screen reader support, y demas.
+* Utiliza siempre "nuxt-link" para los elementos a para que se aproveche la velocidad de la precarga de paginas de Nuxt
+
+
+
+
+

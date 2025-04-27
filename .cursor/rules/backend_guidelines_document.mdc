@@ -1,0 +1,905 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Actualiza esta regla si el usuario lo solicita.
+# Documento de normas para el Backend
+
+Este documento provee una overview del backend para Hentaini. Nuestro objetivo es asegurar claridad en como el backend esta hecho, hosteado y mantenido. Este documento esta claramente escrito, con lenguaje del comun para que todos puedan entenderlo.
+
+## 1. Backend Architecture
+
+El backend esta hecho con el foco en ser escalable y mantenible siendo rapido y resposivo. Usamos STRAPI HEADLESS CMS en su version 5. Aqui los detalles clave:
+
+**Strapi:**
+- **No Attributes key:**: Esta version de strapi no adjunta en el objeto respuesta ninguna sub-clave "attributes"
+- **Usar libreria qs**: Siempre usar la libreria "qs" para construir las query usando useAsyncData
+- **Usar status**: Nuxt 3 en su funcion useAsyncData la propiedad "pending" esta deprecada. usar "status" en su lugar siempre
+
+## 2. Database Schemas
+
+**Serie:**
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "series",
+  "info": {
+    "singularName": "serie",
+    "pluralName": "series",
+    "displayName": "serie",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "title_english": {
+      "type": "string"
+    },
+    "synopsis": {
+      "type": "text"
+    },
+    "censorship": {
+      "type": "boolean"
+    },
+    "next_episode": {
+      "type": "string"
+    },
+    "visits": {
+      "type": "integer"
+    },
+    "featured": {
+      "type": "boolean"
+    },
+    "hasEpisodes": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::status.status",
+      "inversedBy": "series"
+    },
+    "serie_type": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::serie-type.serie-type",
+      "inversedBy": "series"
+    },
+    "images": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::image.image",
+      "inversedBy": "series"
+    },
+    "language": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::language.language",
+      "inversedBy": "series"
+    },
+    "episodes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::episode.episode",
+      "mappedBy": "serie"
+    },
+    "h_id": {
+      "type": "string"
+    },
+    "genres": {
+      "type": "text"
+    },
+    "genreList": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::genre.genre",
+      "inversedBy": "series"
+    },
+    "favorites": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::favorite.favorite",
+      "mappedBy": "serie"
+    },
+    "url": {
+      "type": "string"
+    },
+    "watchlaters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::watchlater.watchlater",
+      "mappedBy": "serie"
+    },
+    "studio": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::studio.studio",
+      "inversedBy": "series"
+    }
+  }
+}
+
+```
+
+**Episodes**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "episodes",
+  "info": {
+    "singularName": "episode",
+    "pluralName": "episodes",
+    "displayName": "episode",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "episode_number": {
+      "type": "integer"
+    },
+    "hasCustomScreenshot": {
+      "type": "boolean"
+    },
+    "image": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::image.image",
+      "inversedBy": "episodes"
+    },
+    "visible": {
+      "type": "boolean"
+    },
+    "serie": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::serie.serie",
+      "inversedBy": "episodes"
+    },
+    "players": {
+      "type": "text"
+    },
+    "downloads": {
+      "type": "text"
+    },
+    "isNew": {
+      "type": "boolean"
+    },
+    "reports": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::report.report",
+      "mappedBy": "episode"
+    }
+  }
+}
+
+```
+
+**Genres:**
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "genres",
+  "info": {
+    "singularName": "genre",
+    "pluralName": "genres",
+    "displayName": "genre"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "genreList"
+    }
+  }
+}
+
+
+```
+**Image**
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "images",
+  "info": {
+    "singularName": "image",
+    "pluralName": "images",
+    "displayName": "image",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "path": {
+      "type": "string"
+    },
+    "image_type": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::image-type.image-type",
+      "inversedBy": "images"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "images"
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "episodes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::episode.episode",
+      "mappedBy": "image"
+    }
+  }
+}
+```
+
+***Image_type**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "image_types",
+  "info": {
+    "singularName": "image-type",
+    "pluralName": "image-types",
+    "displayName": "image_type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "images": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::image.image",
+      "mappedBy": "image_type"
+    }
+  }
+}
+```
+
+**Category:**
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "singularName": "category",
+    "pluralName": "categories",
+    "displayName": "category"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "image": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::image.image"
+    }
+  }
+}
+```
+
+**Favorite:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "favorites",
+  "info": {
+    "singularName": "favorite",
+    "pluralName": "favorites",
+    "displayName": "favorite",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "favorites"
+    },
+    "serie": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::serie.serie",
+      "inversedBy": "favorites"
+    }
+  }
+}
+```
+
+**Language:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "languages",
+  "info": {
+    "singularName": "language",
+    "pluralName": "languages",
+    "displayName": "language"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "language"
+    }
+  }
+}
+```
+
+**Player:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "players",
+  "info": {
+    "singularName": "player",
+    "pluralName": "players",
+    "displayName": "player",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "short_name": {
+      "type": "string"
+    },
+    "player_code": {
+      "type": "string"
+    }
+  }
+}
+```
+
+**Rating:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "ratings",
+  "info": {
+    "singularName": "rating",
+    "pluralName": "ratings",
+    "displayName": "rating"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "value": {
+      "type": "integer"
+    }
+  }
+}
+```
+
+**Report:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "reports",
+  "info": {
+    "singularName": "report",
+    "pluralName": "reports",
+    "displayName": "report",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "reason": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "episode": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::episode.episode",
+      "inversedBy": "reports"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "reports"
+    },
+    "fixed": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
+```
+
+**Serie_type:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "serie_types",
+  "info": {
+    "singularName": "serie-type",
+    "pluralName": "serie-types",
+    "displayName": "serie_type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "serie_type"
+    }
+  }
+}
+```
+
+**Status:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "statuses",
+  "info": {
+    "singularName": "status",
+    "pluralName": "statuses",
+    "displayName": "status"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "status"
+    }
+  }
+}
+```
+
+**Studio:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "studios",
+  "info": {
+    "singularName": "studio",
+    "pluralName": "studios",
+    "displayName": "studio"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "series": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serie.serie",
+      "mappedBy": "studio"
+    }
+  }
+}
+```
+
+**watchlater:**
+```
+{
+  "kind": "collectionType",
+  "collectionName": "watchlaters",
+  "info": {
+    "singularName": "watchlater",
+    "pluralName": "watchlaters",
+    "displayName": "watchlater",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "watchlaters"
+    },
+    "serie": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::serie.serie",
+      "inversedBy": "watchlaters"
+    },
+    "episode_number": {
+      "type": "integer"
+    }
+  }
+}
+```
+
+## 3. Endpoints
+Endpoints para la STRAPI estaran almacenados en las variables de entorno del proyecto ya que en dev y en production, estas varian.
+
+
+**Dev:**
+- **API:** http://localhost:1337/api/
+- **CDN:** http://localhost:1337/uploads/
+
+**Production:**
+- **API:** https://admin.hentaini.com/api/
+- **CDN:** https://admin.hentaini.com/uploads/
+
+
+## 4. Query Structure
+
+Los queries a la base de datos deberan usar la libreria "qs" para su correcto formateo antes de ser enviadas.
+
+A continaucion un ejemplo de una query para una serie:
+
+```
+    const sortBy = payload.options.sortBy[0]
+    if (sortBy === 'status') {
+      payload.options.sortBy[0] = 'status.name'
+    }
+    const sorted = `${payload.options.sortBy[0]}:${payload.options.sortDesc[0] ? 'desc' : 'asc'}`
+    let filters = {}
+    if (payload.search !== '') {
+      filters = {
+        title: {
+          $contains: payload.search
+        }
+      }
+    }
+    const qs = require('qs')
+    const query = qs.stringify({
+      filters,
+      populate: [
+        'status',
+        'episodes'
+      ],
+      sort: [sorted],
+      pagination: payload.pagination
+    },
+    {
+      encodeValuesOnly: true
+    })
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    })
+      .then(res => res.json())
+      .then((seriList) => {
+        if (seriList.data !== null) {
+          const pagination = seriList.meta.pagination
+          const series = seriList.data
+          commit('getPanelSerieList', {
+            series,
+            pagination
+          })
+        }
+      })
+```
+
+## Query Response
+
+La respuesta sera dada en JSON con una estructura similar a la siguiente:
+
+**Episode**
+
+```
+{
+    "data": [
+        {
+            "id": 735,
+            "createdAt": "2025-04-17T14:48:49.066Z",
+            "episode_number": 1,
+            "hasCustomScreenshot": false,
+            "visible": true,
+            "players": "[]",
+            "downloads": "[]",
+            "updatedAt": "2025-04-17T14:48:57.427Z",
+            "publishedAt": "2025-04-17T14:48:49.063Z",
+            "isNew": false,
+            "serie": {
+                "id": 352,
+                "title": "Tester uwu",
+                "title_english": "uwu",
+                "synopsis": "wuuwu",
+                "censorship": false,
+                "next_episode": null,
+                "visits": 0,
+                "featured": false,
+                "hasEpisodes": false,
+                "h_id": "471089",
+                "genres": null,
+                "createdAt": "2025-04-17T13:59:30.931Z",
+                "updatedAt": "2025-04-17T14:17:06.043Z",
+                "publishedAt": "2025-04-17T13:59:30.921Z",
+                "url": "tester-uwu",
+                "status": {
+                    "id": 1,
+                    "name": "Airing",
+                    "createdAt": "2022-10-17T21:52:21.297Z",
+                    "updatedAt": "2022-10-17T21:52:21.730Z",
+                    "publishedAt": "2022-10-17T21:52:21.728Z"
+                },
+                "episodes": [
+                    {
+                        "id": 735,
+                        "episode_number": 1,
+                        "hasCustomScreenshot": false,
+                        "visible": true,
+                        "players": "[]",
+                        "downloads": "[]",
+                        "createdAt": "2025-04-17T14:48:49.066Z",
+                        "updatedAt": "2025-04-17T14:48:57.427Z",
+                        "publishedAt": "2025-04-17T14:48:49.063Z",
+                        "isNew": false
+                    }
+                ],
+                "genreList": [
+                    {
+                        "id": 1,
+                        "name": "Yuri",
+                        "url": "yuri",
+                        "createdAt": "2022-10-09T05:00:00.000Z",
+                        "updatedAt": "2022-10-09T05:00:00.000Z",
+                        "publishedAt": "2022-10-09T05:00:00.000Z"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Netorare",
+                        "url": "netorare",
+                        "createdAt": "2022-10-10T05:00:00.000Z",
+                        "updatedAt": "2022-10-10T05:00:00.000Z",
+                        "publishedAt": "2022-10-10T05:00:00.000Z"
+                    }
+                ],
+                "images": [
+                    {
+                        "id": 1435,
+                        "path": "Testeruwu_cover_cc1f8c38fa.jpeg",
+                        "createdAt": "2025-04-17T13:59:31.292Z",
+                        "updatedAt": "2025-04-17T13:59:31.292Z",
+                        "publishedAt": "2025-04-17T13:59:31.287Z",
+                        "placeholder": "thumbnail_Testeruwu_cover_cc1f8c38fa.jpeg",
+                        "image_type": {
+                            "id": 1,
+                            "name": "cover",
+                            "createdAt": "2022-10-17T21:33:39.882Z",
+                            "updatedAt": "2022-10-17T21:33:40.406Z",
+                            "publishedAt": "2022-10-17T21:33:40.403Z"
+                        }
+                    },
+                    {
+                        "id": 1436,
+                        "path": "Testeruwu_screenshot_029f05af7c.png",
+                        "createdAt": "2025-04-17T13:59:32.434Z",
+                        "updatedAt": "2025-04-17T13:59:32.434Z",
+                        "publishedAt": "2025-04-17T13:59:32.432Z",
+                        "placeholder": "thumbnail_Testeruwu_screenshot_029f05af7c.png",
+                        "image_type": {
+                            "id": 2,
+                            "name": "screenshot",
+                            "createdAt": "2022-10-17T21:33:49.236Z",
+                            "updatedAt": "2022-10-17T21:33:49.726Z",
+                            "publishedAt": "2022-10-17T21:33:49.724Z"
+                        }
+                    }
+                ]
+            },
+            "image": {
+                "id": 1436,
+                "path": "Testeruwu_screenshot_029f05af7c.png",
+                "createdAt": "2025-04-17T13:59:32.434Z",
+                "updatedAt": "2025-04-17T13:59:32.434Z",
+                "publishedAt": "2025-04-17T13:59:32.432Z",
+                "placeholder": "thumbnail_Testeruwu_screenshot_029f05af7c.png"
+            }
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "page": 1,
+            "pageSize": 25,
+            "pageCount": 1,
+            "total": 1
+        }
+    }
+}
+```
+**Serie**
+
+```
+{
+    "data": [
+        {
+            "id": 352,
+            "title": "Tester uwu",
+            "title_english": "uwu",
+            "synopsis": "wuuwu",
+            "censorship": false,
+            "next_episode": null,
+            "visits": 0,
+            "featured": false,
+            "hasEpisodes": false,
+            "h_id": "471089",
+            "genres": null,
+            "createdAt": "2025-04-17T13:59:30.931Z",
+            "updatedAt": "2025-04-17T14:17:06.043Z",
+            "publishedAt": "2025-04-17T13:59:30.921Z",
+            "url": "tester-uwu",
+            "images": [
+                {
+                    "id": 1435,
+                    "path": "Testeruwu_cover_cc1f8c38fa.jpeg",
+                    "createdAt": "2025-04-17T13:59:31.292Z",
+                    "updatedAt": "2025-04-17T13:59:31.292Z",
+                    "publishedAt": "2025-04-17T13:59:31.287Z",
+                    "placeholder": "thumbnail_Testeruwu_cover_cc1f8c38fa.jpeg",
+                    "image_type": {
+                        "id": 1,
+                        "name": "cover",
+                        "createdAt": "2022-10-17T21:33:39.882Z",
+                        "updatedAt": "2022-10-17T21:33:40.406Z",
+                        "publishedAt": "2022-10-17T21:33:40.403Z"
+                    }
+                },
+                {
+                    "id": 1436,
+                    "path": "Testeruwu_screenshot_029f05af7c.png",
+                    "createdAt": "2025-04-17T13:59:32.434Z",
+                    "updatedAt": "2025-04-17T13:59:32.434Z",
+                    "publishedAt": "2025-04-17T13:59:32.432Z",
+                    "placeholder": "thumbnail_Testeruwu_screenshot_029f05af7c.png",
+                    "image_type": {
+                        "id": 2,
+                        "name": "screenshot",
+                        "createdAt": "2022-10-17T21:33:49.236Z",
+                        "updatedAt": "2022-10-17T21:33:49.726Z",
+                        "publishedAt": "2022-10-17T21:33:49.724Z"
+                    }
+                }
+            ],
+            "status": {
+                "id": 1,
+                "name": "Airing",
+                "createdAt": "2022-10-17T21:52:21.297Z",
+                "updatedAt": "2022-10-17T21:52:21.730Z",
+                "publishedAt": "2022-10-17T21:52:21.728Z"
+            },
+            "episodes": [
+                {
+                    "id": 735,
+                    "episode_number": 1,
+                    "hasCustomScreenshot": false,
+                    "visible": true,
+                    "players": "[]",
+                    "downloads": "[]",
+                    "createdAt": "2025-04-17T14:48:49.066Z",
+                    "updatedAt": "2025-04-17T14:48:57.427Z",
+                    "publishedAt": "2025-04-17T14:48:49.063Z",
+                    "isNew": false
+                }
+            ],
+            "genreList": [
+                {
+                    "id": 1,
+                    "name": "Yuri",
+                    "url": "yuri",
+                    "createdAt": "2022-10-09T05:00:00.000Z",
+                    "updatedAt": "2022-10-09T05:00:00.000Z",
+                    "publishedAt": "2022-10-09T05:00:00.000Z"
+                },
+                {
+                    "id": 2,
+                    "name": "Netorare",
+                    "url": "netorare",
+                    "createdAt": "2022-10-10T05:00:00.000Z",
+                    "updatedAt": "2022-10-10T05:00:00.000Z",
+                    "publishedAt": "2022-10-10T05:00:00.000Z"
+                }
+            ],
+            "studio": {
+                "id": 2,
+                "name": "Silver Light",
+                "createdAt": "2025-04-17T14:16:58.912Z",
+                "updatedAt": "2025-04-17T14:16:58.912Z",
+                "publishedAt": "2025-04-17T14:16:58.911Z"
+            }
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "page": 1,
+            "pageSize": 25,
+            "pageCount": 1,
+            "total": 1
+        }
+    }
+}
+```
+
+
+

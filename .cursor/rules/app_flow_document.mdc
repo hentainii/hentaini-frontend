@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Actualiza esta regla si el usuario lo solicita.
+# Documento de flujo del usuario para Hentaini
+
+## Llegada del usuario
+Cuando el usuario llega por primera vez al sitio se encontrara con index.vue que redireccionara a home.vue que se presenta iniciando con un carrusel, seguido por los ultimos capitulos Hentai subidos, luego una seccion con las ultimas series subidas y por ultimo un pequeño FAQ aclarando algunos terminos del Hentai, y un footer simple.
+
+## Busqueda
+
+Si el usuario elige buscar en el buscador de texto vera un desplegable que dara resultados de busqueda de la base de datos usando la API de STRAPI.
+
+## Filtrado
+
+En la seccion de Explore el usuario podra aplicar diferentes filtros por genero, relevancia o visitas de una serie
+
+## Generos
+
+Si el usuario selecciona busqueda por generos vera que cargan series unicamente de ese genero
+
+## Registro
+
+El usuario podra visitar la pagina de registro para registrar una cuenta. NO es necesario el email, pero es sugerido si se quiere recuperar la cuenta.
+
+## Login
+
+El usuario podra hacer login con su cuenta para acceder a la seccion de "Watch Later" y "Favorites" donde se vera una lista con las series que se hayan guardado y que perteneceran a dicho usuario
+
+## Panel Admin
+
+Para los adminsitradores del sitio existe un rango llamado admin que permitira el acceso mediante un control de middleware a la seccion "panel" de las paginas de nuxt, donde se podra administrar todo el contenido de la pagina

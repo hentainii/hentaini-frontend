@@ -1,0 +1,100 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Actualiza esta regla si el usuario lo solicita.
+# Documento de normas para el Frontend
+
+Este documento indica la arquitectura del frontend, los principios de diseño y las tecnologias que usaremos en Cuevana Movies. Apuntamos a asegurar que cada desarrollador, diseñador o accionista pueda entender el setup y el approach inicial, incluso sin un trasfondo tecnico.
+
+## Frontend Architecture
+
+El frontend estara realizado con Nuxt3 y Talwind 4 con su nueva sintaxis en el archivo main.css. No usaremos typescript, ergo sea estrictamente necesaria en puntos clave de la aplicacion. Mantendremos una arquitectura basada en componentes para mantener un codigo modular y reusable.
+
+- **Frameworks & Libraries:**
+    - **NuxtJS 3:** Provee estructura, permitiendo el server-side rendering y optimizaciones de rendimiento
+    - **Tailwind 4:** Con su nueva sintaxis, provee una excelente forma de estilar toda la interfaz
+    - **Nuxt/Image:** Modulo que provee una forma de cargar imagenes de forma eficiente
+    - **Nuxtjs/i18n:** Modulo que permite la internacionalizacion eficiente y un switch de idiomas
+    - **Nuxt/Eslint:** Permite es eslintado para mantener una estructura concisa del proyecto
+    - **Nuxt/Icons:** Provee una amplia galeria de iconos para toda ocasion
+    - **Nuxt/Fonts:** Permite cargar fuentes de forma eficiente
+
+- **Scalabillity & Maintainability:**
+    - Componentes modulares que permiten soporte a caracteristicas y mejoras futuras
+    - Separacion de concerns clara, donde la logica de UI, la de negocio y los estilos estan gestionados de forma distintiva
+    - Consitencia de codigo reforzada por las mejores practivas y comentarios dentro del codigo y de funciones
+    - NO usaras importacion de componentes en las paginas, ya que Nuxt3 cuenta con auto-importacion
+
+- **Performance:**
+- Carga de assets eficiente y cargas perezosas para asegurar tiempos de carga bajos y optimizaciones moviles.
+
+## Design Principles
+
+El diseño esta centrado en 3 principios nucleo:
+
+- **Usability:**
+    - La interfaz sera clara y minimalista, sin clutter visual ni añadidos bombasticos
+    - Llamadas a la accion claras usando los colores destinados para ello
+
+- **Accesibilidad:**
+    - Usilizando componentes UI creados de froma modular, colores y contrastes, con compatibilidad para screen readers, aseguraremos soporte para todo tipo de usuarios.
+    - Uso consistente de etiquetas, navegaciones tab, y uso consistente de de las mejores practicas.
+
+- **Repsonsiveness:**
+    - Cada elemento estara diseñado para ajustarse perfectamente a varios tipos de tamaño de pantalla, sea desktop o movil.
+    - El diseño mobile-first asegura un acceso a navegacion, texto y elementos interactivos optimo para dispositivos touch y pantallas pequeñas.
+
+
+## Styling and Theming
+
+Es estilado es clave para proveer una apariencia moderna y consistente entre plataformas. Nuestro approach incluye:
+
+- **Methodologies & Tools:**
+    - **TailwindCSS 4:** El framework principal de estilado con su nueva sintaxis en el archivo main.css
+
+- **Theming:**
+    - Una paleta de colores neutra es usada como base, acenduata con colores azules
+    - Ejemplo de la paleta de colores:
+        - Color base "dark bg": #070d24
+        - Color acento "primary blue": #0072ef
+
+- **Styling:**
+    - El estilo sera sobretodo plano, moderno con sutiles toques de apple design, manteniendo unos principios de diseño limpios y minimalistas.
+
+
+## Component Structura
+
+El proyecto sigue una arquitectura basada en componentes que provee unos beneficios claros a largo plazo:
+
+- **Organization:**
+    - Los componentes estan organizados en directorios logicos (e.g. buttons, composables, layouts, etc...) para asegurar que cada parte de la UI esta aislada y se puede reutilizar.
+    - Componentes comune como navbars, cards, modals, estan en componentes standalone, lo que reduce duplicacion.
+
+- **Rehusability:**
+    - Reusando coponentes, las actualizaciones se vuelven mas manejables y consistentes.
+    - Cada componente encapsula su propia logica y estilado, mentiniendo un mantenimiento derecho y conciso.
+
+## Routing and Navigation
+
+La navegacion es un aspecto vital de la aplicacion, asegurando que los usuarios se puedan mover perfectamente entre secciones:
+
+- **Routing:**
+    - **NuxtJS 3 <nuxt-link>:** Provee una navegacion con precarga que evita el reload del DOM entre navegaciones
+
+- **Navigation Structure:**
+    - Un navbar en la parte superior de la pantalla asegura que el usuario encuentre el rumbo dentro de la app a toda hora. Con una version movil amigable y clara.
+
+## Performance Optimization
+
+Mantener un buen rendimiento es central en nuestra estrategia de experiencia de usuario:
+
+- **Optimization Techniques:**
+    - Lazy loading para las imagenes reduce los tiempos de carga iniciales
+    - Code splitting asegura que solo el javascript necesario es cargado
+
+- **User Experience:**
+    - Tiempos rapidos de carga aseguran una transicion entre secciones correcta y rapida, sobretodo en dispositivos moviles
+    
+    
