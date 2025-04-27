@@ -1,0 +1,17 @@
+# Bloquear acceso a carpetas sensibles
+User-agent: *
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /config/
+Disallow: /private/
+Disallow: /tmp/
+
+# Bloquear archivos específicos
+Disallow: /config.php
+Disallow: /database.sql
+
+# Permitir todo lo demás
+Allow: /
+
+# Declarar el mapa del sitio (sitemap)
+Sitemap: https://www.hentaini.com/sitemap.xml

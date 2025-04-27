@@ -58,24 +58,24 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
     - `NUXT_PUBLIC_STRAPI_CDN=...`
     - `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=...` (si usas gtag)
     - `NUXT_PUBLIC_DISQUS_SHORTNAME=...` (si usas Disqus)
-- [ ] **Configurar `nuxt.config.ts`:**
+- [X] **Configurar `nuxt.config.ts`:**
   - [X] Abre el `nuxt.config.ts` del nuevo proyecto.
   - [X] Define la configuración básica (SSR, devtools).
-  - [ ] **`runtimeConfig`**: Configura las variables de entorno copiadas del `.env`.
-  - [ ] **`app.head`**: Copia y adapta la configuración global de `head` (título, metas base, links) desde `__nuxt2/nuxt.config.js`.
-  - [ ] **`css`**: Añade la ruta a tu archivo CSS global principal (ej. `~/assets/css/main.css`). Tendrás que copiar este archivo desde `__nuxt2/assets/css/` a `assets/css/` en el nuevo proyecto más adelante.
-  - [ ] **`modules`**: Añade los módulos Nuxt 3 que instalaste (ej. `@nuxtjs/tailwindcss`, `@pinia/nuxt`, `@nuxt/image`, `@nuxtjs/i18n`).
-  - [ ] **Configuración de Módulos**: Añade las secciones de configuración para cada módulo (Tailwind, Pinia, Image, i18n), adaptando desde `__nuxt2/nuxt.config.js`.
+  - [X] **`runtimeConfig`**: Configura las variables de entorno copiadas del `.env`.
+  - [X] **`app.head`**: Copia y adapta la configuración global de `head` (título, metas base, links) desde `__nuxt2/nuxt.config.js`.
+  - [X] **`css`**: Añade la ruta a tu archivo CSS global principal (ej. `~/assets/css/main.css`). Tendrás que copiar este archivo desde `__nuxt2/assets/css/` a `assets/css/` en el nuevo proyecto más adelante.
+  - [X] **`modules`**: Añade los módulos Nuxt 3 que instalaste (ej. `@nuxtjs/tailwindcss`, `@pinia/nuxt`, `@nuxt/image`, `@nuxtjs/i18n`).
+  - [X] **Configuración de Módulos**: Añade las secciones de configuración para cada módulo (Tailwind, Pinia, Image, i18n), adaptando desde `__nuxt2/nuxt.config.js`.
 
 ## 3. Estructura Base y Archivos Clave (`app.vue`, `error.vue`, `assets`, `public`)
 
-- [ ] **Copiar `assets/`:**
-  - [ ] Copia el contenido relevante de `__nuxt2/assets/` (CSS, fuentes, etc.) a la carpeta `assets/` del nuevo proyecto.
-- [ ] **Crear y Copiar `public/`:**
-  - [ ] Crea la carpeta `public/` en la raíz del nuevo proyecto.
-  - [ ] Copia el contenido de `__nuxt2/static/` a la carpeta `public/` del nuevo proyecto (favicons, robots.txt, imágenes estáticas si las hay).
-- [ ] **Configurar `app.vue`:**
-  - [ ] Edita `app.vue` en la raíz del nuevo proyecto. Define la estructura base con `<NuxtLayout>` y `<NuxtPage>`.
+- [X] **Copiar `assets/`:**
+  - [X] Copia el contenido relevante de `__nuxt2/assets/` (CSS, fuentes, etc.) a la carpeta `assets/` del nuevo proyecto.
+- [X] **Crear y Copiar `public/`:**
+  - [X] Crea la carpeta `public/` en la raíz del nuevo proyecto.
+  - [X] Copia el contenido de `__nuxt2/static/` a la carpeta `public/` del nuevo proyecto (favicons, robots.txt, imágenes estáticas si las hay).
+- [X] **Configurar `app.vue`:**
+  - [X] Edita `app.vue` en la raíz del nuevo proyecto. Define la estructura base con `<NuxtLayout>` y `<NuxtPage>`.
     ```vue
     <template>
       <div>
@@ -85,9 +85,9 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
       </div>
     </template>
     ```
-- [ ] **Crear `error.vue`:**
-  - [ ] Crea `error.vue` en la raíz del nuevo proyecto.
-  - [ ] Copia y adapta la lógica/plantilla de `__nuxt2/layouts/error.vue` a la sintaxis de Nuxt 3 (recibe `error` como prop, usa `<script setup>`).
+- [X] **Crear `error.vue`:**
+  - [X] Crea `error.vue` en la raíz del nuevo proyecto.
+  - [X] Copia y adapta la lógica/plantilla de `__nuxt2/layouts/error.vue` a la sintaxis de Nuxt 3 (recibe `error` como prop, usa `<script setup>`).
 
 ## 4. Migración del Store (Vuex a Pinia)
 
