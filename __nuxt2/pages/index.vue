@@ -1,18 +1,12 @@
 <template>
   <div>
-    <Header />
-    <Carousel v-if="$store.state.isDesktop" />
-    <!-- <TagCloud />
-    <LatestEpisodes />
-    <v-container><v-divider /></v-container>
-    <LatestSeries />
-    <MobileHeader /> -->
+    <h1>Redirecting...</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Index',
+  name: 'IndexPage',
   data () {
     return {
       title: 'hentaini',

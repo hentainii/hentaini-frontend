@@ -91,32 +91,32 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
 
 ## 4. Migración del Store (Vuex a Pinia)
 
-- [ ] **Crear Carpeta `stores/`:**
-  - [ ] Crea la carpeta `stores/` en la raíz del nuevo proyecto.
-- [ ] **Migrar cada Módulo:**
-  - [ ] Por cada archivo `.js` en `__nuxt2/store/`, crea un archivo correspondiente en `stores/` del nuevo proyecto.
-  - [ ] Adapta la sintaxis de Vuex (`state`, `mutations`, `actions`, `getters`) a Pinia (`defineStore`, `state`, `actions`, `getters`), usando Composition API y `$fetch` para llamadas API (ver ejemplo en plan anterior).
-    - [ ] `stores/series.js`
-    - [ ] `stores/episodes.js`
-    - [ ] `stores/genres.js`
-    - [ ] `stores/studios.js`
-    - [ ] `stores/favorite.js`
-    - [ ] `stores/language.js`
-    - [ ] `stores/players.js`
-    - [ ] `stores/rrss.js`
-    - [ ] `stores/serietypes.js`
-    - [ ] `stores/statuses.js`
-    - [ ] `stores/user.js`
-- [ ] **Refactorizar Uso:** A medida que migres componentes y páginas, actualiza cómo acceden al store (usando `useUserStore()`, etc.).
+- [X] **Crear Carpeta `stores/`:**
+  - [X] Crea la carpeta `stores/` en la raíz del nuevo proyecto.
+- [X] **Migrar cada Módulo:**
+  - [X] Por cada archivo `.js` en `__nuxt2/store/`, crea un archivo correspondiente en `stores/` del nuevo proyecto.
+  - [X] Adapta la sintaxis de Vuex (`state`, `mutations`, `actions`, `getters`) a Pinia (`defineStore`, `state`, `actions`, `getters`), usando Composition API y `$fetch` para llamadas API (ver ejemplo en plan anterior).
+    - [X] `stores/series.js`
+    - [X] `stores/episodes.js`
+    - [X] `stores/genres.js`
+    - [X] `stores/studios.js`
+    - [X] `stores/favorite.js`
+    - [X] `stores/language.js`
+    - [X] `stores/players.js`
+    - [X] `stores/rrss.js`
+    - [X] `stores/serietypes.js`
+    - [X] `stores/statuses.js`
+    - [X] `stores/user.js`
+- [X] **Refactorizar Uso:** A medida que migres componentes y páginas, actualiza cómo acceden al store (usando `useUserStore()`, etc.).
 
 ## 5. Migración de Layouts (`layouts/`)
 
-- [ ] **Crear Carpeta `layouts/`:**
-  - [ ] Crea la carpeta `layouts/` en el nuevo proyecto.
-- [ ] **Migrar Layouts:**
-  - [ ] Copia los archivos de layout (ej. `default.vue`, `panel.vue`) desde `__nuxt2/layouts/` al nuevo `layouts/`.
-  - [ ] Edita cada layout copiado: reemplaza `<Nuxt />` por `<slot />`.
-  - [ ] Adapta cualquier lógica dentro de los layouts a `<script setup>` y Composition API si es necesario.
+- [X] **Crear Carpeta `layouts/`:**
+  - [X] Crea la carpeta `layouts/` en el nuevo proyecto.
+- [X] **Migrar Layouts:**
+  - [X] Copia los archivos de layout (ej. `default.vue`, `panel.vue`) desde `__nuxt2/layouts/` al nuevo `layouts/`.
+  - [X] Edita cada layout copiado: reemplaza `<Nuxt />` por `<slot />`.
+  - [X] Adapta cualquier lógica dentro de los layouts a `<script setup>` y Composition API si es necesario.
 
 ## 6. Migración de Componentes (`components/`)
 
