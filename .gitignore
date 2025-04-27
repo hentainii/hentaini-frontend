@@ -94,3 +94,8 @@ static/img/ads2/*
 yarn.lock
 
 .github/*
+
+static/img/ads/*
+static/img/ads2/*
+
+__nuxt2/*
