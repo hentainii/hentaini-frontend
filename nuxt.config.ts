@@ -39,7 +39,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxtjs/i18n',
     'nuxt-gtag',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@nuxt/eslint'
   ],
   i18n: {
     lazy: true,
