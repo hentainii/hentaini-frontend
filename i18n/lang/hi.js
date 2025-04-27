@@ -1,0 +1,104 @@
+// Hindi Translation (hi-IN.js)
+export default {
+  landpage: {
+    latest_episodes_little: 'हाल के हेंटाई एपिसोड खोजें',
+    latest_episodes: 'हाल के एपिसोड',
+    latest_series_little: 'हाल के हेंटाई श्रृंखलाएँ खोजें',
+    latest_series: 'हाल की हेंटाई',
+    updated_text: 'अपडेट किया गया ',
+    watch_now: 'अभी देखें',
+    featured: 'विशेषताएँ'
+  },
+  favorites: {
+    title: 'मेरे पसंदीदा',
+    subtitle: 'आप यहाँ अपने पसंदीदा हेंटाई सहेज सकते हैं।',
+    no_favorites: 'अभी कोई पसंदीदा नहीं',
+    add: 'पसंदीदा में जोड़ें',
+    remove: 'पसंदीदा से निकालें'
+  },
+  watch_later: {
+    title: 'बाद में देखने के लिए',
+    subtitle: 'आप यहाँ हेंटाई को बाद में देखने के लिए सहेज सकते हैं।',
+    no_watch_later: 'अभी तक कोई हेंटाई बाद में देखने के लिए नहीं',
+    add: 'बाद में देखने के लिए जोड़ें',
+    remove: 'बाद में देखने के लिए हटाएं'
+  },
+  menu: {
+    explore: 'अन्वेषण करें',
+    airing: 'प्रसारण',
+    suggestions: 'सुझाव',
+    rrss: 'हमसे जुड़ें',
+    search_bar_text: 'हेंटाई खोजें',
+    change_language: 'भाषा बदलें',
+    user_profile: 'प्रोफ़ाइल',
+    admin_panel_button: 'व्यवस्थापक पैनल',
+    logout_text: 'लॉगआउट',
+    login_register_nav: 'लॉगिन या पंजीकरण'
+  },
+  mobile: {
+    home: 'घर',
+    airing: 'प्रसारण',
+    suggestions: 'मेरी सूची'
+  },
+  episode: {
+    episode_number: 'एपिसोड',
+    download_text: 'एपिसोड डाउनलोड करें',
+    add_favorite: 'पसंदीदा में जोड़ें',
+    show_episodes: 'एपिसोड दिखाएँ',
+    comments_section_header: 'टिप्पणियाँ',
+    new_badge: 'नया',
+    uncensored: 'सेंसर नहीं',
+    watch_later: 'बाद में देखने के लिए जोड़ें',
+    report: {
+      title: 'इस एपिसोड की समस्या की रिपोर्ट करें',
+      reasons: {
+        a: 'टूटे प्लेयर',
+        b: 'कोई सबटाइटल नहीं',
+        c: 'ऑडियो की गुणवत्ता खराब'
+      },
+      details: 'अतिरिक्त विवरण',
+      submit: 'रिपोर्ट भेजें',
+      info: 'यदि कोई और इसी कारण से एपिसोड की रिपोर्ट कर चुका है, तो आपकी रिपोर्ट को नजरअंदाज किया जा सकता है।',
+      success: 'रिपोर्ट सफलतापूर्वक भेजी गई',
+      error: 'रिपोर्ट भेजते समय एक त्रुटि हुई',
+      already_reported: 'किसी ने पह चुका है कि इस एपिसोड की रिपोर्ट की है उसी कारण से'
+    },
+    previous: 'पिछला एपिसोड',
+    next: 'अगला एपिसोड',
+    list: 'एपिसोड सूची',
+    download: 'एपिसोड डाउनलोड करें',
+    comments: 'टिप्पणियाँ',
+    genres: 'शैलियाँ',
+    serie_info: 'श्रृंखला की जानकारी',
+    close: 'बंद करें'
+  },
+  serie: {
+    synopsis: 'संक्षेप: ',
+    genres: 'श्रेणियाँ ',
+    loginToSave: 'सहेजें',
+    noEpísodes: 'अभी कोई एपिसोड नहीं',
+    similar_series: 'समान श्रृंखला'
+  },
+  explore: {
+    title: 'हमारी सूची का अन्वेषण करें।',
+    subtitle: 'आप इस पेज पर सर्वश्रेष्ठ हेंताई ढूंढ सकते हैं।',
+    on_genre_title_part_1: 'गर्लफ्रेंड नहीं है? कोई बात नहीं। हमारी',
+    on_genre_title_part_2: 'सूची का अन्वेषण करें',
+    on_genre_suntitle_part_1: 'आप सर्वश्रेष्ठ',
+    on_genre_suntitle_part_2: 'हेंताई यहाँ ढूंढ सकते हैं।',
+    filter: {
+      title: 'फ़िल्टर',
+      airing: 'प्रसारण में',
+      finalized: 'समाप्त',
+      censorship: 'बिना सेंसर'
+    },
+    order_by: {
+      title: 'क्रमबद्ध करें',
+      most_views: 'सबसे अधिक देखा गया',
+      low_views: 'नवीनतम'
+    },
+    genres: 'हेंताई श्रेणियाँ',
+    no_results: 'कोई श्रृंखला नहीं मिली',
+    reset_filters: 'फ़िल्टर रीसेट करें'
+  }
+}

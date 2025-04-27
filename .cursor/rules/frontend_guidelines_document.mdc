@@ -6,7 +6,7 @@ alwaysApply: true
 Actualiza esta regla si el usuario lo solicita.
 # Documento de normas para el Frontend
 
-Este documento indica la arquitectura del frontend, los principios de diseño y las tecnologias que usaremos en Cuevana Movies. Apuntamos a asegurar que cada desarrollador, diseñador o accionista pueda entender el setup y el approach inicial, incluso sin un trasfondo tecnico.
+Este documento indica la arquitectura del frontend, los principios de diseño y las tecnologias que usaremos en Hentaini. Apuntamos a asegurar que cada desarrollador, diseñador o accionista pueda entender el setup y el approach inicial, incluso sin un trasfondo tecnico.
 
 ## Frontend Architecture
 

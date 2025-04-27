@@ -51,16 +51,16 @@ Utiliza este checklist para iterar paso a paso sobre la migración. Cada paso im
 
 ## 2. Configuración Fundamental (`nuxt.config.ts`, `.env`)
 
-- [ ] **Crear `.env`:**
-  - [ ] Crea un archivo `.env` en la raíz del nuevo proyecto.
-  - [ ] Copia las variables de entorno necesarias desde el `.env` (o configuración similar) del proyecto `__nuxt2`. Asegúrate de seguir la convención de Nuxt 3 (`NUXT_PUBLIC_` para variables públicas).
+- [X] **Crear `.env`:**
+  - [X] Crea un archivo `.env` en la raíz del nuevo proyecto.
+  - [X] Copia las variables de entorno necesarias desde el `.env` (o configuración similar) del proyecto `__nuxt2`. Asegúrate de seguir la convención de Nuxt 3 (`NUXT_PUBLIC_` para variables públicas).
     - `NUXT_PUBLIC_STRAPI_ENDPOINT=...`
     - `NUXT_PUBLIC_STRAPI_CDN=...`
     - `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=...` (si usas gtag)
     - `NUXT_PUBLIC_DISQUS_SHORTNAME=...` (si usas Disqus)
 - [ ] **Configurar `nuxt.config.ts`:**
-  - [ ] Abre el `nuxt.config.ts` del nuevo proyecto.
-  - [ ] Define la configuración básica (SSR, devtools).
+  - [X] Abre el `nuxt.config.ts` del nuevo proyecto.
+  - [X] Define la configuración básica (SSR, devtools).
   - [ ] **`runtimeConfig`**: Configura las variables de entorno copiadas del `.env`.
   - [ ] **`app.head`**: Copia y adapta la configuración global de `head` (título, metas base, links) desde `__nuxt2/nuxt.config.js`.
   - [ ] **`css`**: Añade la ruta a tu archivo CSS global principal (ej. `~/assets/css/main.css`). Tendrás que copiar este archivo desde `__nuxt2/assets/css/` a `assets/css/` en el nuevo proyecto más adelante.
