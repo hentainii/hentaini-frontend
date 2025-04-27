@@ -1,0 +1,209 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+---
+
+## 1. Preparativos Iniciales y Nuevo Proyecto
+
+- [X] **Preparar Proyecto Nuxt 2:**
+  - [X] Actualizar Nuxt 2 a la última versión (`^2.17.3` o superior) en el proyecto original.
+  - [X] Hacer backup completo del proyecto original (ej. `git commit -a "Pre-Nuxt3 Migration Backup"`).
+  - [X] Crear una copia del proyecto original en una subcarpeta, por ejemplo `__nuxt2`. Esta será tu referencia.
+    ```bash
+    # Estando fuera de la carpeta del proyecto
+    cp -r tu-proyecto-nuxt2 __nuxt2
+    ```
+- [X] **Crear Nuevo Proyecto Nuxt 3:**
+  - [X] Inicializar un nuevo proyecto Nuxt 3 en la ubicación deseada (puedes usar el nombre original del proyecto).
+    ```bash
+    npx nuxi@latest init tu-proyecto-nuxt3
+    cd tu-proyecto-nuxt3
+    ```
+  - [X] Instalar dependencias iniciales.
+    ```bash
+    npm install # o yarn install / pnpm install
+    ```
+  - [X] Iniciar el servidor de desarrollo para confirmar que el proyecto base funciona.
+    ```bash
+    npm run dev
+    ```
+- [X] **Revisar Dependencias:**
+  - [X] Compara el `package.json` de `__nuxt2` con el del nuevo proyecto.
+  - [X] Identifica dependencias clave de Nuxt 2 (módulos Nuxt, librerías UI, etc.) que necesitarás en Nuxt 3.
+  - [X] Busca versiones compatibles con Nuxt 3/Vue 3 para esas dependencias e instálalas en el nuevo proyecto.
+    - *Ejemplo:* Para Pinia: `npm install pinia @pinia/nuxt`
+    - *Ejemplo:* Para Tailwind: `npm install -D @nuxtjs/tailwindcss`
+    - *Ejemplo:* Para Nuxt Image: `npm install @nuxt/image` (o la versión edge si es necesaria)
+    - *Ejemplo:* Para i18n: `npm install -D @nuxtjs/i18n@next` (verifica la versión recomendada)
+  - [X] Elimina dependencias obsoletas de Nuxt 2 (ej. `@nuxtjs/axios`, `@nuxtjs/auth-next`, `vuex`).
+
+## 2. Configuración Fundamental (`nuxt.config.ts`, `.env`)
+
+- [X] **Crear `.env`:**
+  - [X] Crea un archivo `.env` en la raíz del nuevo proyecto.
+  - [X] Copia las variables de entorno necesarias desde el `.env` (o configuración similar) del proyecto `__nuxt2`. Asegúrate de seguir la convención de Nuxt 3 (`NUXT_PUBLIC_` para variables públicas).
+    - `NUXT_PUBLIC_STRAPI_ENDPOINT=...`
+    - `NUXT_PUBLIC_STRAPI_CDN=...`
+    - `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=...` (si usas gtag)
+    - `NUXT_PUBLIC_DISQUS_SHORTNAME=...` (si usas Disqus)
+- [X] **Configurar `nuxt.config.ts`:**
+  - [X] Abre el `nuxt.config.ts` del nuevo proyecto.
+  - [X] Define la configuración básica (SSR, devtools).
+  - [X] **`runtimeConfig`**: Configura las variables de entorno copiadas del `.env`.
+  - [X] **`app.head`**: Copia y adapta la configuración global de `head` (título, metas base, links) desde `__nuxt2/nuxt.config.js`.
+  - [X] **`css`**: Añade la ruta a tu archivo CSS global principal (ej. `~/assets/css/main.css`). Tendrás que copiar este archivo desde `__nuxt2/assets/css/` a `assets/css/` en el nuevo proyecto más adelante.
+  - [X] **`modules`**: Añade los módulos Nuxt 3 que instalaste (ej. `@nuxtjs/tailwindcss`, `@pinia/nuxt`, `@nuxt/image`, `@nuxtjs/i18n`).
+  - [X] **Configuración de Módulos**: Añade las secciones de configuración para cada módulo (Tailwind, Pinia, Image, i18n), adaptando desde `__nuxt2/nuxt.config.js`.
+
+## 3. Estructura Base y Archivos Clave (`app.vue`, `error.vue`, `assets`, `public`)
+
+- [X] **Copiar `assets/`:**
+  - [X] Copia el contenido relevante de `__nuxt2/assets/` (CSS, fuentes, etc.) a la carpeta `assets/` del nuevo proyecto.
+- [X] **Crear y Copiar `public/`:**
+  - [X] Crea la carpeta `public/` en la raíz del nuevo proyecto.
+  - [X] Copia el contenido de `__nuxt2/static/` a la carpeta `public/` del nuevo proyecto (favicons, robots.txt, imágenes estáticas si las hay).
+- [X] **Configurar `app.vue`:**
+  - [X] Edita `app.vue` en la raíz del nuevo proyecto. Define la estructura base con `<NuxtLayout>` y `<NuxtPage>`.
+    ```vue
+    <template>
+      <div>
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
+      </div>
+    </template>
+    ```
+- [X] **Crear `error.vue`:**
+  - [X] Crea `error.vue` en la raíz del nuevo proyecto.
+  - [X] Copia y adapta la lógica/plantilla de `__nuxt2/layouts/error.vue` a la sintaxis de Nuxt 3 (recibe `error` como prop, usa `<script setup>`).
+
+## 4. Migración del Store (Vuex a Pinia)
+
+- [X] **Crear Carpeta `stores/`:**
+  - [X] Crea la carpeta `stores/` en la raíz del nuevo proyecto.
+- [X] **Migrar cada Módulo:**
+  - [X] Por cada archivo `.js` en `__nuxt2/store/`, crea un archivo correspondiente en `stores/` del nuevo proyecto.
+  - [X] Adapta la sintaxis de Vuex (`state`, `mutations`, `actions`, `getters`) a Pinia (`defineStore`, `state`, `actions`, `getters`), usando Composition API y `$fetch` para llamadas API (ver ejemplo en plan anterior).
+    - [X] `stores/series.js`
+    - [X] `stores/episodes.js`
+    - [X] `stores/genres.js`
+    - [X] `stores/studios.js`
+    - [X] `stores/favorite.js`
+    - [X] `stores/language.js`
+    - [X] `stores/players.js`
+    - [X] `stores/rrss.js`
+    - [X] `stores/serietypes.js`
+    - [X] `stores/statuses.js`
+    - [X] `stores/user.js`
+- [X] **Refactorizar Uso:** A medida que migres componentes y páginas, actualiza cómo acceden al store (usando `useUserStore()`, etc.).
+
+## 5. Migración de Layouts (`layouts/`)
+
+- [X] **Crear Carpeta `layouts/`:**
+  - [X] Crea la carpeta `layouts/` en el nuevo proyecto.
+- [X] **Migrar Layouts:**
+  - [X] Copia los archivos de layout (ej. `default.vue`, `panel.vue`) desde `__nuxt2/layouts/` al nuevo `layouts/`.
+  - [X] Edita cada layout copiado: reemplaza `<Nuxt />` por `<slot />`.
+  - [X] Adapta cualquier lógica dentro de los layouts a `<script setup>` y Composition API si es necesario.
+
+## 6. Migración de Componentes (`components/`)
+
+- [X] **Crear Carpeta `components/`:**
+  - [X] Crea la carpeta `components/` en el nuevo proyecto.
+- [ ] **Migrar Componentes Gradualmente:**
+  - [ ] Empieza por los componentes más simples o base.
+  - [ ] Copia un componente (ej. `SerieCard.vue`) de `__nuxt2/components/` a `components/` en el nuevo proyecto.
+  - [ ] **Refactorizar a `<script setup>`:**
+    - Convierte Options API (`data`, `props`, `methods`, `computed`, lifecycle hooks) a Composition API (`ref`, `defineProps`, `defineEmits`, funciones, `computed`, `onMounted`, etc.).
+    - Actualiza el acceso al store (usar Pinia stores).
+    - Actualiza el uso de `$route` / `$router` a `useRoute()` / `useRouter()` / `navigateTo()`.
+    - Reemplaza el uso de librerías/plugins de Nuxt 2 con sus equivalentes de Nuxt 3 (ej. llamadas API con `$fetch`, manejo de imágenes con `<NuxtImg>`).
+    - Elimina imports manuales de otros componentes (Nuxt 3 auto-importa).
+  - [ ] Prueba el componente migrado (puedes crear una página temporal para probarlo aisladamente).
+  - [ ] Repite el proceso para todos los componentes, manejando las dependencias entre ellos.
+    - [ ] Componentes UI (Card, Button, etc.)
+    - [ ] Componentes de Layout (Header, Footer, MobileHeader)
+    - [ ] Componentes complejos (Explore, Forms, Lists, Carousel)
+    - [ ] Componentes específicos (VideoElement, StudioAutocomplete)
+
+## 7. Migración de Páginas (`pages/`)
+
+- [ ] **Crear Carpeta `pages/`:**
+  - [ ] Crea la carpeta `pages/` en el nuevo proyecto.
+- [ ] **Migrar Páginas Gradualmente:**
+  - [ ] Empieza por las páginas más simples (ej. `index.vue`, `home.vue`).
+  - [ ] Copia una página de `__nuxt2/pages/` a `pages/` en el nuevo proyecto.
+  - [ ] **Renombrar Rutas Dinámicas:** Si copias páginas como `_episode/index.vue`, renómbralas a `[episode]/index.vue` en la estructura de carpetas del nuevo proyecto.
+  - [ ] **Refactorizar a `<script setup>`:**
+    - Convierte toda la lógica de Options API a Composition API.
+    - Reemplaza `asyncData`/`fetch` por `useAsyncData`/`useFetch`.
+    - Reemplaza `head()` por `useHead()`.
+    - Actualiza el acceso al store (Pinia).
+    - Actualiza el uso de middleware usando `definePageMeta({ middleware: [...] })`.
+    - Asigna layouts usando `definePageMeta({ layout: '...' })`.
+    - Reemplaza `<NuxtChild />` por `<NuxtPage />` si usas rutas anidadas.
+    - Asegúrate de que los componentes usados en la plantilla sean los ya migrados a Nuxt 3.
+  - [ ] Prueba la página migrada.
+  - [ ] Repite para todas las páginas y subcarpetas (`panel/`, `h/`, `genres/`, `explore/`).
+
+## 8. Migración de Middleware (`middleware/`)
+
+- [ ] **Crear Carpeta `middleware/`:**
+  - [ ] Crea la carpeta `middleware/` en el nuevo proyecto.
+- [ ] **Migrar Middleware:**
+  - [ ] Copia los archivos de middleware (ej. `authenticated.js`) desde `__nuxt2/middleware/` al nuevo `middleware/`.
+  - [ ] Adapta la sintaxis usando `defineNuxtRouteMiddleware((to, from) => { ... })`.
+  - [ ] Accede al estado/contexto usando composables (Pinia stores, `useRuntimeConfig`).
+  - [ ] Renombra a `.global.js` si el middleware debe ejecutarse globalmente (como el de autenticación combinado).
+  - [ ] Asegúrate de que el middleware se aplique correctamente (globalmente o vía `definePageMeta` en las páginas).
+
+## 9. Migración de Plugins (`plugins/`)
+
+- [ ] **Crear Carpeta `plugins/`:**
+  - [ ] Crea la carpeta `plugins/` en el nuevo proyecto.
+- [ ] **Migrar Plugins:**
+  - [ ] Copia los archivos de plugins (ej. `disqus.js`, `gtag.js`) desde `__nuxt2/plugins/` al nuevo `plugins/`.
+  - [ ] Adapta la sintaxis usando `defineNuxtPlugin((nuxtApp) => { ... })`.
+  - [ ] Usa sufijos `.client.js` o `.server.js` si necesitan ejecución específica.
+  - [ ] Revisa la compatibilidad de las librerías de terceros que inicializan (Disqus, GTag) y usa versiones/métodos compatibles con Vue 3/Nuxt 3.
+  - [ ] Instala las dependencias necesarias para los plugins (ej. `vue-gtag-next`).
+  - [ ] Recuerda que los plugins se auto-registran, no necesitas listarlos en `nuxt.config`.
+
+## 10. Migración de Internacionalización (`lang/`, `i18n`)
+
+- [ ] **Crear Carpeta `lang/` (o como la llame el módulo i18n de Nuxt 3):**
+  - [ ] Verifica la estructura esperada por `@nuxtjs/i18n@next`.
+  - [ ] Crea la carpeta necesaria en el nuevo proyecto.
+- [ ] **Copiar Archivos de Idioma:**
+  - [ ] Copia los archivos (`en.js`, `es.js`, etc.) desde `__nuxt2/lang/` a la nueva carpeta.
+  - [ ] Revisa si el formato de los archivos necesita ajustes para la nueva versión del módulo.
+- [ ] **Configurar Módulo i18n:**
+  - [ ] Configura `@nuxtjs/i18n` en `nuxt.config.ts` con las opciones adecuadas (locales, defaultLocale, archivos, etc.).
+- [ ] **Revisar Uso:**
+  - [ ] Busca usos de `$t`, `localePath`, etc., en el código migrado y asegúrate de que funcionen con la nueva versión.
+
+## 11. Pruebas Finales y Limpieza
+
+- [ ] **Pruebas Exhaustivas:**
+  - [ ] Ejecuta `npm run dev` y navega por toda la aplicación.
+  - [ ] Prueba todas las funcionalidades: búsqueda, filtros, login/logout, panel admin, favoritos, watchlater, reproducción de video, Disqus, GTag (con herramientas de desarrollador).
+  - [ ] Revisa errores en la consola del navegador y del servidor (terminal).
+  - [ ] Usa Nuxt DevTools para inspeccionar componentes, estado, llamadas API, etc.
+  - [ ] Prueba en diferentes navegadores y dispositivos móviles.
+  - [ ] Revisa el rendimiento (Lighthouse).
+- [ ] **Limpieza:**
+  - [ ] Revisa `package.json` y elimina dependencias que finalmente no se usaron.
+  - [ ] Elimina código comentado o archivos de prueba temporales.
+  - [ ] Considera eliminar la carpeta `__nuxt2` una vez que estés seguro de que la migración está completa y estable.
+- [ ] **Build de Producción:**
+  - [ ] Ejecuta `npm run build` y `npm run start` (o `npm run preview`) para probar el build de producción.
+
+--- 
+
+
+
+
+(Las secciones de ejemplo de código detallado de los pasos anteriores se omiten aquí para brevedad, pero puedes consultarlas en la versión anterior del plan si necesitas referencias específicas durante la migración de cada parte).

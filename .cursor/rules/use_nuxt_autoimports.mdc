@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+* No uses imports de las funciones de Nuxt 3 como "ref", "computed", "onMounted" al inicio del setup ya que Nuxt3 tiene los autoimports y no es necesario
+
+* Tampoco es necesario importar plugins, componentes, composables o demas elementos del funcionamiento nativo de Nuxt3 ya que los autoimports estan activados
