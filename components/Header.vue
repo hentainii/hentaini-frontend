@@ -48,27 +48,6 @@
               </v-btn>
             </nuxt-link>
           </li>
-          <li v-if="rrss" class="mr-2">
-            <v-tooltip
-              v-for="rs in rrss"
-              :key="rs.name"
-              bottom
-            >
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  large
-                  :href="rs.url"
-                  target="_blank"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon>mdi-{{ rs.name.toLowerCase() }}</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('menu.rrss') }} {{ rs.name }}</span>
-            </v-tooltip>
-          </li>
           <li class="mr-2">
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
@@ -267,20 +246,9 @@ export default {
   computed: {
     availableLocales () {
       return this.$i18n.locales.filter(i => i.code !== this.$i18n.locale)
-    },
-    rrss () {
-      return this.$store.state.rrss.rrss
     }
   },
-  mounted () {
-    // this.getRrss()
-  },
   methods: {
-    async getRrss () {
-      await this.$store.dispatch('rrss/getRrss', {
-        token: this.$store.state.auth.token
-      })
-    },
     logout () {
       Cookie.remove('auth')
       this.$store.commit('setAuth', null)
