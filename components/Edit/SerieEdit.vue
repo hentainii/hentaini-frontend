@@ -49,6 +49,7 @@
             :return-object="true"
           />
           <StudioAutocomplete v-model="serieData.studio" class="mb-3" />
+          <ProducerAutocomplete v-model="serieData.producer" class="mb-3" />
           <v-row>
             <v-col cols="6">
               <v-select
@@ -170,8 +171,15 @@
 </template>
 
 <script>
+import StudioAutocomplete from '../StudioAutocomplete.vue'
+import ProducerAutocomplete from '../ProducerAutocomplete.vue'
+
 export default {
   name: 'EditSerie',
+  components: {
+    StudioAutocomplete,
+    ProducerAutocomplete
+  },
   data: () => ({
     serieData: null,
     cover: {}, // objeto para la imagen cover seleccionada
@@ -206,7 +214,7 @@ export default {
       await this.$store.dispatch('series/getSerie', {
         serieId: this.$route.params.id,
         populate: [
-          'genreList', 'status', 'language', 'serie_type', 'images', 'images.image_type', 'studio'
+          'genreList', 'status', 'language', 'serie_type', 'images', 'images.image_type', 'studio', 'producer'
         ]
       })
       const serie = { ...this.$store.state.series.currentSerie }

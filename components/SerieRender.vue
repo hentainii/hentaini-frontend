@@ -132,10 +132,16 @@
               {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
-          <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2">
+          <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2 mt-4">
             <span style="color:#b9b9b9;">
               Studio:
               {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
+            </span>
+          </v-row>
+          <v-row v-if="serie.producer && (serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name))" class="px-4 pb-2">
+            <span style="color:#b9b9b9;">
+              Producer:
+              {{ serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name) }}
             </span>
           </v-row>
           <v-row v-if="serie.episodes.length > 0" class="mt-10 mb-5">
@@ -217,7 +223,8 @@ export default {
           'status',
           'episodes',
           'genreList',
-          'studio'
+          'studio',
+          'producer'
         ]
       },
       {

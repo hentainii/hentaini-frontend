@@ -49,6 +49,7 @@
             :return-object="false"
           />
           <StudioAutocomplete v-model="serie.studio" class="mb-3" />
+          <ProducerAutocomplete v-model="serie.producer" class="mb-3" />
           <v-row>
             <v-col cols="6">
               <v-select
@@ -170,8 +171,15 @@
 </template>
 
 <script>
+import StudioAutocomplete from '../StudioAutocomplete.vue'
+import ProducerAutocomplete from '../ProducerAutocomplete.vue'
+
 export default {
   name: 'CreateSerie',
+  components: {
+    StudioAutocomplete,
+    ProducerAutocomplete
+  },
   data: () => ({
     serie: {
       title: '',
@@ -187,7 +195,8 @@ export default {
       status: null,
       language: 1,
       serie_type: 1,
-      studio: null
+      studio: null,
+      producer: null
     },
     cover: [],
     background_cover: [],
@@ -201,7 +210,9 @@ export default {
     alertType: '',
     isSubmitting: false,
     studioSearch: '',
-    studioToCreate: null
+    studioToCreate: null,
+    producerSearch: '',
+    producerToCreate: null
   }),
   computed: {
     genreList () {
@@ -235,6 +246,23 @@ export default {
         })
       }
       return options
+    },
+    producerList () {
+      return this.$store.state.producers.producerList || this.$store.state.producers.producers || []
+    },
+    producerOptions () {
+      const input = this.producerSearch && this.producerSearch.trim()
+      const exists = this.producerList.some(
+        s => s.name.toLowerCase() === input?.toLowerCase()
+      )
+      const options = [...this.producerList]
+      if (input && !exists) {
+        options.unshift({
+          id: '__create__',
+          name: `Crear nueva productora: "${input}"`
+        })
+      }
+      return options
     }
   },
   mounted () {
@@ -243,6 +271,7 @@ export default {
     this.getLanguageList()
     this.getStatuses()
     this.getStudios()
+    this.getProducers()
     this.serie.h_id = Math.floor(Math.random() * (666666 - 333333) + 333333).toString()
   },
   methods: {
@@ -270,9 +299,16 @@ export default {
       if (this.studioToCreate && !this.studioList.some(s => s.name.toLowerCase() === this.studioToCreate.toLowerCase())) {
         await this.createStudio(this.studioToCreate)
       }
+      if (this.producerToCreate && !this.producerList.some(s => s.name.toLowerCase() === this.producerToCreate.toLowerCase())) {
+        await this.createProducer(this.producerToCreate)
+      }
       let studioId = this.serie.studio
+      let producerId = this.serie.producer
       if (typeof studioId === 'object' && studioId !== null && studioId.id) {
         studioId = studioId.id
+      }
+      if (typeof producerId === 'object' && producerId !== null && producerId.id) {
+        producerId = producerId.id
       }
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}series`, {
         method: 'POST',
@@ -284,6 +320,7 @@ export default {
           data: {
             ...this.serie,
             studio: studioId || null,
+            producer: producerId || null,
             url: this.hiphenated_name
           }
         })
@@ -375,6 +412,11 @@ export default {
         token: this.$store.state.auth.token
       })
     },
+    async getProducers () {
+      await this.$store.dispatch('producers/getProducers', {
+        token: this.$store.state.auth.token
+      })
+    },
     removeNoUTFCharacters (str) {
       let output = ''
       for (let i = 0; i < str.length; i++) {
@@ -427,6 +469,19 @@ export default {
       const created = this.studioList.find(s => s.name.toLowerCase() === studioName.toLowerCase())
       if (created) {
         this.serie.studio = created.id
+      }
+      this.isSubmitting = false
+    },
+    async createProducer (producerName) {
+      this.isSubmitting = true
+      await this.$store.dispatch('producers/createProducer', {
+        token: this.$store.state.auth.token,
+        producer: { name: producerName }
+      })
+      await this.getProducers()
+      const created = this.producerList.find(s => s.name.toLowerCase() === producerName.toLowerCase())
+      if (created) {
+        this.serie.producer = created.id
       }
       this.isSubmitting = false
     }
