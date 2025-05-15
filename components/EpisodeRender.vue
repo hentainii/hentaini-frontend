@@ -28,7 +28,9 @@
                   class="play-button elevation-8"
                   @click="showVideo = true"
                 >
-                  <v-icon size="48">mdi-play</v-icon>
+                  <v-icon size="48">
+                    mdi-play
+                  </v-icon>
                 </v-btn>
               </div>
             </v-img>
@@ -177,7 +179,9 @@
                 text
                 class="px-3"
               >
-                <v-icon left>mdi-arrow-left</v-icon>
+                <v-icon left>
+                  mdi-arrow-left
+                </v-icon>
               </v-btn>
               <v-btn
                 :to="localePath(`/h/${episode.serie.url}`)"
@@ -195,7 +199,9 @@
                 text
                 class="px-3"
               >
-                <v-icon right>mdi-arrow-right</v-icon>
+                <v-icon right>
+                  mdi-arrow-right
+                </v-icon>
               </v-btn>
             </v-btn-toggle>
           </v-col>
@@ -214,7 +220,9 @@
         <!-- Series Similares -->
         <v-card class="mb-4 rounded-lg elevation-3">
           <v-card-title class="primary--text">
-            <v-icon left color="primary">mdi-video-vintage</v-icon>
+            <v-icon left color="primary">
+              mdi-video-vintage
+            </v-icon>
             {{ $t('serie.similar_series') }}
           </v-card-title>
           <v-card-text class="pt-1">
@@ -248,7 +256,9 @@
         <!-- Información de la serie -->
         <v-card class="rounded-lg mb-4 elevation-3">
           <v-card-title class="primary--text">
-            <v-icon left color="primary">mdi-information</v-icon>
+            <v-icon left color="primary">
+              mdi-information
+            </v-icon>
             {{ $t('episode.serie_info') }}
           </v-card-title>
 
@@ -283,7 +293,9 @@
         <v-card class="rounded-lg mb-4 elevation-3">
           <v-card-title class="d-flex justify-space-between align-center primary--text">
             <div>
-              <v-icon left color="primary">mdi-format-list-numbered</v-icon>
+              <v-icon left color="primary">
+                mdi-format-list-numbered
+              </v-icon>
               {{ $t('episode.show_episodes') }}
             </div>
             <v-btn
@@ -486,7 +498,7 @@ export default {
       return this.favorites.some(favorite => favorite.url === this.episode.serie.url)
     },
     filteredPlayers () {
-      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C')
+      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA')
     },
     isInWatchLater () {
       return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
