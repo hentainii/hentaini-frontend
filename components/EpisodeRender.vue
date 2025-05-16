@@ -498,7 +498,7 @@ export default {
       return this.favorites.some(favorite => favorite.url === this.episode.serie.url)
     },
     filteredPlayers () {
-      return this.episode.players.filter(player => player.active)
+      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA')
     },
     isInWatchLater () {
       return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
