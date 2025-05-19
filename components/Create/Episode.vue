@@ -383,13 +383,12 @@ export default {
     },
     playerListModel () {
       this.episode.players = [
-        { name: 'Cloud', url: '' },
         { name: 'Yourupload', url: '' },
-        { name: 'Stream2', url: '' },
-        { name: 'mp4uplo', url: '' },
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' },
-        { name: 'TERA', url: '' }
+        { name: 'HNI', url: '' },
+        { name: 'Stream2', url: '' },
+        { name: 'mp4uplo', url: '' }
       ]
     },
     async uploadImageToStrapi (imageBlob, imageName, imageType, episodeNumber, createdEpisodeId) {
