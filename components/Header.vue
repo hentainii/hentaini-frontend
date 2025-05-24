@@ -58,7 +58,7 @@
               <v-btn
                 icon
                 large
-                href="https://discord.gg/vehUU6c22e"
+                href="https://discord.gg/PPkkEuRfyz"
                 target="_blank"
                 v-bind="attrs"
                 v-on="on"
