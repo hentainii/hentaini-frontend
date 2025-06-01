@@ -1,0 +1,314 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Plan de Migración del Sistema Uploader de PHP a Nuxt.js
+
+## Objetivo
+Migrar el sistema de subida de archivos (Uploader) desde PHP a Nuxt.js para integrarlo en la interfaz de creación de episodios (`Episode.vue`). El sistema debe ser capaz de subir videos a múltiples servidores APIs y obtener los códigos de respuesta para poblar automáticamente los campos de players.
+
+## Análisis del Sistema Legacy
+
+### Componentes Identificados:
+1. **Frontend Legacy**: Interfaz en `serie-episode-create.php` (líneas 221-273)
+2. **JavaScript Legacy**: Lógica de upload (líneas 274-614)
+3. **Handlers PHP**: Varios manejadores en `legacy-uploader/uploader/`
+   - `mp4upload-handler.php`
+   - `vhide-handler.php` 
+   - `STREAM2-handler.php`
+   - `yourupload-uploadfile.php` y `yourupload-getfolder.php`
+4. **Sistema de Accounts**: Tabla `accounts` que gestiona credenciales por servicio
+5. **Player Management**: Sistema de players con campos `api_key` y `up_available`
+
+## Estructura de Base de Datos (STRAPI)
+
+### Tabla `players` (existente - a extender):
+- `id` (auto)
+- `name` (string)
+- `short_name` (string) 
+- `player_code` (text)
+- `up_available` (boolean) - **NUEVO** - indica si está disponible para upload
+- `createdAt`, `updatedAt` (auto)
+
+### Tabla `accounts` (nueva):
+- `id` (auto)
+- `service` (string) - nombre del servicio (M, YourUpload, Mp4upload, VHide, STREAM2)
+- `username` (string) - usuario para el servicio
+- `password` (string) - contraseña para el servicio  
+- `email` (string) - email para el servicio
+- `api_key` (string) - clave API del servicio
+- `up_available` (boolean) - si esta cuenta está disponible para usar
+- `player` (relation) - relación con tabla players (many-to-one)
+- `createdAt`, `updatedAt` (auto)
+
+## Plan de Implementación
+
+### Fase 1: Preparación de Base de Datos (STRAPI Backend - Repositorio Separado)
+- [x] **Tarea 1.1**: Analizar estructura actual de tabla `players`
+- [ ] **Tarea 1.2**: Añadir campo `up_available` (boolean) a Content Type `players` 
+- [ ] **Tarea 1.3**: Crear Content Type `accounts` con campos:
+  - `service` (Text)
+  - `username` (Text)  
+  - `password` (Text)
+  - `email` (Email)
+  - `api_key` (Text)
+  - `up_available` (Boolean)
+  - `player` (Relation - Many-to-One con players)
+- [ ] **Tarea 1.4**: Configurar permisos en STRAPI para endpoints de accounts
+
+### Fase 2: Frontend Store Extensions (Nuxt.js)
+- [x] **Tarea 2.1**: Extender `store/players.js` para incluir gestión de accounts
+- [x] **Tarea 2.2**: Crear `store/uploader.js` para gestionar estado de uploads
+- [x] **Tarea 2.3**: Implementar actions en stores para:
+  - [x] Obtener players con accounts (populate accounts)
+  - [x] Gestionar estado de uploads múltiples
+  - [x] Trackear progreso de uploads
+  - [x] Manejar respuestas y errores de uploads
+
+### Fase 3: Upload Handlers (Cliente - JavaScript Modules)
+- [x] **Tarea 3.1**: Crear `composables/uploader/` directory
+- [x] **Tarea 3.2**: Crear handlers de upload para cada servicio:
+  - [x] `mp4upload.js` - usando formularios multipart chunked
+  - [ ] `vhide.js` - usando API keys 
+  - [ ] `stream2.js` - usando API keys
+  - [ ] `yourupload.js` - usando autenticación de sesión
+  - [x] `mega.js` - usando MegaJS library del CDN
+- [x] **Tarea 3.3**: Crear `uploadManager.js` para coordinar uploads múltiples
+- [x] **Tarea 3.4**: Implementar upload por chunks para archivos grandes
+- [x] **Tarea 3.5**: Implementar sistema de retry para uploads fallidos
+
+### Fase 4: Frontend Components
+- [x] **Tarea 4.1**: Actualizar `components/Uploader/Main.vue` con nueva funcionalidad
+- [x] **Tarea 4.2**: Crear componentes adicionales:
+  - [x] `components/Uploader/ProgressCard.vue` - progreso por servicio
+  - [ ] `components/Uploader/FileSelector.vue` - selector con drag&drop
+  - [ ] `components/Uploader/RetryButton.vue` - botón retry por servicio
+- [x] **Tarea 4.3**: Integrar uploader en `components/Create/Episode.vue`
+- [x] **Tarea 4.4**: Añadir sistema de notificaciones para estado de uploads
+
+### Fase 5: Integración y UX
+- [x] **Tarea 5.1**: Integrar uploader con formulario de Episode
+- [x] **Tarea 5.2**: Auto-poblar campos de players con códigos obtenidos
+- [x] **Tarea 5.3**: Implementar validaciones de archivos (tipo, tamaño)
+- [x] **Tarea 5.4**: Añadir preview de video antes de upload (drag & drop implementado)
+- [x] **Tarea 5.5**: Implementar sistema de templates de players (Airing Model, Finished Model - ya existente)
+
+### Fase 6: Testing y Optimización
+- [ ] **Tarea 6.1**: Testing de uploads por chunks
+- [ ] **Tarea 6.2**: Testing de múltiples uploads simultáneos
+- [ ] **Tarea 6.3**: Testing de sistema de retry
+- [ ] **Tarea 6.4**: Optimización de performance
+- [ ] **Tarea 6.5**: Testing de integración con Episode creation
+
+## Estado Actual de Implementación
+
+### ✅ Completado:
+1. **Stores Vuex**: `accounts.js`, `uploader.js` y extensión de `players.js`
+2. **Upload Handlers**: Mega y Mp4upload (con proxies backend)
+3. **Upload Manager**: Coordinación de uploads múltiples con retry logic
+4. **Utilities**: Chunked upload y retry logic con backoff exponencial
+5. **Componentes UI**: `UploaderMain.vue` y `UploaderProgressCard.vue`
+6. **Integración**: Uploader integrado en `Episode.vue` con auto-population
+
+### 🔄 En Progreso/Falta:
+1. **Backend STRAPI**: Configuración de Content Types (repositorio separado)
+2. **Handlers adicionales**: YourUpload, VHide, STREAM2
+3. **Testing completo**: Todas las fases de testing
+4. **Componentes opcionales**: FileSelector y RetryButton específicos
+
+### 📝 Notas de Implementación:
+
+#### Mega Upload:
+- ✅ Implementado con MegaJS desde CDN
+- ✅ Progress tracking real
+- ✅ Manejo de errores robusto
+
+#### Mp4upload:
+- ✅ Implementado con chunked upload
+- ⚠️ Requiere backend proxy debido a CORS
+- ✅ Fallback directo (limitado por CORS)
+
+#### Upload Manager:
+- ✅ Queue system para controlar concurrencia
+- ✅ Priority-based uploading
+- ✅ Retry logic con exponential backoff
+- ✅ Auto-population de episode players
+
+#### UI/UX:
+- ✅ Drag & drop file selection
+- ✅ Real-time progress tracking
+- ✅ Service-specific progress cards
+- ✅ Error handling y retry buttons
+- ✅ Integration con Episode creation flow
+
+## Arquitectura Técnica
+
+### Estructura de Directorios Propuesta:
+```
+store/
+├── uploader.js                  # Estado global del uploader ✅
+├── players.js                   # Extendido con gestión de accounts ✅
+└── accounts.js                  # Gestión específica de accounts ✅
+
+composables/
+└── uploader/
+    ├── uploadManager.js         # Coordinador de uploads múltiples ✅
+    ├── handlers/
+    │   ├── mp4upload.js ✅
+    │   ├── vhide.js ⏳
+    │   ├── stream2.js ⏳
+    │   ├── yourupload.js ⏳
+    │   └── mega.js ✅
+    └── utils/
+        ├── chunkedUpload.js     # Utilidad para uploads por chunks ✅
+        └── retryLogic.js        # Lógica de reintentos ✅
+
+components/
+├── Uploader/
+│   ├── Main.vue                 # Componente principal ✅
+│   ├── ProgressCard.vue         # Card de progreso por servicio ✅
+│   ├── FileSelector.vue         # Selector de archivos con drag&drop ⏳
+│   └── RetryButton.vue          # Botón de retry por servicio ⏳
+```
+
+### Flujo de Datos (STRAPI Integration):
+1. **Carga inicial**: `store/players.js` llama a STRAPI `/players?populate=accounts` ✅
+2. **Selección de archivo**: Usuario selecciona archivo en `Episode.vue` ✅
+3. **Filtrado de servicios**: Se filtran players con `up_available: true` y sus accounts activas ✅
+4. **Upload paralelo**: `uploadManager.js` inicia uploads a servicios disponibles ✅
+5. **Progress tracking**: Cada handler reporta progreso a `store/uploader.js` ✅
+6. **Auto-población**: Códigos obtenidos se insertan en campos de players del episodio ✅
+7. **Retry capability**: Sistema permite reintentar uploads fallidos ✅
+8. **Submit final**: Formulario de Episode listo para envío ✅
+
+### STRAPI API Calls (siguiendo patrón de series.js):
+```javascript
+// store/players.js - extendido ✅
+async getPlayersWithAccounts({ commit }, payload) {
+  const qs = require('qs')
+  const query = qs.stringify({
+    populate: ['accounts'],
+    filters: {
+      up_available: true
+    }
+  }, { encodeValuesOnly: true })
+  
+  await fetch(`${this.$config.API_STRAPI_ENDPOINT}players?${query}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${payload.token}`
+    }
+  })
+  .then(res => res.json())
+  .then((players) => {
+    commit('getPlayersWithAccounts', players)
+  })
+}
+
+// store/accounts.js - nuevo ✅
+async getAvailableAccounts({ commit }, payload) {
+  const qs = require('qs')
+  const query = qs.stringify({
+    populate: ['player'],
+    filters: {
+      up_available: true
+    }
+  }, { encodeValuesOnly: true })
+  
+  await fetch(`${this.$config.API_STRAPI_ENDPOINT}accounts?${query}`, {
+    headers: {
+      'Content-Type': 'application/json', 
+      Authorization: `Bearer ${payload.token}`
+    }
+  })
+  .then(res => res.json())
+  .then((accounts) => {
+    commit('getAvailableAccounts', accounts)
+  })
+}
+```
+
+### Tecnologías a Utilizar:
+- **Frontend**: Vue.js + Vuetify (ya implementado) ✅
+- **Upload Libraries**: Axios para HTTP, FormData para chunks ✅
+- **State Management**: Vuex (ya implementado) ✅
+- **File Handling**: FileReader API, Blob handling ✅
+- **Progress Tracking**: Reactive state con Vuex ✅
+- **External APIs**: 
+  - MegaJS para Mega (CDN import) ✅
+  - Fetch/Axios para resto de servicios ✅
+- **Backend**: STRAPI (repositorio separado) ⏳
+
+## Consideraciones Técnicas
+
+### Chunked Upload:
+- Dividir archivos en chunks de 1MB para mejor handling ✅
+- Implementar resume capability para uploads interrumpidos ⏳
+- Manejar timeout y retry logic por chunk ✅
+
+### Security:
+- Validar tipos de archivo permitidos (.mp4) ✅
+- Límites de tamaño de archivo ✅
+- Sanitización de nombres de archivo ✅
+- Credentials manejadas desde STRAPI backend ⏳
+
+### Performance:
+- Uploads paralelos pero controlados (max 3-5 simultáneos) ✅
+- Progress indicators precisos ✅
+- Gestión de memoria para archivos grandes ✅
+- Lazy loading de libraries pesadas (MegaJS) ✅
+
+### Error Handling:
+- Retry automático con backoff exponencial ✅
+- Logging detallado de errores ✅
+- Fallback a otros servicios si uno falla ✅
+- User-friendly error messages ✅
+- Estado persistente de uploads en progreso ✅
+
+## Timeline Estimado
+- **Fase 1**: 1 día (Backend STRAPI - repositorio separado) ⏳
+- **Fase 2**: 1-2 días (Store extensions) ✅
+- **Fase 3**: 3-4 días (Upload handlers) ✅ (2/5 handlers completados)
+- **Fase 4**: 2-3 días (Frontend components) ✅
+- **Fase 5**: 2 días (Integración UX) ✅
+- **Fase 6**: 1-2 días (Testing) ⏳
+
+**Total**: 10-14 días de desarrollo (**~70% completado**)
+
+## Riesgos y Mitigaciones
+- **Riesgo**: APIs externas pueden cambiar
+  - **Mitigación**: Crear abstracción layer, logging detallado ✅
+- **Riesgo**: Uploads grandes pueden fallar  
+  - **Mitigación**: Sistema de chunks + retry robusto ✅
+- **Riesgo**: Performance issues con múltiples uploads
+  - **Mitigación**: Queue system, límites de concurrencia ✅
+- **Riesgo**: CORS issues con external APIs
+  - **Mitigación**: Proxy patterns o server-side handling ⚠️ (Requerido para Mp4upload, VHide, etc.)
+
+## Próximos Pasos
+
+### Inmediatos:
+1. **Backend STRAPI**: Configurar Content Types en repositorio backend
+2. **Testing**: Probar el flujo completo con Mega uploads
+3. **Handlers restantes**: Implementar YourUpload, VHide, STREAM2
+
+### Mediano plazo:
+1. **Backend proxies**: Implementar proxies para servicios con CORS
+2. **Performance testing**: Validar con archivos de diferentes tamaños
+3. **Error scenarios**: Testing de escenarios de error diversos
+
+## Resultado Esperado
+Un sistema de upload integrado y moderno que permita:
+1. Subida automática a múltiples servicios desde accounts configuradas en STRAPI ✅
+2. Progress tracking en tiempo real por servicio ✅
+3. Auto-population de campos de players en Episode creation ✅
+4. Retry capability para uploads fallidos ✅
+5. UX fluida integrada en el workflow de creación de episodios ✅
+6. Gestión centralizada de accounts y credentials desde panel admin ⏳
+
+
+
+
+
+

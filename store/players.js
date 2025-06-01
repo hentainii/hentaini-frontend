@@ -1,11 +1,19 @@
 export const state = () => {
   return {
-    players: []
+    players: [],
+    playersWithAccounts: [],
+    currentPlayer: null
   }
 }
 export const mutations = {
   getPlayers (state, players) {
     state.players = players.data
+  },
+  getPlayersWithAccounts (state, players) {
+    state.playersWithAccounts = players.data
+  },
+  setCurrentPlayer (state, player) {
+    state.currentPlayer = player
   }
 }
 export const actions = {
@@ -21,8 +29,31 @@ export const actions = {
         commit('getPlayers', players)
       })
   },
+  async getPlayersWithAccounts ({ commit }, payload) {
+    const qs = require('qs')
+    const query = qs.stringify({
+      populate: ['accounts'],
+      filters: {
+        up_available: true
+      },
+      sort: ['name:asc']
+    }, {
+      encodeValuesOnly: true
+    })
+
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}players?${query}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    })
+      .then(res => res.json())
+      .then((players) => {
+        commit('getPlayersWithAccounts', players)
+      })
+  },
   createPlayer ({ commit }, payload) {
-    fetch(`${this.$config.API_STRAPI_ENDPOINT}players`, {
+    return fetch(`${this.$config.API_STRAPI_ENDPOINT}players`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,13 +64,43 @@ export const actions = {
       })
     }).then((response) => {
       if (response.status === 200) {
-        this.$router.push({ path: '/panel/player/create', query: { created: true } })
+        return response.json()
       } else {
         throw new Error('Error creating player')
       }
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
+    })
+  },
+  async editPlayer ({ commit }, payload) {
+    return await fetch(`${this.$config.API_STRAPI_ENDPOINT}players/${payload.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      },
+      body: JSON.stringify({
+        data: payload.player
+      })
+    }).then((response) => {
+      if (response.status === 200) {
+        return response.json()
+      } else {
+        throw new Error('Error editing player')
+      }
+    })
+  },
+  async deletePlayer ({ commit }, payload) {
+    return await fetch(`${this.$config.API_STRAPI_ENDPOINT}players/${payload.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      }
+    }).then((response) => {
+      if (response.status === 200) {
+        return true
+      } else {
+        throw new Error('Error deleting player')
+      }
     })
   }
 }

@@ -227,6 +227,13 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <!-- Uploader Section -->
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <UploaderMain @players-populated="onPlayersPopulated" />
+        </v-col>
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -268,6 +275,7 @@ export default {
   },
   async mounted () {
     await this.getPlayers()
+    await this.getPlayersWithAccounts()
     await this.getSerie()
   },
   methods: {
@@ -329,6 +337,11 @@ export default {
         token: this.$store.state.auth.token
       })
     },
+    async getPlayersWithAccounts () {
+      await this.$store.dispatch('players/getPlayersWithAccounts', {
+        token: this.$store.state.auth.token
+      })
+    },
     createPlayerUrl (player, code, index) {
       const playerFromList = this.players.filter(p => p.name === player)
       if (playerFromList.length) {
@@ -377,6 +390,20 @@ export default {
         { name: 'Stream2', url: '' },
         { name: 'mp4uplo', url: '' }
       ]
+    },
+    onPlayersPopulated (newPlayers) {
+      // Add the populated players to the episode
+      this.episode.players = [...this.episode.players, ...newPlayers]
+
+      // Show success message
+      this.alertBox = true
+      this.alertBoxColor = 'success'
+      this.errorMessage = `Successfully auto-filled ${newPlayers.length} player(s) from uploader results!`
+
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => {
+        this.alertBox = false
+      }, 5000)
     },
     async uploadImageToStrapi (imageBlob, imageName, imageType, episodeNumber, createdEpisodeId) {
       console.log('Uploading image to Strapi:', imageBlob, imageName, imageType, episodeNumber, createdEpisodeId)
