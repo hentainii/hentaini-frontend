@@ -1,0 +1,61 @@
+Array
+(
+    [success] => File(s) uploaded
+    [data] => Array
+        (
+        )
+
+    [files] => Array
+        (
+            [] => Array
+                (
+                    [key] => 
+                    [tmpfile] => /opt/yourupload/tmp/yourupload-20241025-484054-1j2ccye.1qr8-Arifureta37Mmp4.mp4
+                    [name] => Arifureta 3 7 M.mp4
+                    [encoding] => 7bit
+                    [mime] => Array
+                        (
+                            [name] => video/mp4
+                            [ext] => mp4
+                        )
+
+                    [mimetype] => video/mp4
+                    [size] => 262425860
+                    [sha1] => f3e121723acc4441b22806ddfae2a09a62365ab8
+                    [doc] => Array
+                        (
+                            [public] => 
+                            [jobAttempts] => 0
+                            [ext] => mp4
+                            [type] => video
+                            [stepTotal] => 1
+                            [stepComplete] => 0
+                            [frameTotal] => 1
+                            [frameComplete] => 0
+                            [downloadHits] => 0
+                            [embedHits] => 0
+                            [totalHits] => 0
+                            [isRestricted] => 
+                            [restrictReason] => 
+                            [valid] => 1
+                            [id] => 5127702
+                            [name] => Arifureta 3 7 M.mp4
+                            [sha1] => f3e121723acc4441b22806ddfae2a09a62365ab8
+                            [size] => 262425860
+                            [encoding] => 7bit
+                            [mimeType] => video/mp4
+                            [tempFile] => /opt/yourupload/tmp/yourupload-20241025-484054-1j2ccye.1qr8-Arifureta37Mmp4.mp4
+                            [jobHandle] => dAkKo5d56Pj6
+                            [status] => queued
+                            [statusDescription] => Waiting for import to start
+                            [UserId] => 108814
+                            [FolderId] => 99928
+                            [updatedAt] => 2024-11-25T16:37:55.014Z
+                            [createdAt] => 2024-11-25T16:37:55.014Z
+                        )
+
+                )
+
+        )
+
+)

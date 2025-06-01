@@ -1,0 +1,16 @@
+Array
+(
+    [msg] => OK
+    [status] => 200
+    [files] => Array
+        (
+            [0] => Array
+                (
+                    [filecode] => 
+                    [filename] => 2022-03-26 21-09-22-1.mp4
+                    [status] => Not video file format
+                )
+
+        )
+
+)

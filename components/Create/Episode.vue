@@ -259,20 +259,7 @@ export default {
     alertBox: false,
     alertBoxColor: '',
     errorMessage: '',
-    isSubmitting: false,
-    headers: [
-      { text: 'Player', value: 'name' },
-      { text: 'Progress', value: 'progress' }
-    ],
-    uploader: [
-      { name: 'Cloud', progress: 0 },
-      { name: 'Yourupload', progress: 0 },
-      { name: 'TERA', progress: 0 },
-      { name: 'Stream2', progress: 0 },
-      { name: 'mp4uplo', progress: 0 },
-      { name: 'BR', progress: 0 },
-      { name: 'Mega', progress: 0 }
-    ]
+    isSubmitting: false
   }),
   computed: {
     players () {
