@@ -73,24 +73,24 @@ export default {
       const episodes = await res.json()
       this.episodes = episodes.data
     },
-    generateSitemap () {
+    async generateSitemap () {
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
           <url>
-            <loc>https://hentaini.com</loc>
+            <loc>https://www3.hentaini.com</loc>
             <lastmod>${new Date().toISOString()}</lastmod>
             <changefreq>daily</changefreq>
             <priority>1.0</priority>
           </url>
           <url>
-            <loc>https://hentaini.com/explore</loc>
+            <loc>https://www3.hentaini.com/explore</loc>
             <lastmod>${new Date().toISOString()}</lastmod>
             <changefreq>daily</changefreq>
             <priority>0.8</priority>
           </url>
           ${this.series.map(serie => `
           <url>
-            <loc>https://hentaini.com/h/${serie.url}</loc>
+            <loc>https://www3.hentaini.com/h/${serie.url}</loc>
             <lastmod>${new Date().toISOString()}</lastmod>
             <changefreq>daily</changefreq>
             <priority>0.8</priority>
@@ -98,14 +98,14 @@ export default {
           `).join('')}
           ${this.episodes.map(episode => `
           <url>
-            <loc>https://hentaini.com/h/${episode.serie?.url}/${episode.episode_number}</loc>
+            <loc>https://www3.hentaini.com/h/${episode.serie?.url}/${episode.episode_number}</loc>
             <lastmod>${new Date().toISOString()}</lastmod>
             <changefreq>daily</changefreq>
             <priority>0.5</priority>
           </url>
           `).join('')}
         </urlset>`
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}sitemap`, {
+      await fetch(`${this.$config.API_STRAPI_ENDPOINT}sitemap`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
