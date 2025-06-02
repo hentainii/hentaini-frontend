@@ -1,0 +1,219 @@
+<template>
+  <v-card class="comment-form" outlined>
+    <v-card-text>
+      <div v-if="!isAuthenticated" class="text-center pa-4">
+        <p class="mb-3">
+          {{ $t('comments.login_required') }}
+        </p>
+        <v-btn color="primary" @click="$emit('show-login')">
+          {{ $t('auth.login') }}
+        </v-btn>
+      </div>
+
+      <div v-else>
+        <v-form ref="form" v-model="valid" @submit.prevent="submitComment">
+          <v-textarea
+            v-model="content"
+            :label="dynamicPlaceholder"
+            :rules="contentRules"
+            :loading="loading"
+            :disabled="loading"
+            rows="4"
+            counter="1000"
+            outlined
+            hide-details="auto"
+            class="mb-3"
+          />
+
+          <div class="d-flex justify-space-between align-center">
+            <div class="d-flex align-center">
+              <v-avatar size="32" class="mr-2">
+                <v-img
+                  v-if="currentUser?.avatar"
+                  :src="avatarUrl"
+                  :alt="currentUser.username"
+                />
+                <v-icon v-else>
+                  mdi-account-circle
+                </v-icon>
+              </v-avatar>
+              <span class="text-caption text--secondary">
+                {{ $t('comments.posting_as') }} {{ currentUser?.username }}
+              </span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <v-btn
+                v-if="showCancel"
+                text
+                :disabled="loading"
+                @click="cancel"
+              >
+                {{ $t('common.cancel') }}
+              </v-btn>
+
+              <v-btn
+                type="submit"
+                color="primary"
+                :loading="loading"
+                :disabled="!valid || !content.trim()"
+              >
+                <v-icon left>
+                  mdi-send
+                </v-icon>
+                {{ dynamicSubmitText }}
+              </v-btn>
+            </div>
+          </div>
+        </v-form>
+      </div>
+    </v-card-text>
+
+    <!-- Error Alert -->
+    <v-alert
+      v-if="error"
+      type="error"
+      dismissible
+      class="ma-3 mt-0"
+      @input="$emit('clear-error')"
+    >
+      {{ error }}
+    </v-alert>
+  </v-card>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'CommentForm',
+
+  props: {
+    placeholder: {
+      type: String,
+      default () {
+        return this.$t('comments.write_comment')
+      }
+    },
+    submitText: {
+      type: String,
+      default () {
+        return this.$t('comments.post_comment')
+      }
+    },
+    showCancel: {
+      type: Boolean,
+      default: false
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    error: {
+      type: String,
+      default: null
+    },
+    parentId: {
+      type: [Number, String],
+      default: null
+    },
+    isReply: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  data () {
+    return {
+      valid: false,
+      content: '',
+      contentRules: [
+        v => !!v || this.$t('validation.required'),
+        v => (v && v.length >= 3) || this.$t('validation.min_length', { min: 3 }),
+        v => (v && v.length <= 1000) || this.$t('validation.max_length', { max: 1000 })
+      ]
+    }
+  },
+
+  computed: {
+    ...mapState(['auth']),
+
+    currentUser () {
+      return this.auth
+    },
+
+    isAuthenticated () {
+      return this.auth && this.auth.id
+    },
+
+    avatarUrl () {
+      if (!this.currentUser?.avatar) { return null }
+      return `${this.$config.CDN_ENDPOINT}${this.currentUser.avatar.url}`
+    },
+
+    // Textos dinámicos para respuestas
+    dynamicPlaceholder () {
+      if (this.isReply) {
+        return this.placeholder || this.$t('comments.write_reply')
+      }
+      return this.placeholder || this.$t('comments.write_comment')
+    },
+
+    dynamicSubmitText () {
+      if (this.isReply) {
+        return this.submitText || this.$t('comments.post_reply')
+      }
+      return this.submitText || this.$t('comments.post_comment')
+    }
+  },
+
+  methods: {
+    submitComment () {
+      if (!this.$refs.form.validate()) { return }
+
+      const commentData = {
+        content: this.content.trim()
+      }
+
+      if (this.parentId) {
+        commentData.parentId = this.parentId
+      }
+
+      this.$emit('submit', commentData)
+
+      // Limpiar el formulario después del envío
+      this.content = ''
+      this.$refs.form.resetValidation()
+    },
+
+    cancel () {
+      this.content = ''
+      this.$refs.form.resetValidation()
+      this.$emit('cancel')
+    },
+
+    focus () {
+      this.$nextTick(() => {
+        const textarea = this.$el.querySelector('textarea')
+        if (textarea) {
+          textarea.focus()
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.comment-form {
+  margin-bottom: 16px;
+}
+
+.comment-form .v-textarea {
+  font-size: 14px;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+</style>

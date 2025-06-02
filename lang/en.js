@@ -100,5 +100,61 @@ export default {
     genres: 'HENTAI GENRES',
     no_results: 'No series found',
     reset_filters: 'Reset filters'
+  },
+  comments: {
+    section_title: 'Comments',
+    write_comment: 'Write a comment...',
+    write_reply: 'Write a reply...',
+    post_comment: 'Post Comment',
+    post_reply: 'Post Reply',
+    reply: 'Reply',
+    edit: 'Edit',
+    delete: 'Delete',
+    like: 'Like',
+    admin: 'Admin',
+    edited: 'Edited',
+    deleted_user: 'Deleted User',
+    login_required: 'You need to be logged in to comment.',
+    posting_as: 'Posting as',
+    sort_by: 'Sort by',
+    sort_newest: 'Newest first',
+    sort_oldest: 'Oldest first',
+    sort_most_liked: 'Most liked',
+    loading: 'Loading comments...',
+    load_more: 'Load more comments',
+    no_comments_title: 'No comments yet',
+    no_comments_message: 'Be the first to share your thoughts about this episode.',
+    be_first_to_comment: 'Be the first to comment',
+    login_to_comment: 'Login to comment',
+    confirm_delete_title: 'Delete comment',
+    confirm_delete_message: 'Are you sure you want to delete this comment? This action cannot be undone.',
+    comment_posted: 'Comment posted successfully!',
+    reply_posted: 'Reply posted successfully!',
+    comment_edited: 'Comment edited successfully!',
+    comment_deleted: 'Comment deleted successfully!',
+    refreshed: 'Comments refreshed',
+    error_posting: 'Error posting comment',
+    error_posting_reply: 'Error posting reply',
+    error_loading_more: 'Error loading more comments'
+  },
+  auth: {
+    login: 'Login',
+    register: 'Register',
+    login_required_to_comment: 'Please login to participate in the discussion'
+  },
+  common: {
+    save: 'Save',
+    cancel: 'Cancel',
+    edit: 'Edit',
+    delete: 'Delete',
+    close: 'Close',
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success'
+  },
+  validation: {
+    required: 'This field is required',
+    min_length: 'Minimum {min} characters required',
+    max_length: 'Maximum {max} characters allowed'
   }
 }

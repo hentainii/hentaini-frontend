@@ -210,7 +210,10 @@
         <!-- Sección de comentarios -->
         <v-card class="mb-4 rounded-lg elevation-3">
           <v-card-text>
-            <LayoutComments />
+            <LayoutComments
+              content-type="episode"
+              :content-id="episode.id"
+            />
           </v-card-text>
         </v-card>
       </v-col>
