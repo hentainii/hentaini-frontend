@@ -112,6 +112,7 @@ export default {
     edit: 'Editar',
     delete: 'Eliminar',
     like: 'Me gusta',
+    remove_like: 'Quitar me gusta',
     admin: 'Admin',
     edited: 'Editado',
     deleted_user: 'Usuario Eliminado',

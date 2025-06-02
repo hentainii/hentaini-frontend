@@ -108,9 +108,11 @@ export default {
     post_comment: 'Post Comment',
     post_reply: 'Post Reply',
     reply: 'Reply',
+    replies: 'Replies',
     edit: 'Edit',
     delete: 'Delete',
     like: 'Like',
+    remove_like: 'Remove like',
     admin: 'Admin',
     edited: 'Edited',
     deleted_user: 'Deleted User',
@@ -135,7 +137,9 @@ export default {
     refreshed: 'Comments refreshed',
     error_posting: 'Error posting comment',
     error_posting_reply: 'Error posting reply',
-    error_loading_more: 'Error loading more comments'
+    error_loading_more: 'Error loading more comments',
+    show_replies: 'Show {count} reply | Show {count} replies',
+    hide_replies: 'Hide replies'
   },
   auth: {
     login: 'Login',

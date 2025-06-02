@@ -68,7 +68,7 @@ export default {
     list: 'भाग यादी',
     download: 'भाग डाउनलोड करा',
     comments: 'टिप्पण्या',
-    genres: 'प्रकार',
+    genres: 'हेंटाई प्रकार',
     serie_info: 'मालिका माहिती',
     close: 'बंद करा'
   },
@@ -100,5 +100,65 @@ export default {
     no_results: 'कोणतीही मालिका सापडली नाही',
     reset_filters: 'फिल्टर रीसेट करा'
   },
-  similar_series: 'समान मालिका'
+  similar_series: 'समान मालिका',
+  comments: {
+    section_title: 'टिप्पण्या',
+    write_comment: 'टिप्पणी लिहा...',
+    write_reply: 'उत्तर लिहा...',
+    post_comment: 'टिप्पणी पोस्ट करा',
+    post_reply: 'उत्तर पोस्ट करा',
+    reply: 'उत्तर द्या',
+    replies: 'उत्तरे',
+    edit: 'संपादित करा',
+    delete: 'हटवा',
+    like: 'आवडले',
+    remove_like: 'आवडले काढा',
+    admin: 'अॅडमिन',
+    edited: 'संपादित',
+    deleted_user: 'हटवलेला वापरकर्ता',
+    login_required: 'टिप्पणी करण्यासाठी तुम्हाला लॉगिन करावे लागेल.',
+    posting_as: 'म्हणून पोस्ट करत आहे',
+    sort_by: 'याप्रमाणे क्रमवारी लावा',
+    sort_newest: 'नवीन प्रथम',
+    sort_oldest: 'जुने प्रथम',
+    sort_most_liked: 'सर्वाधिक आवडलेले',
+    loading: 'टिप्पण्या लोड होत आहेत...',
+    load_more: 'अधिक टिप्पण्या लोड करा',
+    no_comments_title: 'अजून कोणत्याही टिप्पण्या नाहीत',
+    no_comments_message: 'या एपिसोडबद्दल आपले विचार सामायिक करणारे पहिले व्यक्ती व्हा.',
+    be_first_to_comment: 'टिप्पणी करणारे पहिले व्यक्ती व्हा',
+    login_to_comment: 'टिप्पणी करण्यासाठी लॉगिन करा',
+    confirm_delete_title: 'टिप्पणी हटवा',
+    confirm_delete_message: 'तुम्हाला खरोखर ही टिप्पणी हटवायची आहे का? ही क्रिया पूर्ववत करता येणार नाही.',
+    comment_posted: 'टिप्पणी यशस्वीरित्या पोस्ट झाली!',
+    reply_posted: 'उत्तर यशस्वीरित्या पोस्ट झाले!',
+    comment_edited: 'टिप्पणी यशस्वीरित्या संपादित झाली!',
+    comment_deleted: 'टिप्पणी यशस्वीरित्या हटवली गेली!',
+    refreshed: 'टिप्पण्या रीफ्रेश झाल्या',
+    error_posting: 'टिप्पणी पोस्ट करताना त्रुटी',
+    error_posting_reply: 'उत्तर पोस्ट करताना त्रुटी',
+    error_loading_more: 'अधिक टिप्पण्या लोड करताना त्रुटी',
+    show_replies: '{count} उत्तरे दाखवा',
+    hide_replies: 'उत्तरे लपवा'
+  },
+  auth: {
+    login: 'लॉगिन',
+    register: 'नोंदणी',
+    login_required_to_comment: 'चर्चेत सहभागी होण्यासाठी कृपया लॉगिन करा'
+  },
+  common: {
+    save: 'सेव्ह करा',
+    cancel: 'रद्द करा',
+    edit: 'संपादित करा',
+    delete: 'हटवा',
+    close: 'बंद करा',
+    loading: 'लोड होत आहे...',
+    error: 'त्रुटी',
+    success: 'यश'
+  },
+  validation: {
+    required: 'हे फील्ड आवश्यक आहे',
+    min_length: 'किमान {min} अक्षरे आवश्यक',
+    max_length: 'कमाल {max} अक्षरांना परवानगी'
+  }
 }

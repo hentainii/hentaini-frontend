@@ -90,66 +90,95 @@
             <div v-if="!commentData.is_deleted" class="comment-actions">
               <div class="d-flex align-center">
                 <!-- Botón de like -->
-                <v-btn
-                  icon
-                  small
-                  :color="hasLiked ? 'red' : 'grey'"
-                  :loading="likeLoading"
-                  :disabled="!isAuthenticated"
-                  @click="handleToggleLike"
-                >
-                  <v-icon>{{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      small
+                      :color="hasLiked ? 'red' : 'grey'"
+                      :loading="likeLoading"
+                      :disabled="!isAuthenticated"
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="handleToggleLike"
+                    >
+                      <v-icon>{{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ hasLiked ? $t('comments.remove_like') : $t('comments.like') }}</span>
+                </v-tooltip>
                 <span class="text-caption text--secondary mr-3">
                   {{ commentData.likes || 0 }}
                 </span>
 
                 <!-- Botón de responder -->
-                <v-btn
-                  text
-                  x-small
-                  color="primary"
-                  :disabled="!isAuthenticated"
-                  @click="toggleReplyForm"
-                >
-                  <v-icon left small>
-                    mdi-reply
-                  </v-icon>
-                  {{ $t('comments.reply') }}
-                </v-btn>
+                <v-tooltip bottom>
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      small
+                      color="primary"
+                      :disabled="!isAuthenticated"
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="toggleReplyForm"
+                    >
+                      <v-icon>mdi-reply</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('comments.reply') }}</span>
+                </v-tooltip>
 
-                <!-- Indicador de respuestas -->
-                <span v-if="repliesCount > 0" class="text-caption text--secondary ml-2">
+                <!-- Indicador de respuestas (solo desktop) -->
+                <span v-if="repliesCount > 0" class="text-caption text--secondary ml-2 hidden-xs-only">
                   {{ repliesCount }} {{ repliesCount === 1 ? $t('comments.reply') : $t('comments.replies') }}
                 </span>
 
+                <!-- Contador de respuestas compacto (solo móvil) -->
+                <v-chip
+                  v-if="repliesCount > 0"
+                  x-small
+                  color="grey darken-3"
+                  class="ml-1 hidden-sm-and-up"
+                >
+                  {{ repliesCount }}
+                </v-chip>
+
                 <!-- Botones de editar/eliminar (solo para el autor o admin) -->
                 <template v-if="canEdit">
-                  <v-btn
-                    text
-                    x-small
-                    color="grey"
-                    class="ml-2"
-                    @click="startEdit"
-                  >
-                    <v-icon left small>
-                      mdi-pencil
-                    </v-icon>
-                    {{ $t('common.edit') }}
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        small
+                        color="grey"
+                        class="ml-1"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="startEdit"
+                      >
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t('common.edit') }}</span>
+                  </v-tooltip>
 
-                  <v-btn
-                    text
-                    x-small
-                    color="error"
-                    class="ml-2"
-                    @click="confirmDelete"
-                  >
-                    <v-icon left small>
-                      mdi-delete
-                    </v-icon>
-                    {{ $t('common.delete') }}
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        small
+                        color="error"
+                        class="ml-1"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="confirmDelete"
+                      >
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t('common.delete') }}</span>
+                  </v-tooltip>
                 </template>
               </div>
             </div>
@@ -171,22 +200,34 @@
         </div>
 
         <!-- Respuestas -->
-        <div v-if="replies.length > 0 || showLoadRepliesButton" class="replies mt-3 ml-7">
+        <div v-if="hasReplies" class="replies mt-3 ml-7">
           <!-- Botón para cargar respuestas -->
-          <v-btn
-            v-if="showLoadRepliesButton && !showingReplies"
-            text
-            small
-            color="primary"
-            class="mb-2"
-            :loading="loadingReplies"
-            @click="loadCommentReplies"
-          >
-            <v-icon left small>
-              mdi-comment-multiple-outline
-            </v-icon>
-            {{ $t('comments.show_replies', { count: repliesCount }) }}
-          </v-btn>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="showLoadRepliesButton"
+                small
+                :color="$vuetify.breakpoint.xsOnly ? 'primary' : 'primary'"
+                :text="!$vuetify.breakpoint.xsOnly"
+                :icon="$vuetify.breakpoint.xsOnly"
+                class="mb-2"
+                :loading="loadingReplies"
+                v-bind="attrs"
+                v-on="on"
+                @click="loadCommentReplies"
+              >
+                <v-icon :left="!$vuetify.breakpoint.xsOnly" small>
+                  mdi-comment-multiple-outline
+                </v-icon>
+                <span v-if="!$vuetify.breakpoint.xsOnly">
+                  {{ $t('comments.show_replies', { count: repliesCount }) }}
+                </span>
+              </v-btn>
+            </template>
+            <span v-if="$vuetify.breakpoint.xsOnly">
+              {{ $t('comments.show_replies', { count: repliesCount }) }}
+            </span>
+          </v-tooltip>
 
           <!-- Lista de respuestas -->
           <div v-if="showingReplies">
@@ -202,19 +243,36 @@
               @show-login="$emit('show-login')"
             />
 
+            <!-- Mensaje si no hay respuestas cargadas -->
+            <div v-if="replies.length === 0" class="text-center py-2 text--secondary">
+              No se encontraron respuestas cargadas
+            </div>
+
             <!-- Botón para ocultar respuestas -->
-            <v-btn
-              text
-              x-small
-              color="grey"
-              class="mt-2"
-              @click="hideReplies"
-            >
-              <v-icon left small>
-                mdi-chevron-up
-              </v-icon>
-              {{ $t('comments.hide_replies') }}
-            </v-btn>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  small
+                  :color="$vuetify.breakpoint.xsOnly ? 'grey' : 'grey'"
+                  :text="!$vuetify.breakpoint.xsOnly"
+                  :icon="$vuetify.breakpoint.xsOnly"
+                  class="mt-2"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="hideReplies"
+                >
+                  <v-icon :left="!$vuetify.breakpoint.xsOnly" small>
+                    mdi-chevron-up
+                  </v-icon>
+                  <span v-if="!$vuetify.breakpoint.xsOnly">
+                    {{ $t('comments.hide_replies') }}
+                  </span>
+                </v-btn>
+              </template>
+              <span v-if="$vuetify.breakpoint.xsOnly">
+                {{ $t('comments.hide_replies') }}
+              </span>
+            </v-tooltip>
           </div>
         </div>
       </v-card-text>
@@ -374,6 +432,13 @@ export default {
 
     showLoadRepliesButton () {
       return !this.isReply && this.repliesCount > 0 && !this.showingReplies
+    },
+
+    hasReplies () {
+      // Mostrar sección de respuestas si:
+      // 1. Hay respuestas cargadas en el store O
+      // 2. El botón de cargar respuestas debe mostrarse (hay respuestas pero no están cargadas)
+      return !this.isReply && (this.replies.length > 0 || this.repliesCount > 0)
     }
   },
 
@@ -433,7 +498,17 @@ export default {
     async loadCommentReplies () {
       try {
         this.loadingReplies = true
-        await this.loadReplies({ parentId: this.comment.id })
+
+        // Usar el método getReplies que funciona con query estándar
+        const replies = await this.$store.dispatch('comments/getReplies', this.comment.id)
+
+        // Agregar las respuestas al store si no están ya
+        if (replies && Array.isArray(replies)) {
+          replies.forEach((reply) => {
+            this.$store.commit('comments/ADD_REPLY', reply)
+          })
+        }
+
         this.showingReplies = true
       } catch (error) {
         console.error('Error cargando respuestas:', error)
@@ -614,12 +689,41 @@ export default {
   }
 
   .comment-actions .v-btn {
-    min-width: auto !important;
-    padding: 0 8px !important;
+    min-width: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin: 0 2px !important;
+  }
+
+  .comment-actions .v-btn .v-icon {
+    font-size: 18px !important;
   }
 
   .comment-actions .text-caption {
     font-size: 0.7rem !important;
+    margin-left: 4px !important;
+    margin-right: 8px !important;
+  }
+
+  .comment-actions .d-flex {
+    gap: 2px;
+  }
+
+  /* Contador de respuestas más compacto en móvil */
+  .comment-actions .v-chip {
+    height: 20px !important;
+    font-size: 0.7rem !important;
+  }
+
+  /* Botones de respuestas en móvil */
+  .replies .v-btn {
+    min-width: 36px !important;
+    height: 36px !important;
+  }
+
+  .replies .v-btn.v-btn--icon {
+    width: 36px !important;
   }
 }
 
