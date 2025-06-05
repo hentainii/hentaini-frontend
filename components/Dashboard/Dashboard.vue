@@ -14,6 +14,19 @@
         <MiscReportsCard />
       </v-col>
     </v-row>
+
+    <!-- New Row for Studio and Producer Management -->
+    <v-row class="mt-4">
+      <v-col>
+        <MiscStudiosCard />
+      </v-col>
+      <v-col>
+        <MiscProducersCard />
+      </v-col>
+      <v-col>
+        <MiscLinkingCard />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

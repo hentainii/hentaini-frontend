@@ -72,11 +72,11 @@ export default {
   },
   computed: {
     users () {
-      return this.$store.state.user.users
+      return this.$store.state.auth.users
     }
   },
   watch: {
-    '$store.state.user.userListPagination' (val) {
+    '$store.state.auth.userListPagination' (val) {
       Object.assign(this.pagination, val)
     },
     'pagination.page': {

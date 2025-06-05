@@ -123,12 +123,12 @@ export const actions = {
         }
       }
       if (payload.producerId) {
-        filters.producer = {
+        filters.producers = {
           id: payload.producerId
         }
       }
       if (payload.producerName) {
-        filters.producer = {
+        filters.producers = {
           name: payload.producerName
         }
       }
@@ -147,7 +147,7 @@ export const actions = {
         filters,
         sort,
         pagination,
-        populate: ['producer', 'series']
+        populate: ['producers', 'series']
       }, {
         encodeValuesOnly: true
       })
@@ -168,7 +168,7 @@ export const actions = {
       const studios = data.data.map(studio => ({
         ...studio,
         seriesCount: studio.series?.length || 0,
-        producerName: studio.producer?.name || 'Unknown'
+        producerName: studio.producers?.[0]?.name || 'Unknown'
       }))
 
       commit('setStudios', {
@@ -222,7 +222,7 @@ export const actions = {
     try {
       const qs = require('qs')
       const query = qs.stringify({
-        populate: ['producer', 'series', 'series.images', 'series.status', 'series.genreList']
+        populate: ['producers', 'series', 'series.images', 'series.status', 'series.genreList']
       }, {
         encodeValuesOnly: true
       })
@@ -242,7 +242,7 @@ export const actions = {
       const studio = {
         ...data.data,
         seriesCount: data.data.series?.length || 0,
-        producerName: data.data.producer?.name || 'Unknown'
+        producerName: data.data.producers?.[0]?.name || 'Unknown'
       }
 
       commit('setCurrentStudio', studio)
@@ -406,6 +406,8 @@ export const getters = {
     return state.studios.find(studio => studio.id === id)
   },
   getStudiosByProducer: state => (producerId) => {
-    return state.studios.filter(studio => studio.producer?.id === producerId)
+    return state.studios.filter(studio =>
+      studio.producers && studio.producers.some(p => p.id === producerId)
+    )
   }
 }
