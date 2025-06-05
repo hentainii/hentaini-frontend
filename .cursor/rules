@@ -1,0 +1,123 @@
+# Plan Detallado: Sistema de Comentarios Propio para Hentaini
+
+## Objetivo
+Reemplazar Disqus con un sistema de comentarios propio usando Nuxt2 + Strapi 4
+
+## Backend - Endpoints Strapi 4 Requeridos
+
+### Modelo Comment Structure:
+```javascript
+{
+  "kind": "collectionType",
+  "collectionName": "comments",
+  "info": {
+    "singularName": "comment",
+    "pluralName": "comments",
+    "displayName": "comment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "content": {
+      "type": "text"
+    },
+    "comment_type": {
+      "type": "string"
+    },
+    "content_id": {
+      "type": "integer"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "comments"
+    },
+    "likes": {
+      "type": "integer"
+    },
+    "liked_by": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "likes"
+    },
+    "is_edited": {
+      "type": "boolean"
+    },
+    "is_deleted": {
+      "type": "boolean"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "reply"
+    },
+    "reply": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::comment.comment",
+      "inversedBy": "parent"
+    }
+  }
+}
+```
+
+### Endpoints necesarios:
+1. `GET /api/comments?filters[content_type][$eq]=episode&filters[content_id][$eq]=123&populate[0]=author&populate[1]=replies.author` - Filtrar comentarios
+2. `POST /api/comments` - Crear comentario
+3. `PUT /api/comments/:id` - Editar comentario
+4. `PUT /api/comments/:id` - Marcar como eliminado el comentario  
+5. `POST /api/comments/:id/reply` - Responder comentario (PENDIENTE)
+6. `PUT /api/comments/:id/like` - Toggle like (PENDIENTE)
+
+## Frontend - Componentes
+
+### Estructura de componentes:
+- `CommentsSection.vue` - Contenedor principal ✅
+- `CommentItem.vue` - Comentario individual (sin respuestas por ahora) ✅
+- `CommentForm.vue` - Formulario nuevo comentario ✅
+- `Comments.vue` - Componente integrado actualizado ✅
+
+### Store y Servicios:
+- `~/store/comments.js` - Vuex store usando fetch nativo ✅
+- Integración con auth token ✅
+- Patrón similar a episodes.js y series.js ✅
+
+## Fases de Implementación:
+1. ✅ Crear store y componentes base con fetch nativo
+2. ✅ Implementar componentes básicos (crear, editar, eliminar)
+3. ✅ Reemplazar componente Comments.vue actual
+4. ⏳ Implementar controladores custom para respuestas y likes
+5. ⏳ Testing y refinamiento
+6. ⏳ Migración de datos de Disqus (opcional)
+
+## Funcionalidades Implementadas:
+✅ Crear comentarios nuevos
+✅ Editar comentarios propios
+✅ Eliminar comentarios (soft delete)
+✅ Autenticación con Bearer token
+✅ Validaciones y estados de carga
+✅ Interfaz responsive con Vuetify
+✅ Traducciones i18n completas
+
+## Funcionalidades Pendientes:
+⏳ Sistema de respuestas anidadas
+⏳ Sistema de likes/dislikes
+⏳ Paginación de comentarios
+⏳ Notificaciones en tiempo real
+
+## Notas Técnicas:
+- Usa fetch nativo siguiendo patrón de stores existentes
+- Autenticación vía $store.state.auth.token
+- Estructura JSON API de Strapi 4
+- Sin dependencias externas (no axios)
+
+## Notas:
+- Mantener compatibilidad con i18n existente
+- Usar Vuetify para consistencia visual
+- Implementar autenticación con sistema existente
+- Añadir validaciones y rate limiting 

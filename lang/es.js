@@ -172,5 +172,65 @@ export default {
       meta_title_suffix: 'Studio | Hentaini',
       meta_description_prefix: 'Descubre las series de'
     }
+  },
+  comments: {
+    section_title: 'Comentarios',
+    write_comment: 'Escribe un comentario...',
+    write_reply: 'Escribe una respuesta...',
+    post_comment: 'Publicar Comentario',
+    post_reply: 'Publicar Respuesta',
+    reply: 'Responder',
+    replies: 'Respuestas',
+    edit: 'Editar',
+    delete: 'Eliminar',
+    like: 'Me gusta',
+    remove_like: 'Quitar me gusta',
+    admin: 'Admin',
+    edited: 'Editado',
+    deleted_user: 'Usuario Eliminado',
+    login_required: 'Necesitas iniciar sesión para comentar.',
+    posting_as: 'Publicando como',
+    sort_by: 'Ordenar por',
+    sort_newest: 'Más recientes',
+    sort_oldest: 'Más antiguos',
+    sort_most_liked: 'Más gustados',
+    loading: 'Cargando comentarios...',
+    load_more: 'Cargar más comentarios',
+    no_comments_title: 'Aún no hay comentarios',
+    no_comments_message: 'Sé el primero en compartir tus pensamientos sobre este episodio.',
+    be_first_to_comment: 'Sé el primero en comentar',
+    login_to_comment: 'Inicia sesión para comentar',
+    confirm_delete_title: 'Eliminar comentario',
+    confirm_delete_message: '¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.',
+    comment_posted: '¡Comentario publicado exitosamente!',
+    reply_posted: '¡Respuesta publicada exitosamente!',
+    comment_edited: '¡Comentario editado exitosamente!',
+    comment_deleted: '¡Comentario eliminado exitosamente!',
+    refreshed: 'Comentarios actualizados',
+    error_posting: 'Error al publicar comentario',
+    error_posting_reply: 'Error al publicar respuesta',
+    error_loading_more: 'Error al cargar más comentarios',
+    show_replies: 'Ver {count} respuesta | Ver {count} respuestas',
+    hide_replies: 'Ocultar respuestas'
+  },
+  auth: {
+    login: 'Iniciar Sesión',
+    register: 'Registrarse',
+    login_required_to_comment: 'Por favor inicia sesión para participar en la discusión'
+  },
+  common: {
+    save: 'Guardar',
+    cancel: 'Cancelar',
+    edit: 'Editar',
+    delete: 'Eliminar',
+    close: 'Cerrar',
+    loading: 'Cargando...',
+    error: 'Error',
+    success: 'Éxito'
+  },
+  validation: {
+    required: 'Este campo es obligatorio',
+    min_length: 'Se requieren mínimo {min} caracteres',
+    max_length: 'Máximo {max} caracteres permitidos'
   }
 }

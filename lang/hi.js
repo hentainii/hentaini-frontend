@@ -97,8 +97,68 @@ export default {
       most_views: 'सबसे अधिक देखा गया',
       low_views: 'नवीनतम'
     },
-    genres: 'हेंताई श्रेणियाँ',
-    no_results: 'कोई श्रृंखला नहीं मिली',
-    reset_filters: 'फ़िल्टर रीसेट करें'
+    genres: 'हेंटाई जॉनर',
+    no_results: 'कोई सीरीज नहीं मिली',
+    reset_filters: 'फिल्टर रीसेट करें'
+  },
+  comments: {
+    section_title: 'टिप्पणियां',
+    write_comment: 'टिप्पणी लिखें...',
+    write_reply: 'जवाब लिखें...',
+    post_comment: 'टिप्पणी पोस्ट करें',
+    post_reply: 'जवाब पोस्ट करें',
+    reply: 'जवाब दें',
+    replies: 'जवाब',
+    edit: 'संपादित करें',
+    delete: 'हटाएं',
+    like: 'पसंद',
+    remove_like: 'पसंद हटाएं',
+    admin: 'एडमिन',
+    edited: 'संपादित',
+    deleted_user: 'हटाए गए उपयोगकर्ता',
+    login_required: 'टिप्पणी करने के लिए आपको लॉगिन करना होगा।',
+    posting_as: 'के रूप में पोस्ट कर रहे हैं',
+    sort_by: 'इसके अनुसार क्रमबद्ध करें',
+    sort_newest: 'नवीनतम पहले',
+    sort_oldest: 'पुराने पहले',
+    sort_most_liked: 'सबसे ज्यादा पसंद किए गए',
+    loading: 'टिप्पणियां लोड हो रही हैं...',
+    load_more: 'और टिप्पणियां लोड करें',
+    no_comments_title: 'अभी तक कोई टिप्पणी नहीं',
+    no_comments_message: 'इस एपिसोड के बारे में अपने विचार साझा करने वाले पहले व्यक्ति बनें।',
+    be_first_to_comment: 'टिप्पणी करने वाले पहले व्यक्ति बनें',
+    login_to_comment: 'टिप्पणी करने के लिए लॉगिन करें',
+    confirm_delete_title: 'टिप्पणी हटाएं',
+    confirm_delete_message: 'क्या आप वाकई इस टिप्पणी को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
+    comment_posted: 'टिप्पणी सफलतापूर्वक पोस्ट की गई!',
+    reply_posted: 'जवाब सफलतापूर्वक पोस्ट किया गया!',
+    comment_edited: 'टिप्पणी सफलतापूर्वक संपादित की गई!',
+    comment_deleted: 'टिप्पणी सफलतापूर्वक हटा दी गई!',
+    refreshed: 'टिप्पणियां रीफ्रेश हो गईं',
+    error_posting: 'टिप्पणी पोस्ट करने में त्रुटि',
+    error_posting_reply: 'जवाब पोस्ट करने में त्रुटि',
+    error_loading_more: 'और टिप्पणियां लोड करने में त्रुटि',
+    show_replies: '{count} जवाब दिखाएं',
+    hide_replies: 'जवाब छुपाएं'
+  },
+  auth: {
+    login: 'लॉगिन',
+    register: 'पंजीकरण',
+    login_required_to_comment: 'चर्चा में भाग लेने के लिए कृपया लॉगिन करें'
+  },
+  common: {
+    save: 'सेव करें',
+    cancel: 'रद्द करें',
+    edit: 'संपादित करें',
+    delete: 'हटाएं',
+    close: 'बंद करें',
+    loading: 'लोड हो रहा है...',
+    error: 'त्रुटि',
+    success: 'सफलता'
+  },
+  validation: {
+    required: 'यह फील्ड आवश्यक है',
+    min_length: 'न्यूनतम {min} अक्षर आवश्यक',
+    max_length: 'अधिकतम {max} अक्षर की अनुमति'
   }
 }

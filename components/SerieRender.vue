@@ -176,7 +176,10 @@
     </v-container>
     <v-container>
       <v-row>
-        <LayoutComments />
+        <LayoutComments
+          content-type="serie"
+          :content-id="serie.id"
+        />
       </v-row>
     </v-container>
   </div>
