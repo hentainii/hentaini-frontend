@@ -100,5 +100,77 @@ export default {
     genres: 'HENTAI GENRES',
     no_results: 'No series found',
     reset_filters: 'Reset filters'
+  },
+  producers: {
+    title: 'Producers',
+    subtitle: 'Discover the producers behind your favorite series',
+    details_button: 'Details',
+    studios_button: 'Studios',
+    view_studios: 'View Studios',
+    series_count: {
+      one: 'series',
+      other: 'series'
+    },
+    studios_count: {
+      one: 'studio',
+      other: 'studios'
+    },
+    order_by: {
+      title: 'Order By'
+    },
+    search: 'Search',
+    search_placeholder: 'Search producers...',
+    no_results: 'No producers found',
+    reset_filters: 'Reset filters',
+    details: {
+      studios_section_title: 'Studios',
+      studios_section_subtitle: 'Studios belonging to',
+      view_all_studios: 'View all studios',
+      no_studios_title: 'No studios available',
+      no_studios_subtitle: 'This producer has no registered studios yet',
+      recent_series_title: 'Recent Series',
+      recent_series_subtitle: 'Latest series produced by',
+      no_series_title: 'No series available',
+      no_series_subtitle: 'This producer has no registered series yet',
+      loading: 'Loading producer information...',
+      founded_in: 'Founded in',
+      breadcrumb_loading: 'Loading...',
+      meta_title_suffix: 'Producer | Hentaini',
+      meta_description_prefix: 'Discover the studios and series of'
+    }
+  },
+  studios: {
+    title: 'Studios',
+    subtitle: 'Discover animation studios behind your favorite series',
+    on_producer_title_part_1: 'Studios from',
+    on_producer_subtitle: 'Explore all studios under this producer',
+    on_studio_title_part_1: 'Series from',
+    on_studio_subtitle: 'All series produced by this studio',
+    from_producer: 'from',
+    view_series_button: 'View Series',
+    producer_button: 'Producer',
+    series_count: {
+      one: 'series',
+      other: 'series'
+    },
+    order_by: {
+      title: 'Order By'
+    },
+    search: 'Search',
+    search_placeholder: 'Search studios...',
+    no_results: 'No results found',
+    reset_filters: 'Reset filters',
+    details: {
+      series_section_title: 'Series',
+      series_section_subtitle: 'Series produced by',
+      view_producer: 'View Producer',
+      no_series_title: 'No series available',
+      no_series_subtitle: 'This studio has no registered series yet',
+      loading: 'Loading studio information...',
+      founded_in: 'Founded in',
+      breadcrumb_loading: 'Loading...',
+      meta_title_suffix: 'Studio | Hentaini',
+      meta_description_prefix: 'Discover the series of'
+    }
   }
 }

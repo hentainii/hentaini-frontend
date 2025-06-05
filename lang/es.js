@@ -100,5 +100,77 @@ export default {
     genres: 'GÉNEROS HENTAI',
     no_results: 'No se encontraron series',
     reset_filters: 'Restablecer filtros'
+  },
+  producers: {
+    title: 'Productoras',
+    subtitle: 'Descubre las productoras detrás de tus series favoritas',
+    details_button: 'Detalles',
+    studios_button: 'Studios',
+    view_studios: 'Ver Studios',
+    series_count: {
+      one: 'serie',
+      other: 'series'
+    },
+    studios_count: {
+      one: 'studio',
+      other: 'studios'
+    },
+    order_by: {
+      title: 'Ordenar Por'
+    },
+    search: 'Buscar',
+    search_placeholder: 'Buscar productoras...',
+    no_results: 'No se encontraron productoras',
+    reset_filters: 'Restablecer filtros',
+    details: {
+      studios_section_title: 'Studios',
+      studios_section_subtitle: 'Estudios pertenecientes a',
+      view_all_studios: 'Ver todos los studios',
+      no_studios_title: 'No hay studios disponibles',
+      no_studios_subtitle: 'Esta productora aún no tiene studios registrados',
+      recent_series_title: 'Series Recientes',
+      recent_series_subtitle: 'Últimas series producidas por',
+      no_series_title: 'No hay series disponibles',
+      no_series_subtitle: 'Esta productora aún no tiene series registradas',
+      loading: 'Cargando información de la productora...',
+      founded_in: 'Fundada en',
+      breadcrumb_loading: 'Cargando...',
+      meta_title_suffix: 'Productora | Hentaini',
+      meta_description_prefix: 'Descubre los studios y series de'
+    }
+  },
+  studios: {
+    title: 'Studios',
+    subtitle: 'Descubre los studios de animación detrás de tus series favoritas',
+    on_producer_title_part_1: 'Studios de',
+    on_producer_subtitle: 'Explora todos los studios bajo esta productora',
+    on_studio_title_part_1: 'Series de',
+    on_studio_subtitle: 'Todas las series producidas por este studio',
+    from_producer: 'de',
+    view_series_button: 'Ver Series',
+    producer_button: 'Productora',
+    series_count: {
+      one: 'serie',
+      other: 'series'
+    },
+    order_by: {
+      title: 'Ordenar Por'
+    },
+    search: 'Buscar',
+    search_placeholder: 'Buscar studios...',
+    no_results: 'No se encontraron resultados',
+    reset_filters: 'Restablecer filtros',
+    details: {
+      series_section_title: 'Series',
+      series_section_subtitle: 'Series producidas por',
+      view_producer: 'Ver Productora',
+      no_series_title: 'No hay series disponibles',
+      no_series_subtitle: 'Este studio aún no tiene series registradas',
+      loading: 'Cargando información del studio...',
+      founded_in: 'Fundado en',
+      breadcrumb_loading: 'Cargando...',
+      meta_title_suffix: 'Studio | Hentaini',
+      meta_description_prefix: 'Descubre las series de'
+    }
   }
 }

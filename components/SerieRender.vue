@@ -134,14 +134,35 @@
           </v-row>
           <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2 mt-4">
             <span style="color:#b9b9b9;">
+              <v-icon small color="blue" class="mr-1">mdi-camera-outline</v-icon>
               Studio:
-              {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
+              <nuxt-link
+                :to="localePath(`/studios?studio=${serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name)}`)"
+                class="primary--text text-decoration-none"
+              >
+                {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
+              </nuxt-link>
             </span>
           </v-row>
           <v-row v-if="serie.producer && (serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name))" class="px-4 pb-2">
             <span style="color:#b9b9b9;">
-              Producer:
-              {{ serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name) }}
+              <v-icon small color="orange" class="mr-1">mdi-office-building</v-icon>
+              Productora:
+              <nuxt-link
+                :to="localePath(`/producers/${serie.producer.id || (serie.producer.data && serie.producer.data.id) || '1'}`)"
+                class="primary--text text-decoration-none"
+                style="margin-right: 8px;"
+              >
+                {{ serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name) }}
+              </nuxt-link>
+              •
+              <nuxt-link
+                :to="localePath(`/studios?producer=${serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name)}`)"
+                class="text-decoration-none"
+                style="color: #b9b9b9; margin-left: 8px; font-size: 0.9em;"
+              >
+                Ver studios
+              </nuxt-link>
             </span>
           </v-row>
           <v-row v-if="serie.episodes.length > 0" class="mt-10 mb-5">
