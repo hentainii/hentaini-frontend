@@ -135,9 +135,9 @@
           <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2 mt-4">
             <span style="color:#b9b9b9;">
               <v-icon small color="blue" class="mr-1">mdi-camera-outline</v-icon>
-              Studio:
+              {{ $t('serie.studio') }}
               <nuxt-link
-                :to="localePath(`/studios?studio=${serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name)}`)"
+                :to="localePath(`/studios/${serie.studio.id || (serie.studio.data && serie.studio.data.id) || '1'}`)"
                 class="primary--text text-decoration-none"
               >
                 {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
@@ -147,21 +147,12 @@
           <v-row v-if="serie.producer && (serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name))" class="px-4 pb-2">
             <span style="color:#b9b9b9;">
               <v-icon small color="orange" class="mr-1">mdi-office-building</v-icon>
-              Productora:
+              {{ $t('serie.producer') }}
               <nuxt-link
                 :to="localePath(`/producers/${serie.producer.id || (serie.producer.data && serie.producer.data.id) || '1'}`)"
                 class="primary--text text-decoration-none"
-                style="margin-right: 8px;"
               >
                 {{ serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name) }}
-              </nuxt-link>
-              •
-              <nuxt-link
-                :to="localePath(`/studios?producer=${serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name)}`)"
-                class="text-decoration-none"
-                style="color: #b9b9b9; margin-left: 8px; font-size: 0.9em;"
-              >
-                Ver studios
               </nuxt-link>
             </span>
           </v-row>

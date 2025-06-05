@@ -1,68 +1,70 @@
 <template>
   <v-card
-    class="producer-card rounded-lg elevation-2"
+    class="producer-card elevation-2"
     hover
     @click="$emit('click')"
   >
-    <!-- Header with icon and type -->
-    <div class="card-header pa-4 primary darken-1">
-      <div class="d-flex align-center mb-2">
-        <v-icon color="white" class="mr-2" size="24">
-          mdi-office-building
-        </v-icon>
-        <span class="white--text text-caption font-weight-medium">PRODUCTORA</span>
-      </div>
-    </div>
-
     <!-- Content -->
     <v-card-text class="pa-4">
-      <h3 class="text-h6 font-weight-bold mb-3">
-        {{ producer.name }}
-      </h3>
+      <!-- Header with icon -->
+      <div class="d-flex align-center mb-3">
+        <div class="icon-container mr-3">
+          <v-icon color="white" size="20">
+            mdi-office-building
+          </v-icon>
+        </div>
+        <div class="flex-grow-1">
+          <h3 class="card-title mb-1 text-truncate">
+            {{ producer.name }}
+          </h3>
+          <p class="card-subtitle mb-0">
+            Producer
+          </p>
+        </div>
+      </div>
 
-      <p v-if="producer.description" class="text-body-2 grey--text mb-4 line-clamp-3">
+      <p v-if="producer.description" class="card-description mb-4">
         {{ producer.description }}
       </p>
 
-      <!-- Stats chips -->
-      <div class="d-flex align-center flex-wrap mb-3">
-        <v-chip x-small color="blue" outlined class="mr-2 mb-1">
-          <v-icon left x-small>
-            mdi-camera-outline
-          </v-icon>
-          {{ producer.studiosCount || 0 }} Studios
-        </v-chip>
-        <v-chip x-small color="green" outlined class="mb-1">
-          <v-icon left x-small>
-            mdi-play-circle-outline
-          </v-icon>
-          {{ producer.seriesCount || 0 }} Series
-        </v-chip>
+      <!-- Stats -->
+      <div class="stats-container mb-4">
+        <div class="stat-item">
+          <span class="stat-value">{{ producer.studiosCount || 0 }}</span>
+          <span class="stat-label">Studios</span>
+        </div>
+        <div class="stat-divider" />
+        <div class="stat-item">
+          <span class="stat-value">{{ producer.seriesCount || 0 }}</span>
+          <span class="stat-label">Series</span>
+        </div>
       </div>
 
       <!-- Action buttons -->
-      <div class="d-flex gap-2">
+      <div class="buttons-container">
         <v-btn
           small
-          color="primary"
+          class="action-btn action-btn-primary"
           depressed
           @click.stop="$emit('view-details')"
         >
-          <v-icon left x-small>
+          <v-icon left small>
             mdi-eye
           </v-icon>
-          Detalles
+          <span class="d-none d-sm-inline">Detalles</span>
+          <span class="d-inline d-sm-none">Ver</span>
         </v-btn>
         <v-btn
           small
-          color="blue"
-          outlined
+          class="action-btn action-btn-secondary"
+          text
           @click.stop="$emit('view-studios')"
         >
-          <v-icon left x-small>
+          <v-icon left small>
             mdi-camera-outline
           </v-icon>
-          Studios
+          <span class="d-none d-sm-inline">Studios</span>
+          <span class="d-inline d-sm-none">Est.</span>
         </v-btn>
       </div>
     </v-card-text>
@@ -85,42 +87,163 @@ export default {
 <style scoped>
 .producer-card {
   cursor: pointer;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  min-height: 200px;
+  border-radius: 16px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
 }
 
 .producer-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(249, 168, 37, 0.3);
 }
 
-.card-header {
-  border-radius: 8px 8px 0 0;
+.icon-container {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f9a825, #f57c00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(249, 168, 37, 0.3);
 }
 
-.line-clamp-3 {
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.4;
-  max-height: 4.2em;
 }
 
-.gap-2 > * {
-  margin-right: 8px;
+.stats-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.gap-2 > *:last-child {
-  margin-right: 0;
+.stat-item {
+  flex: 1;
+  text-align: center;
 }
 
+.stat-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 16px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  flex: 1;
+  border-radius: 10px !important;
+  font-weight: 500;
+  text-transform: none;
+  font-size: 0.875rem;
+}
+
+.action-btn-primary {
+  background: linear-gradient(135deg, #f9a825, #f57c00) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(249, 168, 37, 0.3);
+}
+
+.action-btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(249, 168, 37, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.action-btn-secondary {
+  color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.action-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* Mobile optimizations */
 @media (max-width: 599px) {
   .producer-card {
-    margin-bottom: 8px;
-    min-height: 180px;
+    min-height: 200px;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+
+  .stats-container {
+    padding: 10px 12px;
+  }
+
+  .stat-divider {
+    margin: 0 12px;
+  }
+}
+
+/* Small mobile optimizations */
+@media (max-width: 360px) {
+  .icon-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card-title {
+    font-size: 1rem;
   }
 }
 </style>

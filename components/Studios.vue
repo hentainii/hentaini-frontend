@@ -124,21 +124,21 @@
             </v-col>
 
             <!-- Mobile filter buttons -->
-            <v-col cols="12" class="d-lg-none px-4 mb-3">
+            <v-col cols="12" class="d-lg-none px-2 mb-3">
               <v-row class="mx-n1 mb-2">
                 <v-col cols="6" class="pa-1">
                   <v-btn
                     block
                     color="grey darken-3"
                     depressed
-                    class="rounded-lg text-capitalize py-2 px-2"
-                    height="42"
+                    class="rounded-lg text-capitalize"
+                    height="40"
                     @click="showOrderSheet = true"
                   >
-                    <v-icon left size="18">
+                    <v-icon left size="16">
                       mdi-sort
                     </v-icon>
-                    <span class="text-truncate">{{ $t('studios.order_by.title') || 'Sort' }}</span>
+                    <span class="text-truncate text-caption">{{ $t('studios.order_by.title') || 'Sort' }}</span>
                   </v-btn>
                 </v-col>
                 <v-col cols="6" class="pa-1">
@@ -146,14 +146,14 @@
                     block
                     color="grey darken-3"
                     depressed
-                    class="rounded-lg text-capitalize py-2 px-2"
-                    height="42"
+                    class="rounded-lg text-capitalize"
+                    height="40"
                     @click="showSearchSheet = true"
                   >
-                    <v-icon left size="18">
+                    <v-icon left size="16">
                       mdi-magnify
                     </v-icon>
-                    <span class="text-truncate">{{ $t('studios.search') || 'Search' }}</span>
+                    <span class="text-truncate text-caption">{{ $t('studios.search') || 'Search' }}</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -169,14 +169,14 @@
                 <v-pagination
                   v-model="pagination.page"
                   :length="pagination.pageCount"
-                  :total-visible="6"
+                  :total-visible="$vuetify.breakpoint.mobile ? 3 : 6"
                   :disabled="loadingMore"
                   circle
                 />
               </v-row>
 
               <!-- Active filters chips (mobile) -->
-              <v-row v-if="lastOrder !== null || searchQuery" class="px-4 d-lg-none mb-2">
+              <v-row v-if="lastOrder !== null || searchQuery" class="px-2 d-lg-none mb-2">
                 <v-col cols="12" class="pa-0">
                   <v-chip
                     v-if="lastOrder !== null"
@@ -210,15 +210,17 @@
               </v-row>
 
               <!-- Content grid - Always showing Studios -->
-              <v-row>
+              <v-row class="mx-n1">
                 <v-col
                   v-for="studio in studios"
                   :key="studio.id"
-                  cols="6"
-                  sm="4"
+                  cols="12"
+                  xs="12"
+                  sm="6"
                   md="4"
-                  lg="3"
-                  class="pa-2"
+                  lg="4"
+                  xl="3"
+                  class="pa-1 pa-sm-2"
                 >
                   <StudioCard
                     :studio="studio"
@@ -640,6 +642,25 @@ export default {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   padding-right: 8px;
+}
+
+/* Mobile overflow fixes */
+@media (max-width: 1263px) {
+  .v-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+/* Prevent horizontal overflow */
+.v-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.v-col {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
 }
 
 .sticky-sidebar::-webkit-scrollbar {

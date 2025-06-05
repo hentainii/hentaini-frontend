@@ -117,31 +117,35 @@
               lg="9"
             >
               <!-- Mobile filters -->
-              <v-row class="d-lg-none mb-4">
-                <v-col cols="6">
+              <v-row class="d-lg-none mb-4 mx-n1">
+                <v-col cols="6" class="pa-1">
                   <v-btn
                     block
-                    color="primary"
-                    outlined
+                    color="grey darken-3"
+                    depressed
+                    class="rounded-lg text-capitalize"
+                    height="40"
                     @click="showOrderSheet = true"
                   >
-                    <v-icon left>
+                    <v-icon left size="16">
                       mdi-sort
                     </v-icon>
-                    Ordenar
+                    <span class="text-truncate text-caption">Ordenar</span>
                   </v-btn>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="6" class="pa-1">
                   <v-btn
                     block
-                    color="primary"
-                    outlined
+                    color="grey darken-3"
+                    depressed
+                    class="rounded-lg text-capitalize"
+                    height="40"
                     @click="showSearchSheet = true"
                   >
-                    <v-icon left>
+                    <v-icon left size="16">
                       mdi-magnify
                     </v-icon>
-                    Buscar
+                    <span class="text-truncate text-caption">Buscar</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -167,15 +171,17 @@
               </v-row>
 
               <!-- Producers grid -->
-              <v-row>
+              <v-row class="mx-n1">
                 <v-col
                   v-for="producer in producers"
                   :key="producer.id"
-                  cols="6"
-                  sm="4"
+                  cols="12"
+                  xs="12"
+                  sm="6"
                   md="4"
-                  lg="3"
-                  class="pa-2"
+                  lg="4"
+                  xl="3"
+                  class="pa-1 pa-sm-2"
                 >
                   <ProducerCard
                     :producer="producer"
@@ -222,7 +228,7 @@
                 <v-pagination
                   v-model="pagination.page"
                   :length="pagination.pageCount"
-                  :total-visible="7"
+                  :total-visible="$vuetify.breakpoint.mobile ? 3 : 7"
                   color="primary"
                   class="elevation-1"
                 />
@@ -479,6 +485,25 @@ export default {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   padding-right: 8px;
+}
+
+/* Mobile overflow fixes */
+@media (max-width: 1263px) {
+  .v-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+/* Prevent horizontal overflow */
+.v-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.v-col {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
 }
 
 .v-pagination >>> .v-pagination__item {

@@ -75,6 +75,8 @@ export default {
   serie: {
     synopsis: 'Synopsis: ',
     genres: 'Genres ',
+    studio: 'Studio:',
+    producer: 'Producer:',
     loginToSave: 'Save',
     noEpísodes: 'No episodes yet',
     similar_series: 'Similar Series'
