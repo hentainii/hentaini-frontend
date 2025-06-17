@@ -82,8 +82,10 @@ export default {
         const name = this.studioSearch.trim()
         await this.createStudio(name)
         this.studioSearch = ''
+        this.$emit('change', this.internalValue)
       } else {
         this.internalValue = val && val.id ? val.id : val
+        this.$emit('change', this.internalValue)
       }
     }
   }

@@ -18,6 +18,12 @@ export const mutations = {
   },
   updateStatus (state, payload) {
     state.panelSerieList.find(serie => serie.id === payload.serieId).status = payload.status
+  },
+  updateStudio (state, payload) {
+    state.panelSerieList.find(serie => serie.id === payload.serieId).studio = payload.studio
+  },
+  updateProducer (state, payload) {
+    state.panelSerieList.find(serie => serie.id === payload.serieId).producer = payload.producer
   }
 }
 export const actions = {
@@ -91,7 +97,9 @@ export const actions = {
       filters,
       populate: [
         'status',
-        'episodes'
+        'episodes',
+        'studio',
+        'producer'
       ],
       sort: [sorted],
       pagination: payload.pagination
@@ -163,5 +171,57 @@ export const actions = {
   },
   updateStatus ({ commit }, payload) {
     commit('updateStatus', payload)
+  },
+  async saveStudio ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      },
+      body: JSON.stringify({
+        data: {
+          studio: payload.studio
+        }
+      })
+    }).then((input) => {
+      if (input.status === 200) {
+        this.snack = true
+        this.snackColor = 'info'
+        this.snackText = 'Studio changed successfully!'
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
+  },
+  async saveProducer ({ commit }, payload) {
+    await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${payload.serieId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.token}`
+      },
+      body: JSON.stringify({
+        data: {
+          producer: payload.producer
+        }
+      })
+    }).then((input) => {
+      if (input.status === 200) {
+        this.snack = true
+        this.snackColor = 'info'
+        this.snackText = 'Producer changed successfully!'
+      }
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    })
+  },
+  updateStudio ({ commit }, payload) {
+    commit('updateStudio', payload)
+  },
+  updateProducer ({ commit }, payload) {
+    commit('updateProducer', payload)
   }
 }

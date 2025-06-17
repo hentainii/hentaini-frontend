@@ -40,6 +40,44 @@
             class="elevation-2 modern-table"
             @page-count="pageCount = $event"
           >
+            <template #[`item.studio.name`]="{ item }">
+              <v-edit-dialog
+                :return-value.sync="item.studio"
+                persistent
+                large
+                eager
+                cancel-text="Cancelar"
+                save-text="Guardar"
+                @save="saveStudio(item.id, item.studio)"
+                @cancel="cancel"
+              >
+                <v-chip small label :class="item.studio ? 'grey darken-4' : 'grey'">
+                  {{ item.studio ? item.studio.name : 'No Studio' }}
+                </v-chip>
+                <template #input>
+                  <StudioAutocomplete :value="item.studio" @change="updateStudio($event, item.id)" />
+                </template>
+              </v-edit-dialog>
+            </template>
+            <template #[`item.producer.name`]="{ item }">
+              <v-edit-dialog
+                :return-value.sync="item.producer"
+                persistent
+                large
+                eager
+                cancel-text="Cancelar"
+                save-text="Guardar"
+                @save="saveProducer(item.id, item.producer)"
+                @cancel="cancel"
+              >
+                <v-chip small label :class="item.producer ? 'grey darken-4' : 'grey'">
+                  {{ item.producer ? item.producer.name : 'No Producer' }}
+                </v-chip>
+                <template #input>
+                  <ProducerAutocomplete :value="item.producer" @change="updateProducer($event, item.id)" />
+                </template>
+              </v-edit-dialog>
+            </template>
             <template #[`item.status`]="{ item }">
               <v-edit-dialog
                 :return-value.sync="item.status"
@@ -168,8 +206,15 @@
 </template>
 
 <script>
+import ProducerAutocomplete from '@/components/ProducerAutocomplete.vue'
+import StudioAutocomplete from '@/components/StudioAutocomplete.vue'
+
 export default {
   name: 'SerieList',
+  components: {
+    ProducerAutocomplete,
+    StudioAutocomplete
+  },
   data: () => ({
     search: '',
     alertBox: false,
@@ -188,6 +233,8 @@ export default {
       { text: 'Episodes', value: 'episodes.length' },
       { text: 'Visits', value: 'visits' },
       { text: 'Airing', sortable: true, value: 'status' },
+      { text: 'Studio', sortable: true, value: 'studio.name' },
+      { text: 'Producer', sortable: true, value: 'producer.name' },
       { text: 'Featured', sortable: true, value: 'featured' },
       { text: 'Actions', sortable: false, value: 'actions' }
     ],
@@ -293,6 +340,34 @@ export default {
       this.snack = true
       this.snackColor = 'error'
       this.snackText = 'Operation cancelled.'
+    },
+    async saveStudio (serieId, newStudio) {
+      await this.$store.dispatch('series/saveStudio', {
+        serieId,
+        studio: newStudio,
+        token: this.$store.state.auth.token
+      })
+      this.getSeries()
+    },
+    async saveProducer (serieId, newProducer) {
+      await this.$store.dispatch('series/saveProducer', {
+        serieId,
+        producer: newProducer,
+        token: this.$store.state.auth.token
+      })
+      this.getSeries()
+    },
+    updateStudio (studio, serieId) {
+      this.$store.dispatch('series/updateStudio', {
+        serieId,
+        studio
+      })
+    },
+    async updateProducer (producer, serieId) {
+      await this.$store.dispatch('series/updateProducer', {
+        serieId,
+        producer
+      })
     }
   }
 }

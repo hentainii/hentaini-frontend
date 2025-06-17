@@ -71,8 +71,10 @@ export default {
         const name = this.producerSearch.trim()
         this.createProducer(name)
         this.producerSearch = ''
+        this.$emit('change', this.internalValue)
       } else {
         this.internalValue = val && val.id ? val.id : val
+        this.$emit('change', this.internalValue)
       }
     },
     async createProducer (producerName) {
