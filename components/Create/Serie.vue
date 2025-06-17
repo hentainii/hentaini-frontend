@@ -296,12 +296,6 @@ export default {
         return
       }
       this.serie.synopsis = this.removeNoUTFCharacters(this.serie.synopsis)
-      if (this.studioToCreate && !this.studioList.some(s => s.name.toLowerCase() === this.studioToCreate.toLowerCase())) {
-        await this.createStudio(this.studioToCreate)
-      }
-      if (this.producerToCreate && !this.producerList.some(s => s.name.toLowerCase() === this.producerToCreate.toLowerCase())) {
-        await this.createProducer(this.producerToCreate)
-      }
       let studioId = this.serie.studio
       let producerId = this.serie.producer
       if (typeof studioId === 'object' && studioId !== null && studioId.id) {
@@ -458,32 +452,6 @@ export default {
       } else {
         this.serie.studio = val && val.id ? val.id : val
       }
-    },
-    async createStudio (studioName) {
-      this.isSubmitting = true
-      await this.$store.dispatch('studios/createStudio', {
-        token: this.$store.state.auth.token,
-        studio: { name: studioName }
-      })
-      await this.getStudios()
-      const created = this.studioList.find(s => s.name.toLowerCase() === studioName.toLowerCase())
-      if (created) {
-        this.serie.studio = created.id
-      }
-      this.isSubmitting = false
-    },
-    async createProducer (producerName) {
-      this.isSubmitting = true
-      await this.$store.dispatch('producers/createProducer', {
-        token: this.$store.state.auth.token,
-        producer: { name: producerName }
-      })
-      await this.getProducers()
-      const created = this.producerList.find(s => s.name.toLowerCase() === producerName.toLowerCase())
-      if (created) {
-        this.serie.producer = created.id
-      }
-      this.isSubmitting = false
     }
   }
 }

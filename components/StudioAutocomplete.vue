@@ -69,7 +69,7 @@ export default {
     async createStudio (studioName) {
       await this.$store.dispatch('studios/createStudio', {
         token: this.$store.state.auth.token,
-        studio: { name: studioName }
+        studioData: { name: studioName }
       })
       await this.getStudios()
       const created = this.studioList.find(s => s.name.toLowerCase() === studioName.toLowerCase())
