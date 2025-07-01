@@ -140,7 +140,7 @@ export const actions = {
 
       const pagination = payload.pagination || {
         page: 1,
-        pageSize: 24
+        pageSize: 400
       }
 
       const query = qs.stringify({
