@@ -136,6 +136,12 @@ export default {
         name: 'Filipino',
         iso: 'fil',
         file: 'fil.js'
+      },
+      {
+        code: 'pt',
+        name: 'Português',
+        iso: 'pt-PT',
+        file: 'pt.js'
       }
     ],
     defaultLocale: 'en',
