@@ -215,6 +215,10 @@ export default {
     show_replies: 'Mostrar {count} resposta | Mostrar {count} respostas',
     hide_replies: 'Ocultar respostas'
   },
+  search: {
+    min_characters: 'Mínimo 3 caracteres para pesquisar',
+    searching: 'Pesquisando...'
+  },
   auth: {
     login: 'Entrar',
     register: 'Registrar',

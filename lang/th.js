@@ -140,6 +140,10 @@ export default {
     show_replies: 'แสดง {count} การตอบกลับ',
     hide_replies: 'ซ่อนการตอบกลับ'
   },
+  search: {
+    min_characters: 'ต้องการอย่างน้อย 3 ตัวอักษรเพื่อค้นหา',
+    searching: 'กำลังค้นหา...'
+  },
   auth: {
     login: 'เข้าสู่ระบบ',
     register: 'สมัครสมาชิก',

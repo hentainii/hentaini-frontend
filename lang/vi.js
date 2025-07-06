@@ -141,6 +141,10 @@ export default {
     show_replies: 'Hiện {count} phản hồi',
     hide_replies: 'Ẩn phản hồi'
   },
+  search: {
+    min_characters: 'Tối thiểu 3 ký tự để tìm kiếm',
+    searching: 'Đang tìm kiếm...'
+  },
   auth: {
     login: 'Đăng nhập',
     register: 'Đăng ký',

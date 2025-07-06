@@ -141,6 +141,10 @@ export default {
     show_replies: '{count}টি উত্তর দেখান',
     hide_replies: 'উত্তর লুকান'
   },
+  search: {
+    min_characters: 'অনুসন্ধানের জন্য ন্যূনতম ৩টি অক্ষর',
+    searching: 'অনুসন্ধান করা হচ্ছে...'
+  },
   auth: {
     login: 'লগইন',
     register: 'নিবন্ধন',

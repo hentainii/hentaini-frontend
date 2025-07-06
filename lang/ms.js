@@ -141,6 +141,10 @@ export default {
     show_replies: 'Tunjuk {count} balasan',
     hide_replies: 'Sembunyikan balasan'
   },
+  search: {
+    min_characters: 'Minimum 3 aksara untuk mencari',
+    searching: 'Mencari...'
+  },
   auth: {
     login: 'Log Masuk',
     register: 'Daftar',

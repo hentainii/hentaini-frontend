@@ -141,6 +141,10 @@ export default {
     show_replies: '{count} जवाब दिखाएं',
     hide_replies: 'जवाब छुपाएं'
   },
+  search: {
+    min_characters: 'खोजने के लिए न्यूनतम 3 अक्षर',
+    searching: 'खोजा जा रहा है...'
+  },
   auth: {
     login: 'लॉगिन',
     register: 'पंजीकरण',

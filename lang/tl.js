@@ -141,6 +141,10 @@ export default {
     show_replies: 'Ipakita ang {count} sagot',
     hide_replies: 'Itago ang mga sagot'
   },
+  search: {
+    min_characters: 'Minimum na 3 character para maghanap',
+    searching: 'Naghahanap...'
+  },
   auth: {
     login: 'Mag-login',
     register: 'Mag-register',

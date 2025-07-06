@@ -140,6 +140,10 @@ export default {
     show_replies: 'Voir {count} réponse | Voir {count} réponses',
     hide_replies: 'Masquer les réponses'
   },
+  search: {
+    min_characters: 'Minimum 3 caractères pour rechercher',
+    searching: 'Recherche en cours...'
+  },
   auth: {
     login: 'Connexion',
     register: 'Inscription',
