@@ -118,7 +118,8 @@ export default {
       { id: 8, name: 'Create Player', url: '/panel/player/create', icon: 'mdi-play-circle' },
       { id: 9, name: 'Episode Reports', url: '/panel/reports', icon: 'mdi-flag' },
       { id: 10, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
-      { id: 11, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' }
+      { id: 11, name: 'Comentarios', url: '/panel/comments', icon: 'mdi-comment' },
+      { id: 12, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' }
     ]
   })
 }

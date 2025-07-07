@@ -1,7 +1,7 @@
 # Plan Detallado: Sistema de Comentarios Propio para Hentaini
 
 ## Objetivo
-Reemplazar Disqus con un sistema de comentarios propio usando Nuxt2 + Strapi 4
+Sistema de comentarios propio usando Nuxt2 + Strapi 4
 
 ## Backend - Endpoints Strapi 4 Requeridos
 
