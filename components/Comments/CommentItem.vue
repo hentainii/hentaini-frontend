@@ -54,6 +54,7 @@
             <!-- Contenido del comentario -->
             <div v-if="!isEditing" class="comment-content">
               <p
+                v-if="!commentData.is_deleted"
                 :class="{ 'text--disabled': commentData.is_deleted }"
                 class="mb-2 text-body-2"
                 v-html="formattedContent"
