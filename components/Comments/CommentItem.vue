@@ -27,12 +27,13 @@
               </span>
 
               <v-chip
-                v-if="author?.role?.name === 'admin' && !commentData.is_deleted"
+                v-if="isAuthorAdmin && !commentData.is_deleted"
                 x-small
-                color="primary"
+                color="red"
                 text-color="white"
-                class="mr-2"
+                class="mr-2 admin-badge"
               >
+                <v-icon left x-small>mdi-shield-crown</v-icon>
                 {{ $t('comments.admin') }}
               </v-chip>
 
@@ -426,6 +427,11 @@ export default {
       return this.hasUserLiked(this.comment)
     },
 
+    isAuthorAdmin () {
+      // Verificar si el autor del comentario es admin (level 2)
+      return this.author?.level === 2
+    },
+
     replies () {
       if (this.isReply) { return [] }
       return this.getRepliesByParentId(this.comment.id)
@@ -731,6 +737,22 @@ export default {
 /* Estados de carga */
 .v-btn--loading {
   pointer-events: none;
+}
+
+/* Badge especial para admin */
+.admin-badge {
+  background: linear-gradient(45deg, #ff4444 0%, #ff6666 100%) !important;
+  box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3) !important;
+  animation: adminGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes adminGlow {
+  from {
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
+  }
+  to {
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.5);
+  }
 }
 
 /* Mejoras visuales */

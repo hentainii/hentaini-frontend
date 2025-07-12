@@ -215,6 +215,13 @@ export default {
     show_replies: 'Ver {count} respuesta | Ver {count} respuestas',
     hide_replies: 'Ocultar respuestas'
   },
+  reactions: {
+    like: 'Me gusta',
+    love: 'Me encanta',
+    wow: 'Me sorprende',
+    dislike: 'Me disgusta',
+    sad: 'Me entristece'
+  },
   search: {
     min_characters: 'Mínimo 3 caracteres para buscar',
     searching: 'Buscando...'

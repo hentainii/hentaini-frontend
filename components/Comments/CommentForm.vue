@@ -37,9 +37,21 @@
                   mdi-account-circle
                 </v-icon>
               </v-avatar>
-              <span class="text-caption text--secondary">
-                {{ $t('comments.posting_as') }} {{ currentUser?.username }}
-              </span>
+              <div class="d-flex align-center">
+                <span class="text-caption text--secondary">
+                  {{ $t('comments.posting_as') }} {{ currentUser?.username }}
+                </span>
+                <v-chip
+                  v-if="isCurrentUserAdmin"
+                  x-small
+                  color="red"
+                  text-color="white"
+                  class="ml-2 admin-badge"
+                >
+                  <v-icon left x-small>mdi-shield-crown</v-icon>
+                  {{ $t('comments.admin') }}
+                </v-chip>
+              </div>
             </div>
 
             <div class="d-flex gap-2">
@@ -146,6 +158,11 @@ export default {
       return this.auth && this.auth.id
     },
 
+    isCurrentUserAdmin () {
+      // Verificar si el usuario actual es admin (level 2)
+      return this.currentUser?.level === 2
+    },
+
     avatarUrl () {
       if (!this.currentUser?.avatar) { return null }
       return `${this.$config.CDN_ENDPOINT}${this.currentUser.avatar.url}`
@@ -215,5 +232,21 @@ export default {
 
 .gap-2 {
   gap: 8px;
+}
+
+/* Badge especial para admin */
+.admin-badge {
+  background: linear-gradient(45deg, #ff4444 0%, #ff6666 100%) !important;
+  box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3) !important;
+  animation: adminGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes adminGlow {
+  from {
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
+  }
+  to {
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.5);
+  }
 }
 </style>

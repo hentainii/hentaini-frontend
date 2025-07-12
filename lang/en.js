@@ -215,6 +215,13 @@ export default {
     show_replies: 'Show {count} reply | Show {count} replies',
     hide_replies: 'Hide replies'
   },
+  reactions: {
+    like: 'Like',
+    love: 'Love',
+    wow: 'Wow',
+    dislike: 'Dislike',
+    sad: 'Sad'
+  },
   search: {
     min_characters: 'Minimum 3 characters to search',
     searching: 'Searching...'
