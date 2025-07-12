@@ -337,7 +337,12 @@ export default {
       try {
         const query = qs.stringify({
           filters: {
-            fixed: false
+            fixed: {
+              $eq: false
+            },
+            publishedAt: {
+              $notNull: true
+            }
           },
           pagination: {
             pageSize: 1
