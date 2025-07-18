@@ -38,9 +38,9 @@
                 </v-icon>
               </v-avatar>
               <div class="d-flex align-center">
-                <span class="text-caption text--secondary">
-                  {{ $t('comments.posting_as') }} {{ currentUser?.username }}
-                </span>
+              <span class="text-caption text--secondary">
+                {{ $t('comments.posting_as') }} {{ currentUser?.username }}
+              </span>
                 <v-chip
                   v-if="isCurrentUserAdmin"
                   x-small

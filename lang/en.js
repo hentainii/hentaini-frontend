@@ -218,9 +218,15 @@ export default {
   reactions: {
     like: 'Like',
     love: 'Love',
+    funny: 'Funny',
     wow: 'Wow',
-    dislike: 'Dislike',
-    sad: 'Sad'
+    mad: 'Mad',
+    title: 'Reactions',
+    tooltip_like: 'Like',
+    tooltip_love: 'Love',
+    tooltip_funny: 'Funny',
+    tooltip_wow: 'Wow',
+    tooltip_mad: 'Mad'
   },
   search: {
     min_characters: 'Minimum 3 characters to search',

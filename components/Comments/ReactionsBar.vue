@@ -1,6 +1,9 @@
 <template>
   <div class="reactions-bar">
     <div class="reactions-container">
+      <div class="reactions-title text-caption mb-2" style="color:#aaa;letter-spacing:1px;">
+        {{ $t('reactions.title') }}
+      </div>
       <!-- Botones de reacción -->
       <div class="reaction-buttons">
         <div
@@ -8,24 +11,31 @@
           :key="reaction.type"
           class="reaction-wrapper"
         >
-          <v-btn
-            :class="[
-              'reaction-btn',
-              { 'reaction-active': userReaction && userReaction.reaction_type === reaction.type },
-              { 'reaction-clicked': clickedReaction === reaction.type }
-            ]"
-            :disabled="loading"
-            fab
-            small
-            @click="handleReactionClick(reaction.type)"
-          >
-            <span
-              class="reaction-img"
-              :style="{
-                backgroundPositionX: `-${reaction.offset}px`
-              }"
-            />
-          </v-btn>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                :class="[
+                  'reaction-btn',
+                  { 'reaction-active': userReaction && userReaction.reaction_type === reaction.type },
+                  { 'reaction-clicked': clickedReaction === reaction.type }
+                ]"
+                :disabled="loading"
+                fab
+                small
+                v-bind="attrs"
+                v-on="on"
+                @click="handleReactionClick(reaction.type)"
+              >
+                <span
+                  class="reaction-img"
+                  :style="{
+                    backgroundPositionX: `-${getOffset(reaction)}px`
+                  }"
+                />
+              </v-btn>
+            </template>
+            <span>{{ $t(reaction.tooltip) }}</span>
+          </v-tooltip>
           <div v-if="reactionStats[reaction.type] > 0" class="reaction-count">
             {{ reactionStats[reaction.type] }}
           </div>
@@ -66,31 +76,37 @@ export default {
   data () {
     return {
       clickedReaction: null,
+      currentBreakpoint: 'desktop',
       reactionTypes: [
         {
           type: 'like',
           label: 'reactions.like',
-          offset: 0
+          tooltip: 'reactions.tooltip_like',
+          offset: { desktop: 0, tablet: 0, mobile: 0 }
         },
         {
           type: 'love',
           label: 'reactions.love',
-          offset: 100
+          tooltip: 'reactions.tooltip_love',
+          offset: { desktop: 97, tablet: 81, mobile: 52 }
+        },
+        {
+          type: 'funny',
+          label: 'reactions.funny',
+          tooltip: 'reactions.tooltip_funny',
+          offset: { desktop: 202, tablet: 168, mobile: 120 }
         },
         {
           type: 'wow',
           label: 'reactions.wow',
-          offset: 202
+          tooltip: 'reactions.tooltip_wow',
+          offset: { desktop: 308, tablet: 255, mobile: 180 }
         },
         {
-          type: 'dislike',
-          label: 'reactions.dislike',
-          offset: 308
-        },
-        {
-          type: 'sad',
-          label: 'reactions.sad',
-          offset: 410
+          type: 'mad',
+          label: 'reactions.mad',
+          tooltip: 'reactions.tooltip_mad',
+          offset: { desktop: 410, tablet: 341, mobile: 240 }
         }
       ]
     }
@@ -119,8 +135,13 @@ export default {
     }
   },
 
-  async mounted () {
-    await this.loadReactions()
+  mounted () {
+    this.loadReactions()
+    this.updateBreakpoint()
+    window.addEventListener('resize', this.updateBreakpoint)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.updateBreakpoint)
   },
 
   methods: {
@@ -160,6 +181,25 @@ export default {
 
     clearError () {
       this.$store.dispatch('reactions/clearError')
+    },
+
+    getOffset (reaction) {
+      // Devuelve el offset correcto según el breakpoint reactivo
+      if (typeof reaction.offset === 'object') {
+        return reaction.offset[this.currentBreakpoint] || reaction.offset.desktop
+      }
+      return reaction.offset
+    },
+
+    updateBreakpoint () {
+      const width = window.innerWidth
+      if (width < 600) {
+        this.currentBreakpoint = 'mobile'
+      } else if (width < 900) {
+        this.currentBreakpoint = 'tablet'
+      } else {
+        this.currentBreakpoint = 'desktop'
+      }
     }
   }
 }
