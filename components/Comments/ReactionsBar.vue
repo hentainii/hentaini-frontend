@@ -88,25 +88,25 @@ export default {
           type: 'love',
           label: 'reactions.love',
           tooltip: 'reactions.tooltip_love',
-          offset: { desktop: 97, tablet: 81, mobile: 52 }
+          offset: { desktop: 97, tablet: 81, mobile: 50 }
         },
         {
           type: 'funny',
           label: 'reactions.funny',
           tooltip: 'reactions.tooltip_funny',
-          offset: { desktop: 202, tablet: 168, mobile: 120 }
+          offset: { desktop: 202, tablet: 168, mobile: 103 }
         },
         {
           type: 'wow',
           label: 'reactions.wow',
           tooltip: 'reactions.tooltip_wow',
-          offset: { desktop: 308, tablet: 255, mobile: 180 }
+          offset: { desktop: 308, tablet: 255, mobile: 155 }
         },
         {
           type: 'mad',
           label: 'reactions.mad',
           tooltip: 'reactions.tooltip_mad',
-          offset: { desktop: 410, tablet: 341, mobile: 240 }
+          offset: { desktop: 410, tablet: 341, mobile: 206 }
         }
       ]
     }
@@ -382,31 +382,12 @@ export default {
   }
   .reaction-img {
     width: 40px;
-    height: 75px;
-    background-size: 1080px 151px;
+    height: 40px;
+    background-size: 300px 40px;
   }
   .reaction-count {
     font-size: 12px;
     padding: 2px 8px;
-  }
-}
-
-@media (max-width: 400px) {
-  .reactions-bar {
-    padding: 12px;
-  }
-  .reaction-btn {
-    width: 44px !important;
-    height: 44px !important;
-  }
-  .reaction-img {
-    width: 28px;
-    height: 53px;
-    background-size: 1080px 151px;
-  }
-  .reaction-count {
-    font-size: 10px;
-    padding: 1px 4px;
   }
 }
 </style>
