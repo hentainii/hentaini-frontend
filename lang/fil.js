@@ -140,6 +140,19 @@ export default {
     show_replies: 'Ipakita ang {count} tugon',
     hide_replies: 'Itago ang mga tugon'
   },
+  reactions: {
+    like: 'Like',
+    love: 'Love',
+    funny: 'Nakakatawa',
+    wow: 'Wow',
+    mad: 'Galit',
+    title: 'Reaksyon',
+    tooltip_like: 'Like',
+    tooltip_love: 'Love',
+    tooltip_funny: 'Nakakatawa',
+    tooltip_wow: 'Wow',
+    tooltip_mad: 'Galit'
+  },
   search: {
     min_characters: 'Minimum na 3 character para maghanap',
     searching: 'Naghahanap...'

@@ -141,6 +141,19 @@ export default {
     show_replies: '{count} उत्तरे दाखवा',
     hide_replies: 'उत्तरे लपवा'
   },
+  reactions: {
+    like: 'आवडले',
+    love: 'प्रेम',
+    funny: 'मजेशीर',
+    wow: 'वा!',
+    mad: 'राग',
+    title: 'प्रतिक्रिया',
+    tooltip_like: 'आवडले',
+    tooltip_love: 'प्रेम',
+    tooltip_funny: 'मजेशीर',
+    tooltip_wow: 'वा!',
+    tooltip_mad: 'राग'
+  },
   search: {
     min_characters: 'शोधण्यासाठी किमान ३ अक्षरे',
     searching: 'शोधत आहे...'

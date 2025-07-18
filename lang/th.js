@@ -140,6 +140,19 @@ export default {
     show_replies: 'แสดง {count} การตอบกลับ',
     hide_replies: 'ซ่อนการตอบกลับ'
   },
+  reactions: {
+    like: 'ถูกใจ',
+    love: 'รักเลย',
+    funny: 'ขำ',
+    wow: 'ว้าว',
+    mad: 'โกรธ',
+    title: 'ปฏิกิริยา',
+    tooltip_like: 'ถูกใจ',
+    tooltip_love: 'รักเลย',
+    tooltip_funny: 'ขำ',
+    tooltip_wow: 'ว้าว',
+    tooltip_mad: 'โกรธ'
+  },
   search: {
     min_characters: 'ต้องการอย่างน้อย 3 ตัวอักษรเพื่อค้นหา',
     searching: 'กำลังค้นหา...'

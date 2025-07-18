@@ -215,6 +215,19 @@ export default {
     show_replies: 'Mostrar {count} resposta | Mostrar {count} respostas',
     hide_replies: 'Ocultar respostas'
   },
+  reactions: {
+    like: 'Curtir',
+    love: 'Amei',
+    funny: 'Engraçado',
+    wow: 'Uau',
+    mad: 'Bravo',
+    title: 'Reações',
+    tooltip_like: 'Curtir',
+    tooltip_love: 'Amei',
+    tooltip_funny: 'Engraçado',
+    tooltip_wow: 'Uau',
+    tooltip_mad: 'Bravo'
+  },
   search: {
     min_characters: 'Mínimo 3 caracteres para pesquisar',
     searching: 'Pesquisando...'

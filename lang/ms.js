@@ -141,6 +141,19 @@ export default {
     show_replies: 'Tunjuk {count} balasan',
     hide_replies: 'Sembunyikan balasan'
   },
+  reactions: {
+    like: 'Suka',
+    love: 'Cinta',
+    funny: 'Lucu',
+    wow: 'Wow',
+    mad: 'Marah',
+    title: 'Reaksi',
+    tooltip_like: 'Suka',
+    tooltip_love: 'Cinta',
+    tooltip_funny: 'Lucu',
+    tooltip_wow: 'Wow',
+    tooltip_mad: 'Marah'
+  },
   search: {
     min_characters: 'Minimum 3 aksara untuk mencari',
     searching: 'Mencari...'

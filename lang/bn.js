@@ -141,6 +141,19 @@ export default {
     show_replies: '{count}টি উত্তর দেখান',
     hide_replies: 'উত্তর লুকান'
   },
+  reactions: {
+    like: 'পছন্দ',
+    love: 'ভালোবাসা',
+    funny: 'মজার',
+    wow: 'ওয়াও',
+    mad: 'রাগান্বিত',
+    title: 'প্রতিক্রিয়া',
+    tooltip_like: 'পছন্দ',
+    tooltip_love: 'ভালোবাসা',
+    tooltip_funny: 'মজার',
+    tooltip_wow: 'ওয়াও',
+    tooltip_mad: 'রাগান্বিত'
+  },
   search: {
     min_characters: 'অনুসন্ধানের জন্য ন্যূনতম ৩টি অক্ষর',
     searching: 'অনুসন্ধান করা হচ্ছে...'

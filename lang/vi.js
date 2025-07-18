@@ -141,6 +141,19 @@ export default {
     show_replies: 'Hiện {count} phản hồi',
     hide_replies: 'Ẩn phản hồi'
   },
+  reactions: {
+    like: 'Thích',
+    love: 'Yêu thích',
+    funny: 'Vui nhộn',
+    wow: 'Wow',
+    mad: 'Tức giận',
+    title: 'Phản ứng',
+    tooltip_like: 'Thích',
+    tooltip_love: 'Yêu thích',
+    tooltip_funny: 'Vui nhộn',
+    tooltip_wow: 'Wow',
+    tooltip_mad: 'Tức giận'
+  },
   search: {
     min_characters: 'Tối thiểu 3 ký tự để tìm kiếm',
     searching: 'Đang tìm kiếm...'

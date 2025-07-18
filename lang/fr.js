@@ -140,6 +140,19 @@ export default {
     show_replies: 'Voir {count} réponse | Voir {count} réponses',
     hide_replies: 'Masquer les réponses'
   },
+  reactions: {
+    like: "J'aime",
+    love: "J'adore",
+    funny: 'Drôle',
+    wow: 'Wow',
+    mad: 'Fâché',
+    title: 'Réactions',
+    tooltip_like: "J'aime",
+    tooltip_love: "J'adore",
+    tooltip_funny: 'Drôle',
+    tooltip_wow: 'Wow',
+    tooltip_mad: 'Fâché'
+  },
   search: {
     min_characters: 'Minimum 3 caractères pour rechercher',
     searching: 'Recherche en cours...'

@@ -141,6 +141,19 @@ export default {
     show_replies: '{count} जवाब दिखाएं',
     hide_replies: 'जवाब छुपाएं'
   },
+  reactions: {
+    like: 'पसंद',
+    love: 'प्यार',
+    funny: 'मजेदार',
+    wow: 'वाह',
+    mad: 'गुस्सा',
+    title: 'प्रतिक्रिया',
+    tooltip_like: 'पसंद',
+    tooltip_love: 'प्यार',
+    tooltip_funny: 'मजेदार',
+    tooltip_wow: 'वाह',
+    tooltip_mad: 'गुस्सा'
+  },
   search: {
     min_characters: 'खोजने के लिए न्यूनतम 3 अक्षर',
     searching: 'खोजा जा रहा है...'
