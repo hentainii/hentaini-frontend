@@ -19,7 +19,12 @@
             small
             @click="handleReactionClick(reaction.type)"
           >
-            <span class="reaction-emoji">{{ reaction.emoji }}</span>
+            <span
+              class="reaction-img"
+              :style="{
+                backgroundPositionX: `-${reaction.offset}px`
+              }"
+            />
           </v-btn>
           <div v-if="reactionStats[reaction.type] > 0" class="reaction-count">
             {{ reactionStats[reaction.type] }}
@@ -65,27 +70,27 @@ export default {
         {
           type: 'like',
           label: 'reactions.like',
-          emoji: '👍'
+          offset: 0
         },
         {
           type: 'love',
           label: 'reactions.love',
-          emoji: '❤️'
+          offset: 100
         },
         {
           type: 'wow',
           label: 'reactions.wow',
-          emoji: '😮'
+          offset: 202
         },
         {
           type: 'dislike',
           label: 'reactions.dislike',
-          emoji: '👎'
+          offset: 308
         },
         {
           type: 'sad',
           label: 'reactions.sad',
-          emoji: '😢'
+          offset: 410
         }
       ]
     }
@@ -179,7 +184,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
@@ -187,20 +192,23 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
 }
 
 .reaction-btn {
-  width: 50px !important;
-  height: 50px !important;
+  width: 100px !important;
+  height: 100px !important;
   border-radius: 50% !important;
   background-color: #3a3a3a !important;
   border: 2px solid #4a4a4a !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reaction-btn:hover {
@@ -240,19 +248,24 @@ export default {
   transform: translateY(-2px) scale(1.15) !important;
 }
 
-.reaction-emoji {
-  font-size: 24px;
-  line-height: 1;
+.reaction-img {
+  display: block;
+  width: 83px;
+  height: 80px;
+  background-image: url('/img/reactions.webp');
+  background-repeat: no-repeat;
+  background-size: 600px 80px;
+  background-position-y: 0;
+  background-position-x: 0;
+  margin: 0 auto;
   transition: all 0.3s ease;
-  z-index: 1;
-  position: relative;
 }
 
-.reaction-btn:hover .reaction-emoji {
-  transform: scale(1.2);
+.reaction-btn:hover .reaction-img {
+  transform: scale(1.1);
 }
 
-.reaction-active .reaction-emoji {
+.reaction-active .reaction-img {
   animation: bounce 0.6s ease;
 }
 
@@ -278,21 +291,21 @@ export default {
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-3px);
+    transform: translateY(-6px);
   }
   60% {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
   }
 }
 
 .reaction-count {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold;
   color: #e0e0e0;
   background-color: rgba(255, 255, 255, 0.1);
-  padding: 2px 8px;
-  border-radius: 12px;
-  min-width: 20px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  min-width: 28px;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -307,42 +320,52 @@ export default {
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .reaction-btn {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  .reaction-img {
+    width: 69px;
+    height: 60px;
+    background-size: 500px 60px;
+  }
+}
+
 @media (max-width: 600px) {
   .reaction-buttons {
     gap: 8px;
   }
-
   .reaction-btn {
-    width: 45px !important;
-    height: 45px !important;
+    width: 60px !important;
+    height: 60px !important;
   }
-
-  .reaction-emoji {
-    font-size: 20px;
+  .reaction-img {
+    width: 40px;
+    height: 75px;
+    background-size: 1080px 151px;
   }
-
   .reaction-count {
-    font-size: 10px;
-    padding: 1px 6px;
+    font-size: 12px;
+    padding: 2px 8px;
   }
 }
 
 @media (max-width: 400px) {
   .reactions-bar {
-    padding: 16px;
+    padding: 12px;
   }
-
   .reaction-btn {
-    width: 40px !important;
-    height: 40px !important;
+    width: 44px !important;
+    height: 44px !important;
   }
-
-  .reaction-emoji {
-    font-size: 18px;
+  .reaction-img {
+    width: 28px;
+    height: 53px;
+    background-size: 1080px 151px;
   }
-
   .reaction-count {
-    font-size: 9px;
+    font-size: 10px;
     padding: 1px 4px;
   }
 }
