@@ -1,19 +1,19 @@
 <template>
   <v-autocomplete
     v-model="internalValue"
-    :items="episodeOptions"
-    label="Selecciona un episodio"
+    :items="serieOptions"
+    label="Selecciona una serie"
     item-text="title"
     item-value="id"
     dense
     clearable
     outlined
-    :search-input.sync="episodeSearch"
+    :search-input.sync="serieSearch"
     :loading="isSearching"
     hide-no-data
     hide-details
     @update:search-input="onSearch"
-    @change="onEpisodeSelect"
+    @change="onSerieSelect"
   />
 </template>
 
@@ -21,7 +21,7 @@
 import qs from 'qs'
 
 export default {
-  name: 'EpisodeAutocomplete',
+  name: 'SerieAutocomplete',
   props: {
     value: {
       type: [String, Number, Object],
@@ -30,10 +30,10 @@ export default {
   },
   data () {
     return {
-      episodeSearch: '',
+      serieSearch: '',
       internalValue: this.value,
-      episodes: [], // últimos 25
-      episodeOptions: [],
+      series: [], // últimas 25
+      serieOptions: [],
       isSearching: false,
       lastApiResults: []
     }
@@ -44,20 +44,19 @@ export default {
     },
     internalValue (val) {
       this.$emit('input', val)
-      this.$emit('change', this.episodes.concat(this.lastApiResults).find(e => e.id === val) || null)
+      this.$emit('change', this.series.concat(this.lastApiResults).find(s => s.id === val) || null)
     }
   },
   async mounted () {
-    await this.fetchLatestEpisodes()
-    this.episodeOptions = this.episodes
+    await this.fetchLatestSeries()
+    this.serieOptions = this.series
   },
   methods: {
-    async fetchLatestEpisodes () {
+    async fetchLatestSeries () {
       const token = this.$store.state.auth.token
-      // Buscar las últimas 25 series y popular todos sus episodios
+      // Buscar las últimas 25 series
       const query = qs.stringify({
         sort: ['createdAt:desc'],
-        populate: ['episodes'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
       const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
@@ -67,41 +66,34 @@ export default {
         }
       })
       const data = await res.json()
-      // Aplanar todos los episodios de las series
-      this.episodes = data.data.flatMap((serie) => {
-        if (!serie.episodes) { return [] }
-        return (serie.episodes || []).map(ep => ({
-          id: ep.id,
-          title: `Serie: ${serie.title} - Episodio ${ep.episode_number}`,
-          episode_number: ep.episode_number,
-          serie: { id: serie.id, title: serie.title }
-        }))
-      })
-      this.episodeOptions = this.episodes
+      this.series = data.data.map(serie => ({
+        id: serie.id,
+        title: serie.title
+      }))
+      this.serieOptions = this.series
     },
     async onSearch (term) {
       const searchTerm = (term || '').toLowerCase()
-      // Si no hay término, mostrar los últimos 25
+      // Si no hay término, mostrar las últimas 25
       if (!searchTerm) {
-        this.episodeOptions = this.episodes
+        this.serieOptions = this.series
         this.lastApiResults = []
         return
       }
-      // Buscar en los últimos 25 episodios
-      const localResults = this.episodes.filter(e => (e.title || '').toLowerCase().includes(searchTerm))
+      // Buscar en las últimas 25 series
+      const localResults = this.series.filter(s => (s.title || '').toLowerCase().includes(searchTerm))
       if (localResults.length > 0) {
-        this.episodeOptions = localResults
+        this.serieOptions = localResults
         this.lastApiResults = []
         return
       }
-      // Si no hay resultados locales, buscar en la API de series por nombre
+      // Si no hay resultados locales, buscar en la API
       this.isSearching = true
       const token = this.$store.state.auth.token
       const query = qs.stringify({
         filters: {
           title: { $containsi: searchTerm }
         },
-        populate: ['episodes'],
         sort: ['createdAt:desc'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
@@ -112,19 +104,14 @@ export default {
         }
       })
       const data = await res.json()
-      this.lastApiResults = data.data.flatMap((serie) => {
-        if (!serie.episodes) { return [] }
-        return (serie.episodes || []).map(ep => ({
-          id: ep.id,
-          title: `Serie: ${serie.title} - Episodio ${ep.episode_number}`,
-          episode_number: ep.episode_number,
-          serie: { id: serie.id, title: serie.title }
-        }))
-      })
-      this.episodeOptions = this.lastApiResults
+      this.lastApiResults = data.data.map(serie => ({
+        id: serie.id,
+        title: serie.title
+      }))
+      this.serieOptions = this.lastApiResults
       this.isSearching = false
     },
-    onEpisodeSelect (val) {
+    onSerieSelect (val) {
       this.internalValue = val
     }
   }
