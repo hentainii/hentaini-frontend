@@ -1,0 +1,59 @@
+{
+    "kind": "collectionType",
+    "collectionName": "episodes",
+    "info": {
+      "singularName": "episode",
+      "pluralName": "episodes",
+      "displayName": "episode",
+      "description": ""
+    },
+    "options": {
+      "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+      "episode_number": {
+        "type": "integer"
+      },
+      "hasCustomScreenshot": {
+        "type": "boolean"
+      },
+      "image": {
+        "type": "relation",
+        "relation": "manyToOne",
+        "target": "api::image.image",
+        "inversedBy": "episodes"
+      },
+      "visible": {
+        "type": "boolean"
+      },
+      "serie": {
+        "type": "relation",
+        "relation": "manyToOne",
+        "target": "api::serie.serie",
+        "inversedBy": "episodes"
+      },
+      "players": {
+        "type": "text"
+      },
+      "downloads": {
+        "type": "text"
+      },
+      "isNew": {
+        "type": "boolean"
+      },
+      "reports": {
+        "type": "relation",
+        "relation": "oneToMany",
+        "target": "api::report.report",
+        "mappedBy": "episode"
+      },
+      "uploader_histories": {
+        "type": "relation",
+        "relation": "oneToMany",
+        "target": "api::uploader-history.uploader-history",
+        "mappedBy": "episode"
+      }
+    }
+  }
+  

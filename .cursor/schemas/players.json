@@ -1,0 +1,39 @@
+{
+    "kind": "collectionType",
+    "collectionName": "players",
+    "info": {
+      "singularName": "player",
+      "pluralName": "players",
+      "displayName": "player",
+      "description": ""
+    },
+    "options": {
+      "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+      "name": {
+        "type": "string"
+      },
+      "short_name": {
+        "type": "string"
+      },
+      "player_code": {
+        "type": "string"
+      },
+      "active": {
+        "type": "boolean",
+        "default": true
+      },
+      "accounts": {
+        "type": "relation",
+        "relation": "oneToMany",
+        "target": "api::account.account",
+        "mappedBy": "player"
+      },
+      "up_available": {
+        "type": "boolean"
+      }
+    }
+  }
+  

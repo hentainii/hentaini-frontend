@@ -57,6 +57,7 @@ export default {
       // Buscar las últimas 25 series
       const query = qs.stringify({
         sort: ['createdAt:desc'],
+        populate: ['episodes'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
       const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
@@ -68,7 +69,8 @@ export default {
       const data = await res.json()
       this.series = data.data.map(serie => ({
         id: serie.id,
-        title: serie.title
+        title: `${serie.title} (${serie.episodes?.length || 0} eps)`,
+        rawTitle: serie.title
       }))
       this.serieOptions = this.series
     },
@@ -81,7 +83,7 @@ export default {
         return
       }
       // Buscar en las últimas 25 series
-      const localResults = this.series.filter(s => (s.title || '').toLowerCase().includes(searchTerm))
+      const localResults = this.series.filter(s => (s.rawTitle || '').toLowerCase().includes(searchTerm))
       if (localResults.length > 0) {
         this.serieOptions = localResults
         this.lastApiResults = []
@@ -94,6 +96,7 @@ export default {
         filters: {
           title: { $containsi: searchTerm }
         },
+        populate: ['episodes'],
         sort: ['createdAt:desc'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
@@ -106,7 +109,8 @@ export default {
       const data = await res.json()
       this.lastApiResults = data.data.map(serie => ({
         id: serie.id,
-        title: serie.title
+        title: `${serie.title} (${serie.episodes?.length || 0} eps)`,
+        rawTitle: serie.title
       }))
       this.serieOptions = this.lastApiResults
       this.isSearching = false

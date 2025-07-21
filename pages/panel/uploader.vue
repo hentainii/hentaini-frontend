@@ -24,6 +24,7 @@
             outlined
             dense
             min="1"
+            class="mt-2"
             :rules="episodeRules"
             :disabled="!selectedSerie"
           />
@@ -58,61 +59,43 @@
                 <tr>
                   <th>Sesión</th>
                   <th>Episodio</th>
-                  <th>Archivo</th>
-                  <th>Fecha</th>
-                  <th v-for="account in accounts" :key="account">
-                    {{ account }}
+                  <th v-for="player in players" :key="player.id">
+                    {{ player.name }}
                   </th>
-                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(session, idx) in sessions" :key="session.id">
                   <td>#{{ idx + 1 }}</td>
-                  <td>{{ session.episode && session.episode.serie ? `Serie: ${session.episode.serie.title} - Ep ${session.episode.episode_number}` : '-' }}</td>
-                  <td>{{ session.file_name }}</td>
-                  <td>{{ formatDate(session.started_at) }}</td>
-                  <td v-for="account in accounts" :key="account">
-                    <div v-if="session.services && session.services[account]">
+                  <td>{{ session.serie ? `Serie: ${session.serie.title} - Ep ${session.episode_number}` : '-' }}</td>
+                  <td v-for="player in players" :key="player.id">
+                    <div v-if="session.services && session.services[player.name]">
                       <v-progress-linear
-                        :value="session.services[account].progress"
-                        :color="getStatusColor(session.services[account].status)"
+                        :value="session.services[player.name].progress"
+                        :color="getStatusColor(session.services[player.name].status)"
                         height="8"
                         rounded
                       />
-                      <div v-if="session.services[account].status === 'failed'">
-                        <v-btn small color="red" @click="retryUpload(session.id, account)">
+                      <div v-if="session.services[player.name].status === 'failed'">
+                        <v-btn small color="red" @click="retryUpload(session.id, player.name)">
                           <v-icon left>
                             mdi-refresh
                           </v-icon>Reintentar
                         </v-btn>
                         <div class="error-message">
-                          {{ session.services[account].error }}
+                          {{ session.services[player.name].error }}
                         </div>
                       </div>
-                      <div v-else-if="session.services[account].status === 'success'">
+                      <div v-else-if="session.services[player.name].status === 'success'">
                         <v-icon color="green">
                           mdi-check-circle
                         </v-icon>
-                        <span class="caption">{{ session.services[account].code }}</span>
+                        <span class="caption">{{ session.services[player.name].code }}</span>
                       </div>
                     </div>
                     <div v-else>
                       -
                     </div>
-                  </td>
-                  <td>
-                    <v-btn
-                      v-if="shouldShowCreateEpisodeButton(session)"
-                      small
-                      color="primary"
-                      @click="createEpisodeFromSession(session)"
-                    >
-                      <v-icon left small>
-                        mdi-plus-circle
-                      </v-icon>
-                      Crear Episodio
-                    </v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -142,7 +125,7 @@ export default {
       episodeNumber: null,
       selectedFile: null,
       isUploading: false,
-      accounts: [],
+      players: [], // Changed from accounts to players
       sessions: [],
       currentSession: null,
       fileRules: [
@@ -184,10 +167,14 @@ export default {
     async fetchAccounts () {
       const token = this.$store.state.auth.token
       const query = qs.stringify({
-        filters: { active: { $eq: true } },
+        filters: {
+          up_available: { $eq: true }
+        },
+        populate: ['accounts'],
         sort: ['name:asc'],
         pagination: { page: 1, pageSize: 50 }
       }, { encodeValuesOnly: true })
+
       const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}players?${query}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -195,7 +182,7 @@ export default {
         }
       })
       const data = await res.json()
-      this.accounts = data.data.map(p => p.name)
+      this.players = data.data
     },
     async fetchSessions () {
       const token = this.$store.state.auth.token
@@ -262,8 +249,8 @@ export default {
         this.currentSession = session.data
 
         // Initialize services status
-        this.accounts.forEach((account) => {
-          this.currentSession.services[account] = {
+        this.players.forEach((player) => {
+          this.currentSession.services[player.name] = {
             status: 'uploading',
             progress: 0
           }
@@ -273,7 +260,7 @@ export default {
         const { uploadToMultipleServices } = useUploadManager()
         const results = await uploadToMultipleServices(
           this.selectedFile,
-          this.accounts.map(name => ({ service: name })),
+          this.players.map(player => ({ service: player.name })),
           this.$store,
           (service, progress) => this.updateUploadProgress(service, progress),
           (service, result) => this.handleUploadSuccess(service, result),
