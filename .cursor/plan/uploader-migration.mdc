@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Plan de Migración del Sistema Uploader de PHP a Nuxt.js
 
 ## Objetivo
@@ -34,11 +29,10 @@ Migrar el sistema de subida de archivos (Uploader) desde PHP a Nuxt.js para inte
 ### Tabla `accounts` (nueva):
 - `id` (auto)
 - `service` (string) - nombre del servicio (M, YourUpload, Mp4upload, VHide, STREAM2)
-- `username` (string) - usuario para el servicio
+- `username` (string) - usuario para el servicio (algunas cuentas requieres username y no email)
 - `password` (string) - contraseña para el servicio  
-- `email` (string) - email para el servicio
-- `api_key` (string) - clave API del servicio
-- `up_available` (boolean) - si esta cuenta está disponible para usar
+- `email` (string) - email para el servicio (algunas cuentas requiere email y no username)
+- `api_key` (string) - clave API del servicio (algunas cuentas no requiren ni email ni username, solo una api_key)
 - `player` (relation) - relación con tabla players (many-to-one)
 - `createdAt`, `updatedAt` (auto)
 
@@ -46,16 +40,15 @@ Migrar el sistema de subida de archivos (Uploader) desde PHP a Nuxt.js para inte
 
 ### Fase 1: Preparación de Base de Datos (STRAPI Backend - Repositorio Separado)
 - [x] **Tarea 1.1**: Analizar estructura actual de tabla `players`
-- [ ] **Tarea 1.2**: Añadir campo `up_available` (boolean) a Content Type `players` 
-- [ ] **Tarea 1.3**: Crear Content Type `accounts` con campos:
+- [X] **Tarea 1.2**: Añadir campo `up_available` (boolean) a Content Type `players` 
+- [X] **Tarea 1.3**: Crear Content Type `accounts` con campos:
   - `service` (Text)
   - `username` (Text)  
   - `password` (Text)
   - `email` (Email)
   - `api_key` (Text)
-  - `up_available` (Boolean)
   - `player` (Relation - Many-to-One con players)
-- [ ] **Tarea 1.4**: Configurar permisos en STRAPI para endpoints de accounts
+- [X] **Tarea 1.4**: Configurar permisos en STRAPI para endpoints de accounts
 
 ### Fase 2: Frontend Store Extensions (Nuxt.js)
 - [x] **Tarea 2.1**: Extender `store/players.js` para incluir gestión de accounts
@@ -110,9 +103,9 @@ Migrar el sistema de subida de archivos (Uploader) desde PHP a Nuxt.js para inte
 4. **Utilities**: Chunked upload y retry logic con backoff exponencial
 5. **Componentes UI**: `UploaderMain.vue` y `UploaderProgressCard.vue`
 6. **Integración**: Uploader integrado en `Episode.vue` con auto-population
+7. **Backend STRAPI**: Configuración de Content Types (repositorio separado)
 
 ### 🔄 En Progreso/Falta:
-1. **Backend STRAPI**: Configuración de Content Types (repositorio separado)
 2. **Handlers adicionales**: YourUpload, VHide, STREAM2
 3. **Testing completo**: Todas las fases de testing
 4. **Componentes opcionales**: FileSelector y RetryButton específicos
@@ -306,6 +299,11 @@ Un sistema de upload integrado y moderno que permita:
 4. Retry capability para uploads fallidos ✅
 5. UX fluida integrada en el workflow de creación de episodios ✅
 6. Gestión centralizada de accounts y credentials desde panel admin ⏳
+
+
+
+
+
 
 
 
