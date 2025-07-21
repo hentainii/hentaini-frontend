@@ -109,7 +109,7 @@ export const actions = {
   startUploadSession ({ commit, rootState }, { file, accounts }) {
     const sessionId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-    commit('se}tSelectedFile', file)
+    commit('setSelectedFile', file)
     commit('setIsUploading', true)
     commit('resetUploadState')
     commit('initializeUploadSession', { sessionId, accounts })

@@ -42,6 +42,7 @@ export function useUploadManager () {
    * @param {Object} store - Vuex store instance
    */
   const uploadToService = async (file, account, onProgress, store) => {
+    console.log('uploadToService debug ====> ', account)
     try {
       const handler = getServiceHandler(account.service)
 
@@ -116,6 +117,10 @@ export function useUploadManager () {
       const progressCallback = (progress) => {
         store.dispatch('uploader/updateProgress', {
           service: account.service,
+          email: account.email,
+          password: account.password,
+          username: account.username,
+          api_key: account.api_key,
           progress
         })
       }

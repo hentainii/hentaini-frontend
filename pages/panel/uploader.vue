@@ -226,7 +226,7 @@ export default {
           serie: this.selectedSerie,
           episode_number: this.episodeNumber,
           file_name: this.selectedFile.name,
-          services: {},
+          services: this.players.map(player => ({ service: player.name })),
           started_at: new Date().toISOString()
         }
 
@@ -252,11 +252,13 @@ export default {
           accounts: this.players.map(player => ({ service: player.name }))
         })
 
+        const latestAccount = this.players.map(player => ({ service: player.name, email: player.accounts[0].email, password: player.accounts[0].password, username: player.accounts[0].username, api_key: player.accounts[0].api_key }))
+
         // Start upload to all services
         const { uploadToMultipleServices } = useUploadManager()
         const results = await uploadToMultipleServices(
           this.selectedFile,
-          this.players.map(player => ({ service: player.name })),
+          latestAccount,
           this.$store,
           (service, progress) => {
             this.$store.dispatch('uploader/updateProgress', { service, progress })
