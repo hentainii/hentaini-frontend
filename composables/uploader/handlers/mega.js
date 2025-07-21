@@ -16,7 +16,7 @@ const loadMegaJS = async () => {
     }
 
     // Load from CDN using dynamic import
-    const module = await import(/* webpackIgnore: true */ 'https://unpkg.com/megajs/dist/main.browser-es.mjs')
+    const module = await import(/* webpackIgnore: true */ 'https://unpkg.com/megajs@1.3.7/dist/main.browser-es.mjs')
     Storage = module.Storage
     return Storage
   } catch (error) {

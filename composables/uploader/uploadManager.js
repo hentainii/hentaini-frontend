@@ -4,7 +4,10 @@
  */
 
 import { useMegaUpload } from './handlers/mega'
-import { useMp4UploadHandler } from './handlers/mp4upload'
+import { useMp4Upload } from './handlers/mp4upload'
+import { useStream2Upload } from './handlers/stream2'
+import { useVHideUpload } from './handlers/vhide'
+import { useYourUpload } from './handlers/yourupload'
 import { useRetryLogic, useUploadQueue } from './utils/retryLogic'
 
 export function useUploadManager () {
@@ -15,11 +18,14 @@ export function useUploadManager () {
   const serviceHandlers = {
     M: useMegaUpload,
     Mega: useMegaUpload,
-    Mp4upload: useMp4UploadHandler
-    // Add other handlers as they are implemented
-    // YourUpload: useYourUploadHandler,
-    // VHide: useVHideHandler,
-    // STREAM2: useStream2Handler
+    MP: useMp4Upload,
+    MP4Upload: useMp4Upload,
+    S2: useStream2Upload,
+    STREAM2: useStream2Upload,
+    VH: useVHideUpload,
+    VHide: useVHideUpload,
+    YU: useYourUpload,
+    YourUpload: useYourUpload
   }
 
   /**
@@ -52,8 +58,18 @@ export function useUploadManager () {
           case 'M':
           case 'Mega':
             return handler.uploadToMega(file, account, onProgress)
-          case 'Mp4upload':
+          case 'MP':
+          case 'MP4Upload':
             return handler.uploadToMp4Upload(file, account, onProgress)
+          case 'S2':
+          case 'STREAM2':
+            return handler.uploadToStream2(file, account, onProgress)
+          case 'VH':
+          case 'VHide':
+            return handler.uploadToVHide(file, account, onProgress)
+          case 'YU':
+          case 'YourUpload':
+            return handler.uploadToYourUpload(file, account, onProgress)
           default:
             throw new Error(`Unsupported service: ${account.service}`)
         }
@@ -182,9 +198,13 @@ export function useUploadManager () {
       Mega: 10,
       M: 10,
       YourUpload: 8,
-      Mp4upload: 6,
+      YU: 8,
+      MP4Upload: 6,
+      MP: 6,
       VHide: 5,
-      STREAM2: 4
+      VH: 5,
+      STREAM2: 4,
+      S2: 4
     }
     return priorities[service] || 0
   }
@@ -231,8 +251,18 @@ export function useUploadManager () {
         case 'M':
         case 'Mega':
           return await handler.validateMegaAccount(account)
-        case 'Mp4upload':
+        case 'MP':
+        case 'MP4Upload':
           return await handler.validateMp4UploadAccount(account)
+        case 'S2':
+        case 'STREAM2':
+          return await handler.validateStream2Account(account)
+        case 'VH':
+        case 'VHide':
+          return await handler.validateVHideAccount(account)
+        case 'YU':
+        case 'YourUpload':
+          return await handler.validateYourUploadAccount(account)
         default:
           throw new Error(`Validation not implemented for service: ${account.service}`)
       }

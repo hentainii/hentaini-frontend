@@ -1,46 +1,16 @@
 /**
- * MP4Upload Upload Handler
- * Handles file uploads to MP4Upload.com using their API
+ * STREAM2 Upload Handler
+ * Handles file uploads to StreamWish.com using their API
  */
 
-export function useMp4Upload () {
-  /**
-   * Authenticate with MP4Upload
-   * @param {Object} account - Account credentials
-   * @returns {Promise<string>} Session ID
-   */
-  const authenticate = async (account) => {
-    const formData = new FormData()
-    formData.append('op', 'login')
-    formData.append('login', account.username)
-    formData.append('password', account.password)
-
-    const response = await fetch('https://www.mp4upload.com/', {
-      method: 'POST',
-      body: formData
-    })
-
-    // Get xfss cookie from response
-    const cookies = response.headers.get('set-cookie')
-    if (!cookies) {
-      throw new Error('Failed to obtain session cookie')
-    }
-
-    const xfssCookie = cookies.split(';').find(c => c.trim().startsWith('xfss='))
-    if (!xfssCookie) {
-      throw new Error('Failed to obtain xfss cookie')
-    }
-
-    return xfssCookie.split('=')[1]
-  }
-
+export function useStream2Upload () {
   /**
    * Get upload server URL
-   * @param {string} apiKey - MP4Upload API key
+   * @param {string} apiKey - StreamWish API key
    * @returns {Promise<string>} Upload server URL
    */
   const getUploadServer = async (apiKey) => {
-    const response = await fetch(`https://www.mp4upload.com/api/upload/server?key=${apiKey}`)
+    const response = await fetch(`https://api.streamwish.com/api/upload/server?key=${apiKey}`)
     const data = await response.json()
 
     if (data.status === 200 && data.result) {
@@ -50,12 +20,12 @@ export function useMp4Upload () {
   }
 
   /**
-   * Upload file to MP4Upload
+   * Upload file to StreamWish
    * @param {File} file - File to upload
    * @param {Object} account - Account credentials
    * @param {Function} progressCallback - Progress callback function
    */
-  const uploadToMp4Upload = async (file, account, progressCallback) => {
+  const uploadToStream2 = async (file, account, progressCallback) => {
     try {
       progressCallback({
         percentage: 0,
@@ -63,15 +33,6 @@ export function useMp4Upload () {
         bytesTotal: file.size,
         status: 'initializing'
       })
-
-      // Authenticate
-      progressCallback({
-        percentage: 5,
-        bytesUploaded: 0,
-        bytesTotal: file.size,
-        status: 'authenticating'
-      })
-      const sessionId = await authenticate(account)
 
       // Get upload server
       progressCallback({
@@ -84,7 +45,7 @@ export function useMp4Upload () {
 
       // Prepare upload
       const formData = new FormData()
-      formData.append('sess_id', sessionId)
+      formData.append('key', account.api_key)
       formData.append('file', file)
 
       // Upload file with progress tracking
@@ -115,10 +76,8 @@ export function useMp4Upload () {
                 status: 'completed'
               })
 
-              if (response[0]?.file_code) {
-                resolve(response[0].file_code)
-              } else if (response.file_code) {
-                resolve(response.file_code)
+              if (response.status === 200 && response.files?.[0]?.filecode) {
+                resolve(response.files[0].filecode)
               } else {
                 reject(new Error(`Failed to upload file: ${xhr.responseText}`))
               }
@@ -138,31 +97,31 @@ export function useMp4Upload () {
         xhr.send(formData)
       })
     } catch (error) {
-      throw new Error(`MP4Upload error: ${error.message}`)
+      throw new Error(`STREAM2 error: ${error.message}`)
     }
   }
 
   /**
-   * Validate MP4Upload account credentials
-   * @param {Object} account - Account object with username, password and api_key
+   * Validate STREAM2 account credentials
+   * @param {Object} account - Account object with api_key
    */
-  const validateMp4UploadAccount = async (account) => {
-    if (!account.username || !account.password || !account.api_key) {
-      throw new Error('MP4Upload account requires username, password and api_key')
+  const validateStream2Account = async (account) => {
+    if (!account.api_key) {
+      throw new Error('STREAM2 account requires api_key')
     }
 
     try {
-      await authenticate(account)
+      await getUploadServer(account.api_key)
       return true
     } catch (error) {
-      throw new Error(`MP4Upload account validation failed: ${error.message}`)
+      throw new Error(`STREAM2 account validation failed: ${error.message}`)
     }
   }
 
   return {
-    uploadToMp4Upload,
-    validateMp4UploadAccount,
-    serviceName: 'MP4Upload',
-    serviceId: 'MP'
+    uploadToStream2,
+    validateStream2Account,
+    serviceName: 'STREAM2',
+    serviceId: 'S2'
   }
 }
