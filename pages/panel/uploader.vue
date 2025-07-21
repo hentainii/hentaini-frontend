@@ -41,7 +41,7 @@
           />
           <v-btn
             class="mt-4 primary rounded-xl"
-            :disabled="!selectedFile || !selectedSerie || !episodeNumber || isUploading"
+            :disabled="!selectedFile || !selectedSerie || episodeNumber === null || isUploading"
             :loading="isUploading"
             block
             @click="startUpload"
@@ -122,6 +122,7 @@ export default {
     return {
       selectedSerie: null,
       selectedSerieObj: null,
+      selectedFile: null,
       episodeNumber: null,
       players: [],
       sessions: [],
@@ -134,7 +135,8 @@ export default {
       episodeRules: [
         v => !!v || 'Por favor ingresa el número de episodio',
         v => v > 0 || 'El número de episodio debe ser mayor a 0'
-      ]
+      ],
+      isUploading: false
     }
   },
   async mounted () {
