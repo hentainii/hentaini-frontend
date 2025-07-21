@@ -119,7 +119,8 @@ export default {
       { id: 9, name: 'Episode Reports', url: '/panel/reports', icon: 'mdi-flag' },
       { id: 10, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
       { id: 11, name: 'Comentarios', url: '/panel/comments', icon: 'mdi-comment' },
-      { id: 12, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' }
+      { id: 12, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' },
+      { id: 13, name: 'Uploader', url: '/panel/uploader', icon: 'mdi-cloud-upload' }
     ]
   })
 }
