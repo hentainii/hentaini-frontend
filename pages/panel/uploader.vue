@@ -77,7 +77,7 @@
                         rounded
                       />
                       <div v-if="session.services[player.name].status === 'failed'">
-                        <v-btn small color="red" @click="retryUpload(session.id, player.name)">
+                        <v-btn small color="red" @click="retryUploadService(session.id, player.name)">
                           <v-icon left>
                             mdi-refresh
                           </v-icon>Reintentar
@@ -123,9 +123,7 @@ export default {
       selectedSerie: null,
       selectedSerieObj: null,
       episodeNumber: null,
-      selectedFile: null,
-      isUploading: false,
-      players: [], // Changed from accounts to players
+      players: [],
       sessions: [],
       currentSession: null,
       fileRules: [
@@ -149,7 +147,7 @@ export default {
     },
     onFileSelected (file) {
       if (file && this.validateFile(file)) {
-        this.selectedFile = file
+        this.$store.dispatch('uploader/selectFile', file)
       }
     },
     validateFile (file) {
@@ -187,7 +185,7 @@ export default {
     async fetchSessions () {
       const token = this.$store.state.auth.token
       const query = qs.stringify({
-        populate: ['episode', 'episode.serie'],
+        populate: ['serie'],
         sort: ['started_at:desc'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
@@ -219,8 +217,6 @@ export default {
         return
       }
 
-      this.isUploading = true
-
       try {
         // Create upload session
         const token = this.$store.state.auth.token
@@ -248,12 +244,10 @@ export default {
         const session = await res.json()
         this.currentSession = session.data
 
-        // Initialize services status
-        this.players.forEach((player) => {
-          this.currentSession.services[player.name] = {
-            status: 'uploading',
-            progress: 0
-          }
+        // Start upload session in store
+        const sessionId = await this.$store.dispatch('uploader/startUploadSession', {
+          file: this.selectedFile,
+          accounts: this.players.map(player => ({ service: player.name }))
         })
 
         // Start upload to all services
@@ -262,17 +256,26 @@ export default {
           this.selectedFile,
           this.players.map(player => ({ service: player.name })),
           this.$store,
-          (service, progress) => this.updateUploadProgress(service, progress),
-          (service, result) => this.handleUploadSuccess(service, result),
-          (service, error) => this.handleUploadError(service, error)
+          (service, progress) => {
+            this.$store.dispatch('uploader/updateProgress', { service, progress })
+            this.updateUploadProgress(service, progress)
+          },
+          (service, result) => {
+            this.$store.dispatch('uploader/setResult', { service, result })
+            this.handleUploadSuccess(service, result)
+          },
+          (service, error) => {
+            this.$store.dispatch('uploader/setResult', { service, result: null, error })
+            this.handleUploadError(service, error)
+          }
         )
 
         console.log('Upload results:', results)
+        await this.$store.dispatch('uploader/finishUploadSession', sessionId)
       } catch (error) {
         console.error('Upload error:', error)
         this.$toast.error(`Error al subir: ${error.message}`)
       } finally {
-        this.isUploading = false
         await this.fetchSessions()
       }
     },
@@ -347,19 +350,29 @@ export default {
 
       await this.fetchSessions()
     },
-    async retryUpload (sessionId, service) {
+    async retryUploadService (sessionId, service) {
       const session = this.sessions.find(s => s.id === sessionId)
       if (!session) { return }
 
       try {
-        const { retryUpload } = useUploadManager()
-        await retryUpload(
+        this.currentSession = session
+        const { retryUpload: retryUploadManager } = useUploadManager()
+        await retryUploadManager(
           this.selectedFile,
           { service },
           this.$store,
-          progress => this.updateUploadProgress(service, progress),
-          result => this.handleUploadSuccess(service, result),
-          error => this.handleUploadError(service, error)
+          (service, progress) => {
+            this.$store.dispatch('uploader/updateProgress', { service, progress })
+            this.updateUploadProgress(service, progress)
+          },
+          (service, result) => {
+            this.$store.dispatch('uploader/setResult', { service, result })
+            this.handleUploadSuccess(service, result)
+          },
+          (service, error) => {
+            this.$store.dispatch('uploader/setResult', { service, result: null, error })
+            this.handleUploadError(service, error)
+          }
         )
       } catch (error) {
         console.error('Retry error:', error)
