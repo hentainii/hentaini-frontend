@@ -62,6 +62,7 @@
                   <th v-for="player in players" :key="player.id">
                     {{ player.name }}
                   </th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,6 +98,17 @@
                       -
                     </div>
                   </td>
+                  <td>
+                    <v-btn
+                      v-if="shouldShowCreateEpisodeButton(session) && !session.episodeCreated"
+                      small
+                      color="primary"
+                      :loading="isCreatingEpisode"
+                      @click="createEpisodeFromSession(session)"
+                    >
+                      Crear Episodio
+                    </v-btn>
+                  </td>
                 </tr>
               </tbody>
             </v-simple-table>
@@ -106,7 +118,8 @@
             class="mt-4 green darken-1 white--text rounded-xl"
             block
             large
-            @click="goToCreateEpisode"
+            :loading="isCreatingEpisode"
+            @click="createEpisodeFromLastUpload"
           >
             <v-icon left>
               mdi-plus-box
@@ -116,6 +129,15 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-alert
+      v-model="alert.show"
+      :type="alert.type"
+      dense
+      dismissible
+      class="mt-4"
+    >
+      {{ alert.message }}
+    </v-alert>
   </v-container>
 </template>
 
@@ -149,7 +171,13 @@ export default {
         v => v > 0 || 'El número de episodio debe ser mayor a 0'
       ],
       isUploading: false,
-      lastUploadResults: null
+      lastUploadResults: null,
+      isCreatingEpisode: false,
+      alert: {
+        show: false,
+        type: 'info',
+        message: ''
+      }
     }
   },
   async mounted () {
@@ -168,11 +196,11 @@ export default {
     validateFile (file) {
       if (!file) { return false }
       if (file.type !== 'video/mp4') {
-        this.$toast.error('Por favor selecciona un archivo MP4')
+        this.showAlert('error', 'Por favor selecciona un archivo MP4')
         return false
       }
       if (file.size > 2000000000) { // 2GB limit
-        this.$toast.error('El archivo debe ser menor a 2GB')
+        this.showAlert('error', 'El archivo debe ser menor a 2GB')
         return false
       }
       return true
@@ -226,9 +254,47 @@ export default {
         default: return 'grey'
       }
     },
+    showAlert (type, message) {
+      this.alert.type = type
+      this.alert.message = message
+      this.alert.show = true
+    },
     async startUpload () {
       if (!this.selectedFile || !this.selectedSerie || !this.episodeNumber) {
-        this.$toast.error('Por favor selecciona una serie, número de episodio y un archivo')
+        this.showAlert('error', 'Por favor selecciona una serie, número de episodio y un archivo')
+        return
+      }
+
+      // Check if episode already exists
+      try {
+        const token = this.$store.state.auth.token
+        const query = qs.stringify({
+          filters: {
+            serie: { id: { $eq: this.selectedSerie } },
+            episode_number: { $eq: this.episodeNumber }
+          }
+        }, { encodeValuesOnly: true })
+
+        const checkRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        if (!checkRes.ok) {
+          throw new Error('Falló la verificación de episodio existente')
+        }
+
+        const existingEpisodes = await checkRes.json()
+
+        if (existingEpisodes.data && existingEpisodes.data.length > 0) {
+          this.showAlert('error', `El episodio ${this.episodeNumber} ya existe para esta serie. Bórralo antes de continuar.`)
+          return // Stop the upload
+        }
+      } catch (error) {
+        console.error('Error al verificar si el episodio existe:', error)
+        this.showAlert('error', 'Error al verificar si el episodio existe. Inténtalo de nuevo.')
         return
       }
 
@@ -307,7 +373,7 @@ export default {
         this.isUploading = false
       } catch (error) {
         console.error('Upload error:', error)
-        this.$toast.error(`Error al subir: ${error.message}`)
+        this.showAlert('error', `Error al subir: ${error.message}`)
         this.isUploading = false
       }
     },
@@ -353,7 +419,7 @@ export default {
         if (!sessionToUpdate.services[service]) { this.$set(sessionToUpdate.services, service, {}) }
         this.$set(sessionToUpdate.services[service], 'status', 'success')
         this.$set(sessionToUpdate.services[service], 'progress', 100)
-        this.$set(sessionToUpdate.services[service], 'code', result.code)
+        this.$set(sessionToUpdate.services[service], 'code', result)
       }
 
       const token = this.$store.state.auth.token
@@ -362,7 +428,7 @@ export default {
         [service]: {
           status: 'success',
           progress: 100,
-          code: result.code
+          code: result
         }
       }
 
@@ -433,34 +499,54 @@ export default {
         )
       } catch (error) {
         console.error('Retry error:', error)
-        this.$toast.error(`Error al reintentar: ${error.message}`)
+        this.showAlert('error', `Error al reintentar: ${error.message}`)
       }
     },
     shouldShowCreateEpisodeButton (session) {
-      // Show button if at least one service uploaded successfully
-      return Object.values(session.services || {}).some(s => s.status === 'success')
+      // Show button if at least one service uploaded successfully and has a code
+      return Object.values(session.services || {}).some(s => s.status === 'success' && s.code)
     },
     async createEpisodeFromSession (session) {
+      this.isCreatingEpisode = true
       try {
-        // Get successful uploads
-        const successfulUploads = Object.entries(session.services || {})
-          .filter(([, status]) => status.status === 'success')
-          .map(([service, status]) => ({
-            service,
-            code: status.code
-          }))
+        // 1. Check if episode already exists
+        const token = this.$store.state.auth.token
+        const query = qs.stringify({
+          filters: {
+            serie: { id: { $eq: session.serie.id } },
+            episode_number: { $eq: session.episode }
+          }
+        }, { encodeValuesOnly: true })
 
-        if (successfulUploads.length === 0) {
-          this.$toast.error('No hay subidas exitosas para crear el episodio')
+        const checkRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (!checkRes.ok) { throw new Error('Falló la verificación de episodio existente') }
+        const existingEpisodes = await checkRes.json()
+
+        if (existingEpisodes.data && existingEpisodes.data.length > 0) {
+          this.showAlert('error', `El episodio ${session.episode} ya existe para esta serie.`)
           return
         }
 
-        // Create new episode
-        const token = this.$store.state.auth.token
+        // 2. Get successful uploads data
+        const successfulUploads = Object.entries(session.services || {})
+          .filter(([, status]) => status.status === 'success' && status.code)
+          .map(([service, status]) => ({ service, code: status.code }))
+
+        if (successfulUploads.length === 0) {
+          this.showAlert('error', 'No hay subidas exitosas para crear el episodio')
+          return
+        }
+
+        // 3. Create new episode
         const episodeData = {
           data: {
-            serie: session.serie,
-            episode: session.episode,
+            serie: session.serie.id,
+            episode_number: session.episode,
             players: successfulUploads.map(upload => ({
               service: upload.service,
               code: upload.code
@@ -478,28 +564,39 @@ export default {
         })
 
         if (!res.ok) {
-          throw new Error('Failed to create episode')
+          throw new Error('Falló la creación del episodio')
         }
 
-        this.$toast.success('Episodio creado exitosamente')
+        this.showAlert('success', 'Episodio creado exitosamente')
+        // Update UI to prevent re-creation
+        const sessionInList = this.sessions.find(s => s.id === session.id)
+        if (sessionInList) {
+          this.$set(sessionInList, 'episodeCreated', true)
+        }
+        this.lastUploadResults = null // Hide the main button
       } catch (error) {
         console.error('Create episode error:', error)
-        this.$toast.error(`Error al crear episodio: ${error.message}`)
+        this.showAlert('error', `Error al crear episodio: ${error.message}`)
+      } finally {
+        this.isCreatingEpisode = false
       }
     },
-    goToCreateEpisode () {
+    createEpisodeFromLastUpload () {
       if (!this.lastUploadResults || this.lastUploadResults.successful.length === 0) {
-        this.$toast.error('No hay subidas exitosas para crear un episodio.')
+        this.showAlert('error', 'No hay subidas exitosas para crear un episodio.')
         return
       }
 
-      this.$router.push({
-        path: `/panel/serie/${this.selectedSerie}/episode/create`,
-        query: {
-          episodeNumber: this.episodeNumber,
-          players: JSON.stringify(this.lastUploadResults.successful.map(p => ({ service: p.service, result: p.result })))
-        }
-      })
+      const sessionData = {
+        serie: { id: this.selectedSerie, title: this.selectedSerieObj.rawTitle },
+        episode: this.episodeNumber,
+        services: this.lastUploadResults.successful.reduce((acc, p) => {
+          acc[p.service] = { status: 'success', code: p.result }
+          return acc
+        }, {})
+      }
+
+      this.createEpisodeFromSession(sessionData)
     }
   }
 }
