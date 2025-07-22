@@ -28,6 +28,14 @@
             :rules="episodeRules"
             :disabled="!selectedSerie"
           />
+          <v-switch
+            v-model="episodeIsVisible"
+            label="Marcar como visible al crear"
+            inset
+            color="primary"
+            class="mt-2"
+            :disabled="!selectedSerie || !episodeNumber"
+          />
           <v-file-input
             v-model="selectedFile"
             label="Selecciona el archivo a subir"
@@ -158,6 +166,7 @@ export default {
       selectedSerieObj: null,
       selectedFile: null,
       episodeNumber: null,
+      episodeIsVisible: true,
       players: [],
       sessions: [],
       currentSession: null,
@@ -509,8 +518,17 @@ export default {
     async createEpisodeFromSession (session) {
       this.isCreatingEpisode = true
       try {
-        // 1. Check if episode already exists
+        // 0. Fetch full serie data to get default image
         const token = this.$store.state.auth.token
+        const serieRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${session.serie.id}?populate[images][populate][0]=image_type`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (!serieRes.ok) { throw new Error('No se pudieron obtener los datos de la serie') }
+        const serieData = await serieRes.json()
+        const defaultImage = serieData.data.images.find(img => img.image_type.name === 'screenshot')
+        if (!defaultImage) { throw new Error('La serie no tiene una imagen de portada por defecto') }
+
+        // 1. Check if episode already exists
         const query = qs.stringify({
           filters: {
             serie: { id: { $eq: session.serie.id } },
@@ -547,10 +565,16 @@ export default {
           data: {
             serie: session.serie.id,
             episode_number: session.episode,
-            players: successfulUploads.map(upload => ({
-              service: upload.service,
-              code: upload.code
-            }))
+            visible: session.visible !== undefined ? session.visible : true,
+            isNew: true,
+            hasCustomScreenshot: false,
+            image: defaultImage.id,
+            players: JSON.stringify(successfulUploads.map(upload => ({
+              name: upload.service,
+              code: upload.code,
+              url: '' // URL can be generated on client or left empty
+            }))),
+            downloads: '[]'
           }
         }
 
@@ -590,6 +614,7 @@ export default {
       const sessionData = {
         serie: { id: this.selectedSerie, title: this.selectedSerieObj.rawTitle },
         episode: this.episodeNumber,
+        visible: this.episodeIsVisible,
         services: this.lastUploadResults.successful.reduce((acc, p) => {
           acc[p.service] = { status: 'success', code: p.result }
           return acc
