@@ -161,8 +161,6 @@ export const actions = {
       commit('SET_ERROR', null)
       commit('SET_CONTENT_INFO', { contentType, contentId })
 
-      console.log('Cargando comentarios para:', { contentType, contentId })
-
       const qs = require('qs')
       const query = qs.stringify({
         filters: {
@@ -187,15 +185,10 @@ export const actions = {
         encodeValuesOnly: true
       })
 
-      console.log('Query generada:', query)
       const url = `${this.$config.API_STRAPI_ENDPOINT}comments?${query}`
-      console.log('URL completa:', url)
 
       const response = await fetch(url)
       const result = await response.json()
-
-      console.log('Respuesta de loadComments:', result)
-
       // CONSULTA ADICIONAL: Obtener TODOS los comentarios para comparar
       const queryAllComments = qs.stringify({
         filters: {
@@ -217,45 +210,21 @@ export const actions = {
         encodeValuesOnly: true
       })
 
-      console.log('=== CONSULTANDO TODOS LOS COMENTARIOS PARA COMPARACIÓN ===')
       const responseAll = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments?${queryAllComments}`)
       const resultAll = await responseAll.json()
-      console.log('Todos los comentarios (sin filtro):', resultAll)
 
       if (resultAll.data) {
-        console.log('=== COMPARACIÓN: TODOS LOS COMENTARIOS ===')
         resultAll.data.forEach((comment, index) => {
-          const commentData = getCommentData(comment)
-          console.log(`Comentario ${index + 1}:`, {
-            id: comment.id,
-            content: commentData?.content?.substring(0, 30) + '...',
-            reply: commentData?.reply,
-            parent: commentData?.parent,
-            hasAttributes: !!comment.attributes,
-            isReply: !!getRelationData(commentData?.reply),
-            author: getRelationData(commentData?.author)
-          })
+          getCommentData(comment)
         })
-        console.log('=== FIN COMPARACIÓN ===')
       }
 
       if (response.ok) {
         // Log detallado de la estructura de comentarios
         if (result.data && result.data.length > 0) {
-          console.log('=== ANÁLISIS DE ESTRUCTURA DE COMENTARIOS ===')
           result.data.forEach((comment, index) => {
-            const commentData = getCommentData(comment)
-            console.log(`Comentario ${index + 1}:`, {
-              id: comment.id,
-              content: commentData?.content?.substring(0, 50) + '...',
-              reply: commentData?.reply,
-              parent: commentData?.parent,
-              hasAttributes: !!comment.attributes,
-              hasReply: !!getRelationData(commentData?.reply),
-              hasParent: !!getRelationData(commentData?.parent)
-            })
+            getCommentData(comment)
           })
-          console.log('=== FIN ANÁLISIS ===')
         }
 
         commit('SET_COMMENTS', result.data || [])
@@ -292,13 +261,6 @@ export const actions = {
         is_deleted: false
       }
 
-      console.log('Enviando comentario a:', `${this.$config.API_STRAPI_ENDPOINT}comments`)
-      console.log('Datos del comentario:', commentData)
-      console.log('Payload recibido:', payload)
-      console.log('State currentContentId:', state.currentContentId)
-      console.log('State currentContentType:', state.currentContentType)
-      console.log('Token:', token ? 'Token presente' : 'Token ausente')
-
       // Crear el comentario con populate
       const qs = require('qs')
       const populateQuery = qs.stringify({
@@ -318,9 +280,6 @@ export const actions = {
         })
       })
 
-      console.log('Respuesta status:', response.status)
-      console.log('Respuesta headers:', response.headers)
-
       // Verificar si la respuesta es JSON válida
       const responseContentType = response.headers.get('content-type')
       if (!responseContentType || !responseContentType.includes('application/json')) {
@@ -330,7 +289,6 @@ export const actions = {
       }
 
       const result = await response.json()
-      console.log('Respuesta completa del servidor:', result)
 
       if (response.ok) {
         // Normalizar el comentario independientemente de la estructura
@@ -338,7 +296,6 @@ export const actions = {
 
         // Si no tiene structure attributes, agregar estructura mínima para compatibilidad
         if (!commentWithPopulation.attributes) {
-          console.log('Comentario sin attributes, estructura directa detectada')
           // Asegurar que tenga las relaciones necesarias inicializadas
           if (!commentWithPopulation.author) {
             commentWithPopulation.author = null
@@ -351,7 +308,6 @@ export const actions = {
           }
         } else {
           // Estructura con attributes (estándar)
-          console.log('Comentario con attributes, estructura estándar detectada')
           commentWithPopulation = {
             ...result.data,
             attributes: {
@@ -363,7 +319,6 @@ export const actions = {
           }
         }
 
-        console.log('Comentario procesado para el store:', commentWithPopulation)
         commit('ADD_COMMENT', commentWithPopulation)
         return commentWithPopulation
       } else {
@@ -460,8 +415,6 @@ export const actions = {
         throw new Error('Debes estar autenticado para responder')
       }
 
-      console.log('Creando respuesta para comentario:', parentId)
-
       const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments/${parentId}/reply`, {
         method: 'POST',
         headers: {
@@ -474,7 +427,6 @@ export const actions = {
       })
 
       const result = await response.json()
-      console.log('Respuesta de createReply:', result)
 
       if (response.ok) {
         // Agregar la respuesta al store
@@ -493,12 +445,8 @@ export const actions = {
   // Obtener respuestas de un comentario específico
   async loadReplies ({ commit }, { parentId, page = 1, pageSize = 10 }) {
     try {
-      console.log('Cargando respuestas para comentario:', parentId)
-
       const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments/${parentId}/replies?page=${page}&pageSize=${pageSize}`)
       const result = await response.json()
-
-      console.log('Respuestas cargadas:', result)
 
       if (response.ok) {
         // Las respuestas se agregan al array principal de comentarios
@@ -530,8 +478,6 @@ export const actions = {
         throw new Error('Debes estar autenticado para dar like')
       }
 
-      console.log('Toggle like para comentario:', commentId)
-
       const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments/${commentId}/like`, {
         method: 'POST',
         headers: {
@@ -541,7 +487,6 @@ export const actions = {
       })
 
       const result = await response.json()
-      console.log('Respuesta de toggleLike:', result)
 
       if (response.ok) {
         // Actualizar el comentario en el store
@@ -566,8 +511,6 @@ export const actions = {
   // Obtener estadísticas de un comentario
   async getCommentStats ({ commit }, commentId) {
     try {
-      console.log('Obteniendo estadísticas para comentario:', commentId)
-
       const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments/${commentId}/stats`)
       const result = await response.json()
 
@@ -623,18 +566,13 @@ export const actions = {
   // Método temporal para verificar conectividad
   async testCommentsEndpoint ({ commit }) {
     try {
-      console.log('Probando endpoint:', `${this.$config.API_STRAPI_ENDPOINT}comments`)
-
       const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments`)
-      console.log('Test GET status:', response.status)
 
       if (response.ok) {
         const result = await response.json()
-        console.log('Test GET resultado:', result)
         return { success: true, data: result }
       } else {
         const textResponse = await response.text()
-        console.log('Test GET error:', textResponse)
         return { success: false, error: textResponse, status: response.status }
       }
     } catch (error) {

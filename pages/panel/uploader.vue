@@ -20,7 +20,7 @@
           <v-text-field
             v-model="episodeNumber"
             type="number"
-            label="Número de episodio"
+            label="Episode Number"
             outlined
             dense
             min="1"
@@ -30,7 +30,7 @@
           />
           <v-switch
             v-model="episodeIsVisible"
-            label="Marcar como visible al crear"
+            label="Visible?"
             inset
             color="primary"
             class="mt-2"
@@ -38,7 +38,7 @@
           />
           <v-file-input
             v-model="selectedFile"
-            label="Selecciona el archivo a subir"
+            label="Select file to upload"
             prepend-icon="mdi-file-upload"
             outlined
             dense
@@ -49,7 +49,7 @@
           />
           <v-btn
             class="mt-4 primary rounded-xl"
-            :disabled="!selectedFile || !selectedSerie || episodeNumber === null || isUploading"
+            :disabled="!selectedFile || !selectedSerie || episodeNumber === null || isUploading || lastUploadResults !== null"
             :loading="isUploading"
             block
             @click="startUpload"
@@ -57,7 +57,20 @@
             <v-icon left>
               mdi-cloud-upload
             </v-icon>
-            Subir Episodio
+            Upload Episode
+          </v-btn>
+          <v-btn
+            v-if="lastUploadResults && lastUploadResults.successful.length > 0"
+            class="mt-4 green darken-1 white--text rounded-xl"
+            block
+            large
+            :loading="isCreatingEpisode"
+            @click="createEpisodeFromLastUpload"
+          >
+            <v-icon left>
+              mdi-plus-box
+            </v-icon>
+            Create Episode from Uploaded Videos
           </v-btn>
         </v-col>
         <v-col cols="12" md="12">
@@ -65,18 +78,31 @@
             <v-simple-table>
               <thead>
                 <tr>
-                  <th>Sesión</th>
-                  <th>Episodio</th>
+                  <th>Session</th>
+                  <th>Episode</th>
                   <th v-for="player in players" :key="player.id">
                     {{ player.name }}
                   </th>
-                  <th>Acciones</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(session, idx) in sessions" :key="session.id">
                   <td>#{{ idx + 1 }}</td>
-                  <td>{{ session.serie ? `Serie: ${session.serie.title} - Ep ${session.episode}` : '-' }}</td>
+                  <td>
+                    <template v-if="session.serie">
+                      <span>Series: </span>
+                      <router-link :to="`/panel/serie/${session.serie.id}/edit`" class="font-weight-bold">
+                        {{ session.serie.title }}
+                      </router-link>
+                      <span> - Ep </span>
+                      <a href="#" @click.prevent="goToEditEpisode(session)">
+                        <v-progress-circular v-if="fetchingEpisodeForSessionId === session.id" indeterminate size="16" width="2" />
+                        <span v-else class="font-weight-bold">{{ session.episode }}</span>
+                      </a>
+                    </template>
+                    <span v-else>-</span>
+                  </td>
                   <td v-for="player in players" :key="player.id">
                     <div v-if="session.services && session.services[player.name]">
                       <v-progress-linear
@@ -89,7 +115,7 @@
                         <v-btn small color="red" @click="retryUploadService(session.id, player.name)">
                           <v-icon left>
                             mdi-refresh
-                          </v-icon>Reintentar
+                          </v-icon>Retry
                         </v-btn>
                         <div class="error-message">
                           {{ session.services[player.name].error }}
@@ -114,26 +140,13 @@
                       :loading="isCreatingEpisode"
                       @click="createEpisodeFromSession(session)"
                     >
-                      Crear Episodio
+                      Create Episode
                     </v-btn>
                   </td>
                 </tr>
               </tbody>
             </v-simple-table>
           </v-card>
-          <v-btn
-            v-if="lastUploadResults && lastUploadResults.successful.length > 0"
-            class="mt-4 green darken-1 white--text rounded-xl"
-            block
-            large
-            :loading="isCreatingEpisode"
-            @click="createEpisodeFromLastUpload"
-          >
-            <v-icon left>
-              mdi-plus-box
-            </v-icon>
-            Crear Episodio con los videos subidos
-          </v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -171,17 +184,18 @@ export default {
       sessions: [],
       currentSession: null,
       fileRules: [
-        v => !!v || 'Por favor selecciona un archivo',
-        v => !v || v.size <= 2000000000 || 'El archivo debe ser menor a 2GB',
-        v => !v || v.type === 'video/mp4' || 'El archivo debe ser formato MP4'
+        v => !!v || 'Please select a file',
+        v => !v || v.size <= 2000000000 || 'File must be smaller than 2GB',
+        v => !v || v.type === 'video/mp4' || 'File must be in MP4 format'
       ],
       episodeRules: [
-        v => !!v || 'Por favor ingresa el número de episodio',
-        v => v > 0 || 'El número de episodio debe ser mayor a 0'
+        v => !!v || 'Please enter the episode number',
+        v => v > 0 || 'The episode number must be greater than 0'
       ],
       isUploading: false,
       lastUploadResults: null,
       isCreatingEpisode: false,
+      fetchingEpisodeForSessionId: null,
       alert: {
         show: false,
         type: 'info',
@@ -196,6 +210,10 @@ export default {
   methods: {
     onSerieChange (serieObj) {
       this.selectedSerieObj = serieObj
+      // Reset for a new upload flow
+      this.lastUploadResults = null
+      this.selectedFile = null
+      this.episodeNumber = null
     },
     onFileSelected (file) {
       if (file && this.validateFile(file)) {
@@ -205,11 +223,11 @@ export default {
     validateFile (file) {
       if (!file) { return false }
       if (file.type !== 'video/mp4') {
-        this.showAlert('error', 'Por favor selecciona un archivo MP4')
+        this.showAlert('error', 'Please select an MP4 file')
         return false
       }
       if (file.size > 2000000000) { // 2GB limit
-        this.showAlert('error', 'El archivo debe ser menor a 2GB')
+        this.showAlert('error', 'File must be smaller than 2GB')
         return false
       }
       return true
@@ -236,19 +254,56 @@ export default {
     },
     async fetchSessions () {
       const token = this.$store.state.auth.token
-      const query = qs.stringify({
+      // 1. Fetch sessions
+      const sessionsQuery = qs.stringify({
         populate: ['serie'],
         sort: ['started_at:desc'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
-      const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}uploader-sessions?${query}`, {
+      const sessionsRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}uploader-sessions?${sessionsQuery}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
       })
-      const data = await res.json()
-      this.sessions = data.data
+      const sessionsData = await sessionsRes.json()
+      if (!sessionsData.data) {
+        this.sessions = []
+        return
+      }
+      const sessions = sessionsData.data
+      // 2. Get unique serie IDs
+      const serieIds = [...new Set(sessions.map(s => s.serie?.id).filter(Boolean))]
+      if (serieIds.length === 0) {
+        this.sessions = sessions
+        return
+      }
+      // 3. Fetch all relevant episodes for those series
+      const episodesQuery = qs.stringify({
+        filters: {
+          serie: {
+            id: {
+              $in: serieIds
+            }
+          }
+        },
+        fields: ['episode_number'],
+        populate: ['serie'] // to get serie id
+      }, { encodeValuesOnly: true })
+      const episodesRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${episodesQuery}`, {
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      })
+      const episodesData = await episodesRes.json()
+      const existingEpisodes = episodesData.data || []
+      // 4. Create a lookup set for quick checks
+      const episodeLookup = new Set(
+        existingEpisodes.map(ep => `${ep.serie.id}-${ep.episode_number}`)
+      )
+      // 5. Augment sessions with episodeCreated flag
+      this.sessions = sessions.map(session => ({
+        ...session,
+        episodeCreated: session.serie ? episodeLookup.has(`${session.serie.id}-${session.episode}`) : false
+      }))
     },
     formatDate (dateStr) {
       if (!dateStr) { return '-' }
@@ -270,7 +325,7 @@ export default {
     },
     async startUpload () {
       if (!this.selectedFile || !this.selectedSerie || !this.episodeNumber) {
-        this.showAlert('error', 'Por favor selecciona una serie, número de episodio y un archivo')
+        this.showAlert('error', 'Please select a series, episode number, and a file')
         return
       }
 
@@ -292,18 +347,18 @@ export default {
         })
 
         if (!checkRes.ok) {
-          throw new Error('Falló la verificación de episodio existente')
+          throw new Error('Failed to check if episode exists')
         }
 
         const existingEpisodes = await checkRes.json()
 
         if (existingEpisodes.data && existingEpisodes.data.length > 0) {
-          this.showAlert('error', `El episodio ${this.episodeNumber} ya existe para esta serie. Bórralo antes de continuar.`)
+          this.showAlert('error', `Episode ${this.episodeNumber} already exists for this series. Please delete it before proceeding.`)
           return // Stop the upload
         }
       } catch (error) {
-        console.error('Error al verificar si el episodio existe:', error)
-        this.showAlert('error', 'Error al verificar si el episodio existe. Inténtalo de nuevo.')
+        console.error('Error checking if episode exists:', error)
+        this.showAlert('error', 'Error checking if episode exists. Please try again.')
         return
       }
 
@@ -382,7 +437,7 @@ export default {
         this.isUploading = false
       } catch (error) {
         console.error('Upload error:', error)
-        this.showAlert('error', `Error al subir: ${error.message}`)
+        this.showAlert('error', `Upload error: ${error.message}`)
         this.isUploading = false
       }
     },
@@ -508,7 +563,7 @@ export default {
         )
       } catch (error) {
         console.error('Retry error:', error)
-        this.showAlert('error', `Error al reintentar: ${error.message}`)
+        this.showAlert('error', `Retry error: ${error.message}`)
       }
     },
     shouldShowCreateEpisodeButton (session) {
@@ -523,10 +578,10 @@ export default {
         const serieRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series/${session.serie.id}?populate[images][populate][0]=image_type`, {
           headers: { Authorization: `Bearer ${token}` }
         })
-        if (!serieRes.ok) { throw new Error('No se pudieron obtener los datos de la serie') }
+        if (!serieRes.ok) { throw new Error('Could not fetch series data') }
         const serieData = await serieRes.json()
         const defaultImage = serieData.data.images.find(img => img.image_type.name === 'screenshot')
-        if (!defaultImage) { throw new Error('La serie no tiene una imagen de portada por defecto') }
+        if (!defaultImage) { throw new Error('The series does not have a default screenshot image') }
 
         // 1. Check if episode already exists
         const query = qs.stringify({
@@ -542,11 +597,11 @@ export default {
             Authorization: `Bearer ${token}`
           }
         })
-        if (!checkRes.ok) { throw new Error('Falló la verificación de episodio existente') }
+        if (!checkRes.ok) { throw new Error('Failed to check if episode exists') }
         const existingEpisodes = await checkRes.json()
 
         if (existingEpisodes.data && existingEpisodes.data.length > 0) {
-          this.showAlert('error', `El episodio ${session.episode} ya existe para esta serie.`)
+          this.showAlert('error', `Episode ${session.episode} already exists for this series.`)
           return
         }
 
@@ -556,7 +611,7 @@ export default {
           .map(([service, status]) => ({ service, code: status.code }))
 
         if (successfulUploads.length === 0) {
-          this.showAlert('error', 'No hay subidas exitosas para crear el episodio')
+          this.showAlert('error', 'No successful uploads to create an episode from.')
           return
         }
 
@@ -569,11 +624,16 @@ export default {
             isNew: true,
             hasCustomScreenshot: false,
             image: defaultImage.id,
-            players: JSON.stringify(successfulUploads.map(upload => ({
-              name: upload.service,
-              code: upload.code,
-              url: '' // URL can be generated on client or left empty
-            }))),
+            players: JSON.stringify(successfulUploads.map((upload) => {
+              const playerInfo = this.players.find(p => p.name === upload.service)
+              const url = playerInfo ? playerInfo.player_code.replace('codigo', upload.code) : ''
+
+              return {
+                name: upload.service,
+                code: upload.code,
+                url
+              }
+            })),
             downloads: '[]'
           }
         }
@@ -588,26 +648,26 @@ export default {
         })
 
         if (!res.ok) {
-          throw new Error('Falló la creación del episodio')
+          throw new Error('Failed to create episode')
         }
 
-        this.showAlert('success', 'Episodio creado exitosamente')
-        // Update UI to prevent re-creation
-        const sessionInList = this.sessions.find(s => s.id === session.id)
-        if (sessionInList) {
-          this.$set(sessionInList, 'episodeCreated', true)
-        }
-        this.lastUploadResults = null // Hide the main button
+        const newEpisode = await res.json()
+        this.showAlert('success', 'Episode created successfully. Redirecting...')
+
+        // Redirect to the episode edit page
+        setTimeout(() => {
+          this.$router.push({ path: `/panel/serie/${session.serie.id}/episodes/${newEpisode.data.id}/edit` })
+        }, 1500)
       } catch (error) {
         console.error('Create episode error:', error)
-        this.showAlert('error', `Error al crear episodio: ${error.message}`)
+        this.showAlert('error', `Error creating episode: ${error.message}`)
       } finally {
         this.isCreatingEpisode = false
       }
     },
     createEpisodeFromLastUpload () {
       if (!this.lastUploadResults || this.lastUploadResults.successful.length === 0) {
-        this.showAlert('error', 'No hay subidas exitosas para crear un episodio.')
+        this.showAlert('error', 'No successful uploads to create an episode from.')
         return
       }
 
@@ -622,6 +682,45 @@ export default {
       }
 
       this.createEpisodeFromSession(sessionData)
+    },
+    async goToEditEpisode (session) {
+      if (!session || !session.serie || !session.episode) {
+        this.showAlert('error', 'Invalid session information.')
+        return
+      }
+      this.fetchingEpisodeForSessionId = session.id
+      try {
+        const token = this.$store.state.auth.token
+        const query = qs.stringify({
+          filters: {
+            serie: { id: { $eq: session.serie.id } },
+            episode_number: { $eq: session.episode }
+          },
+          fields: ['id']
+        }, { encodeValuesOnly: true })
+
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+        })
+
+        if (!res.ok) {
+          throw new Error('Could not find the episode.')
+        }
+
+        const episodes = await res.json()
+
+        if (episodes.data && episodes.data.length > 0) {
+          const episodeId = episodes.data[0].id
+          this.$router.push({ path: `/panel/serie/${session.serie.id}/episodes/${episodeId}/edit` })
+        } else {
+          this.showAlert('warning', 'This episode has not been created yet. Please create it using the actions button.')
+        }
+      } catch (error) {
+        console.error('Error finding episode ID:', error)
+        this.showAlert('error', 'An error occurred while searching for the episode.')
+      } finally {
+        this.fetchingEpisodeForSessionId = null
+      }
     }
   }
 }

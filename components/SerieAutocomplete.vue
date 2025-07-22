@@ -2,7 +2,7 @@
   <v-autocomplete
     v-model="internalValue"
     :items="serieOptions"
-    label="Selecciona una serie"
+    label="Select serie"
     item-text="title"
     item-value="id"
     dense
