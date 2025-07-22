@@ -33,13 +33,7 @@ export const mutations = {
   updateUploadProgress (state, { service, progress }) {
     state.activeUploads = {
       ...state.activeUploads,
-      [service]: {
-        ...state.activeUploads[service],
-        progress: progress.percentage || 0,
-        bytesUploaded: progress.bytesUploaded || 0,
-        bytesTotal: progress.bytesTotal || 0,
-        status: progress.status || 'uploading' // uploading, completed, error, retrying
-      }
+      [service]: progress
     }
   },
   setUploadResult (state, { service, result, error = null }) {

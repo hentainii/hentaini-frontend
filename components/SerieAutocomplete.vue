@@ -35,7 +35,9 @@ export default {
       series: [], // últimas 25
       serieOptions: [],
       isSearching: false,
-      lastApiResults: []
+      lastApiResults: [],
+      selectedSerie: null,
+      searchTimeout: null
     }
   },
   watch: {
@@ -44,7 +46,9 @@ export default {
     },
     internalValue (val) {
       this.$emit('input', val)
-      this.$emit('change', this.series.concat(this.lastApiResults).find(s => s.id === val) || null)
+      const selected = this.series.concat(this.lastApiResults).find(s => s.id === val) || null
+      this.selectedSerie = selected
+      this.$emit('change', selected)
     }
   },
   async mounted () {
@@ -74,7 +78,21 @@ export default {
       }))
       this.serieOptions = this.series
     },
-    async onSearch (term) {
+    onSearch (term) {
+      if (this.selectedSerie && term === this.selectedSerie.title) {
+        return
+      }
+
+      if (this.isSearching) {
+        return
+      }
+
+      clearTimeout(this.searchTimeout)
+      this.searchTimeout = setTimeout(() => {
+        this.performSearch(term)
+      }, 300)
+    },
+    async performSearch (term) {
       const searchTerm = (term || '').toLowerCase()
       // Si no hay término, mostrar las últimas 25
       if (!searchTerm) {
@@ -100,20 +118,27 @@ export default {
         sort: ['createdAt:desc'],
         pagination: { page: 1, pageSize: 25 }
       }, { encodeValuesOnly: true })
-      const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await res.json()
-      this.lastApiResults = data.data.map(serie => ({
-        id: serie.id,
-        title: `${serie.title} (${serie.episodes?.length || 0} eps)`,
-        rawTitle: serie.title
-      }))
-      this.serieOptions = this.lastApiResults
-      this.isSearching = false
+      try {
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await res.json()
+        this.lastApiResults = data.data.map(serie => ({
+          id: serie.id,
+          title: `${serie.title} (${serie.episodes?.length || 0} eps)`,
+          rawTitle: serie.title
+        }))
+        this.serieOptions = this.lastApiResults
+      } catch (error) {
+        console.error('Error searching series:', error)
+        this.lastApiResults = []
+        this.serieOptions = []
+      } finally {
+        this.isSearching = false
+      }
     },
     onSerieSelect (val) {
       this.internalValue = val

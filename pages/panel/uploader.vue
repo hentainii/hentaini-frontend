@@ -67,7 +67,7 @@
               <tbody>
                 <tr v-for="(session, idx) in sessions" :key="session.id">
                   <td>#{{ idx + 1 }}</td>
-                  <td>{{ session.serie ? `Serie: ${session.serie.title} - Ep ${session.episode_number}` : '-' }}</td>
+                  <td>{{ session.serie ? `Serie: ${session.serie.title} - Ep ${session.episode}` : '-' }}</td>
                   <td v-for="player in players" :key="player.id">
                     <div v-if="session.services && session.services[player.name]">
                       <v-progress-linear
@@ -101,6 +101,18 @@
               </tbody>
             </v-simple-table>
           </v-card>
+          <v-btn
+            v-if="lastUploadResults && lastUploadResults.successful.length > 0"
+            class="mt-4 green darken-1 white--text rounded-xl"
+            block
+            large
+            @click="goToCreateEpisode"
+          >
+            <v-icon left>
+              mdi-plus-box
+            </v-icon>
+            Crear Episodio con los videos subidos
+          </v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -136,7 +148,8 @@ export default {
         v => !!v || 'Por favor ingresa el número de episodio',
         v => v > 0 || 'El número de episodio debe ser mayor a 0'
       ],
-      isUploading: false
+      isUploading: false,
+      lastUploadResults: null
     }
   },
   async mounted () {
@@ -219,12 +232,15 @@ export default {
         return
       }
 
+      this.isUploading = true
+      this.lastUploadResults = null
+
       try {
         // Create upload session
         const token = this.$store.state.auth.token
         const sessionData = {
           serie: this.selectedSerie,
-          episode_number: this.episodeNumber,
+          episode: this.episodeNumber,
           file_name: this.selectedFile.name,
           services: this.players.map(player => ({ service: player.name })),
           started_at: new Date().toISOString()
@@ -245,6 +261,17 @@ export default {
 
         const session = await res.json()
         this.currentSession = session.data
+
+        // Add the new session to the top of the sessions list for immediate UI update
+        const newSessionForUI = {
+          ...session.data,
+          serie: {
+            id: this.selectedSerie,
+            title: this.selectedSerieObj.rawTitle
+          },
+          episode: this.episodeNumber
+        }
+        this.sessions.unshift(newSessionForUI)
 
         // Start upload session in store
         const sessionId = await this.$store.dispatch('uploader/startUploadSession', {
@@ -275,25 +302,37 @@ export default {
         )
 
         console.log('Upload results:', results)
+        this.lastUploadResults = results
         await this.$store.dispatch('uploader/finishUploadSession', sessionId)
+        this.isUploading = false
       } catch (error) {
         console.error('Upload error:', error)
         this.$toast.error(`Error al subir: ${error.message}`)
-      } finally {
-        await this.fetchSessions()
+        this.isUploading = false
       }
     },
     async updateUploadProgress (service, progress) {
       if (!this.currentSession) { return }
+
+      // Update local session for instant UI feedback
+      const sessionToUpdate = this.sessions.find(s => s.id === this.currentSession.id)
+      if (sessionToUpdate) {
+        if (!sessionToUpdate.services) { this.$set(sessionToUpdate, 'services', {}) }
+        if (!sessionToUpdate.services[service]) { this.$set(sessionToUpdate.services, service, {}) }
+        this.$set(sessionToUpdate.services[service], 'progress', progress.percentage)
+        this.$set(sessionToUpdate.services[service], 'status', progress.status)
+      }
 
       const token = this.$store.state.auth.token
       const services = {
         ...this.currentSession.services,
         [service]: {
           ...this.currentSession.services[service],
-          progress
+          progress: progress.percentage,
+          status: progress.status
         }
       }
+      this.currentSession.services = services
 
       await fetch(`${this.$config.API_STRAPI_ENDPOINT}uploader-sessions/${this.currentSession.id}`, {
         method: 'PUT',
@@ -303,11 +342,19 @@ export default {
         },
         body: JSON.stringify({ data: { services } })
       })
-
-      await this.fetchSessions()
     },
     async handleUploadSuccess (service, result) {
       if (!this.currentSession) { return }
+
+      // Update local session for instant UI feedback
+      const sessionToUpdate = this.sessions.find(s => s.id === this.currentSession.id)
+      if (sessionToUpdate) {
+        if (!sessionToUpdate.services) { this.$set(sessionToUpdate, 'services', {}) }
+        if (!sessionToUpdate.services[service]) { this.$set(sessionToUpdate.services, service, {}) }
+        this.$set(sessionToUpdate.services[service], 'status', 'success')
+        this.$set(sessionToUpdate.services[service], 'progress', 100)
+        this.$set(sessionToUpdate.services[service], 'code', result.code)
+      }
 
       const token = this.$store.state.auth.token
       const services = {
@@ -327,11 +374,19 @@ export default {
         },
         body: JSON.stringify({ data: { services } })
       })
-
-      await this.fetchSessions()
     },
     async handleUploadError (service, error) {
       if (!this.currentSession) { return }
+
+      // Update local session for instant UI feedback
+      const sessionToUpdate = this.sessions.find(s => s.id === this.currentSession.id)
+      if (sessionToUpdate) {
+        if (!sessionToUpdate.services) { this.$set(sessionToUpdate, 'services', {}) }
+        if (!sessionToUpdate.services[service]) { this.$set(sessionToUpdate.services, service, {}) }
+        this.$set(sessionToUpdate.services[service], 'status', 'failed')
+        this.$set(sessionToUpdate.services[service], 'progress', 0)
+        this.$set(sessionToUpdate.services[service], 'error', error.message)
+      }
 
       const token = this.$store.state.auth.token
       const services = {
@@ -351,8 +406,6 @@ export default {
         },
         body: JSON.stringify({ data: { services } })
       })
-
-      await this.fetchSessions()
     },
     async retryUploadService (sessionId, service) {
       const session = this.sessions.find(s => s.id === sessionId)
@@ -407,7 +460,7 @@ export default {
         const episodeData = {
           data: {
             serie: session.serie,
-            episode_number: session.episode_number,
+            episode: session.episode,
             players: successfulUploads.map(upload => ({
               service: upload.service,
               code: upload.code
@@ -433,6 +486,20 @@ export default {
         console.error('Create episode error:', error)
         this.$toast.error(`Error al crear episodio: ${error.message}`)
       }
+    },
+    goToCreateEpisode () {
+      if (!this.lastUploadResults || this.lastUploadResults.successful.length === 0) {
+        this.$toast.error('No hay subidas exitosas para crear un episodio.')
+        return
+      }
+
+      this.$router.push({
+        path: `/panel/serie/${this.selectedSerie}/episode/create`,
+        query: {
+          episodeNumber: this.episodeNumber,
+          players: JSON.stringify(this.lastUploadResults.successful.map(p => ({ service: p.service, result: p.result })))
+        }
+      })
     }
   }
 }

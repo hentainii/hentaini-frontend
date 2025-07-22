@@ -227,13 +227,6 @@
           </v-card>
         </v-col>
       </v-row>
-
-      <!-- Uploader Section -->
-      <v-row class="mt-4">
-        <v-col cols="12">
-          <UploaderMain @players-populated="onPlayersPopulated" />
-        </v-col>
-      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -277,8 +270,40 @@ export default {
     await this.getPlayers()
     await this.getPlayersWithAccounts()
     await this.getSerie()
+    this.populateFromQuery()
   },
   methods: {
+    populateFromQuery () {
+      const { episodeNumber, players: playersJson } = this.$route.query
+
+      if (episodeNumber) {
+        this.episode.episode_number = parseInt(episodeNumber, 10)
+      }
+
+      if (playersJson) {
+        try {
+          const uploadedPlayers = JSON.parse(playersJson)
+          const newPlayers = uploadedPlayers.map((p) => {
+            const playerInfo = this.players.find(player => player.name === p.service)
+            if (playerInfo) {
+              return {
+                name: p.service,
+                code: p.result,
+                url: playerInfo.player_code.replace('codigo', p.result)
+              }
+            }
+            return null
+          }).filter(p => p !== null)
+
+          this.episode.players = newPlayers
+        } catch (error) {
+          console.error('Error parsing players from query:', error)
+          this.alertBox = true
+          this.alertBoxColor = 'red'
+          this.errorMessage = 'Could not load player data from uploader.'
+        }
+      }
+    },
     async createEpisode () {
       this.isSubmitting = !this.isSubmitting
       if (this.serie.episodes.find(episode => episode.episode_number === this.episode.episode_number)) {
@@ -390,20 +415,6 @@ export default {
         { name: 'Stream2', url: '' },
         { name: 'mp4uplo', url: '' }
       ]
-    },
-    onPlayersPopulated (newPlayers) {
-      // Add the populated players to the episode
-      this.episode.players = [...this.episode.players, ...newPlayers]
-
-      // Show success message
-      this.alertBox = true
-      this.alertBoxColor = 'success'
-      this.errorMessage = `Successfully auto-filled ${newPlayers.length} player(s) from uploader results!`
-
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        this.alertBox = false
-      }, 5000)
     },
     async uploadImageToStrapi (imageBlob, imageName, imageType, episodeNumber, createdEpisodeId) {
       console.log('Uploading image to Strapi:', imageBlob, imageName, imageType, episodeNumber, createdEpisodeId)

@@ -114,7 +114,7 @@ export function useUploadManager () {
    * @param {Array} accounts - Array of account objects
    * @param {Object} store - Vuex store instance
    */
-  const uploadToMultipleServices = async (file, accounts, store) => {
+  const uploadToMultipleServices = async (file, accounts, store, onProgress, onSuccess, onError) => {
     if (!file) {
       throw new Error('No file provided for upload')
     }
@@ -133,12 +133,11 @@ export function useUploadManager () {
       const progressCallback = (progress) => {
         store.dispatch('uploader/updateProgress', {
           service: account.service,
-          email: account.email,
-          password: account.password,
-          username: account.username,
-          api_key: account.api_key,
           progress
         })
+        if (onProgress) {
+          onProgress(account.service, progress)
+        }
       }
 
       // Add upload to queue with priority based on service
@@ -167,11 +166,18 @@ export function useUploadManager () {
             service: account.service,
             result: result.value
           })
+          if (onSuccess) {
+            onSuccess(account.service, result.value)
+          }
         } else {
+          const errorMsg = result.reason?.message || result.value?.error || 'Unknown error'
           failed.push({
             service: account.service,
-            error: result.reason?.message || result.value?.error || 'Unknown error'
+            error: errorMsg
           })
+          if (onError) {
+            onError(account.service, new Error(errorMsg))
+          }
         }
       })
 
