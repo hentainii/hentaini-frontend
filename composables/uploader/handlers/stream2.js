@@ -20,7 +20,7 @@ export function useStream2Upload () {
   }
 
   /**
-   * Upload file to StreamWish
+   * Upload file to StreamWish using their API
    * @param {File} file - File to upload
    * @param {Object} account - Account credentials
    * @param {Function} progressCallback - Progress callback function
@@ -34,27 +34,27 @@ export function useStream2Upload () {
         status: 'initializing'
       })
 
-      // Get upload server
-      progressCallback({
-        percentage: 10,
-        bytesUploaded: 0,
-        bytesTotal: file.size,
-        status: 'getting_upload_server'
-      })
+      // Get upload server URL from StreamWish API
       const uploadServer = await getUploadServer(account.api_key)
 
-      // Prepare upload
+      // Create form data for the file upload
       const formData = new FormData()
       formData.append('key', account.api_key)
       formData.append('file', file)
 
-      // Upload file with progress tracking
-      const xhr = new XMLHttpRequest()
+      // Optional metadata if needed
+      if (file.name) {
+        formData.append('file_title', file.name)
+      }
 
+      // Create XMLHttpRequest to track progress
       return new Promise((resolve, reject) => {
-        xhr.upload.onprogress = (event) => {
+        const xhr = new XMLHttpRequest()
+
+        // Setup progress tracking
+        xhr.upload.addEventListener('progress', (event) => {
           if (event.lengthComputable) {
-            const percentage = Math.round((event.loaded / event.total) * 80) + 10 // 10-90%
+            const percentage = Math.round((event.loaded / event.total) * 100)
             progressCallback({
               percentage,
               bytesUploaded: event.loaded,
@@ -62,37 +62,47 @@ export function useStream2Upload () {
               status: 'uploading'
             })
           }
-        }
+        })
 
-        xhr.onload = () => {
-          if (xhr.status === 200) {
+        // Setup completion handler
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
             try {
               const response = JSON.parse(xhr.responseText)
 
-              progressCallback({
-                percentage: 100,
-                bytesUploaded: file.size,
-                bytesTotal: file.size,
-                status: 'completed'
-              })
+              if (response.status === 200 && response.files && response.files.length > 0) {
+                // Upload completed successfully
+                progressCallback({
+                  percentage: 100,
+                  bytesUploaded: file.size,
+                  bytesTotal: file.size,
+                  status: 'completed'
+                })
 
-              if (response.status === 200 && response.files?.[0]?.filecode) {
+                // Return the file code
                 resolve(response.files[0].filecode)
               } else {
-                reject(new Error(`Failed to upload file: ${xhr.responseText}`))
+                reject(new Error(response.msg || 'Unknown error during upload'))
               }
             } catch (error) {
               reject(new Error(`Failed to parse response: ${error.message}`))
             }
           } else {
-            reject(new Error(`Upload failed with status ${xhr.status}`))
+            reject(new Error(`HTTP error! status: ${xhr.status}`))
           }
-        }
+        })
 
-        xhr.onerror = () => {
-          reject(new Error('Upload failed due to network error'))
-        }
+        // Setup error handler
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error during upload'))
+        })
 
+        // Setup abort handler
+        xhr.addEventListener('abort', () => {
+          reject(new Error('Upload aborted'))
+        })
+
+        // Start the upload
         xhr.open('POST', uploadServer)
         xhr.send(formData)
       })
