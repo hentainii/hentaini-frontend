@@ -49,7 +49,6 @@ export function useUploadManager () {
    * @param {Object} store - Vuex store instance
    */
   const uploadToService = async (file, account, onProgress, store) => {
-    console.log('uploadToService debug ====> ', account)
     try {
       const handler = getServiceHandler(account.service)
 

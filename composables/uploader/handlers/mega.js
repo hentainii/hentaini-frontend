@@ -32,7 +32,6 @@ export function useMegaUpload () {
    * @param {Function} progressCallback - Progress callback function
    */
   const uploadToMega = async (file, account, progressCallback) => {
-    console.log('uploadToMega debug ====> ', account)
     try {
       // Load MegaJS library
       const MegaStorage = await loadMegaJS()

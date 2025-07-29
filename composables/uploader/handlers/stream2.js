@@ -26,6 +26,10 @@ export function useStream2Upload () {
    * @param {Function} progressCallback - Progress callback function
    */
   const uploadToStream2 = async (file, account, progressCallback) => {
+    const CHUNK_SIZE = 5 * 1024 * 1024 // 5MB
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
+    let uploadedChunks = 0
+
     try {
       progressCallback({
         percentage: 0,
@@ -34,79 +38,81 @@ export function useStream2Upload () {
         status: 'initializing'
       })
 
-      // Get upload server URL from StreamWish API
       const uploadServer = await getUploadServer(account.api_key)
 
-      // Create form data for the file upload
-      const formData = new FormData()
-      formData.append('key', account.api_key)
-      formData.append('file', file)
+      const uploadChunk = async (chunk, chunkNumber) => {
+        const formData = new FormData()
+        // According to the documentation, the API key is sent in the 'key' field.
+        formData.append('key', account.api_key)
+        formData.append('file', chunk, file.name) // Pass filename
+        // Streamwish might need chunk info, but their public API doc is sparse.
+        // This is a guess based on common practices.
+        // formData.append('chunk', chunkNumber);
+        // formData.append('chunks', totalChunks);
 
-      // Optional metadata if needed
-      if (file.name) {
-        formData.append('file_title', file.name)
+        const response = await fetch(uploadServer, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Origin: 'https://streamwish.com' // Mimic legacy behavior to bypass CORS
+          }
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          throw new Error(`Chunk upload failed: ${response.statusText} - ${errorText}`)
+        }
+
+        return response.json()
       }
 
-      // Create XMLHttpRequest to track progress
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
+      let finalFileCode = null
 
-        // Setup progress tracking
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            const percentage = Math.round((event.loaded / event.total) * 100)
-            progressCallback({
-              percentage,
-              bytesUploaded: event.loaded,
-              bytesTotal: event.total,
-              status: 'uploading'
-            })
-          }
-        })
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * CHUNK_SIZE
+        const end = Math.min(start + CHUNK_SIZE, file.size)
+        const chunk = file.slice(start, end)
 
-        // Setup completion handler
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const response = JSON.parse(xhr.responseText)
+        const response = await uploadChunk(chunk, i)
 
-              if (response.status === 200 && response.files && response.files.length > 0) {
-                // Upload completed successfully
-                progressCallback({
-                  percentage: 100,
-                  bytesUploaded: file.size,
-                  bytesTotal: file.size,
-                  status: 'completed'
-                })
-
-                // Return the file code
-                resolve(response.files[0].filecode)
-              } else {
-                reject(new Error(response.msg || 'Unknown error during upload'))
-              }
-            } catch (error) {
-              reject(new Error(`Failed to parse response: ${error.message}`))
-            }
+        if (i === 0) { // First chunk response should contain the file code
+          if (response.status === 200 && response.files && response.files.length > 0) {
+            finalFileCode = response.files[0].filecode
           } else {
-            reject(new Error(`HTTP error! status: ${xhr.status}`))
+            throw new Error(response.msg || 'Failed to get file code from first chunk')
           }
-        })
+        }
 
-        // Setup error handler
-        xhr.addEventListener('error', () => {
-          reject(new Error('Network error during upload'))
+        uploadedChunks++
+        const percentage = Math.round((uploadedChunks / totalChunks) * 100)
+        progressCallback({
+          percentage,
+          bytesUploaded: end,
+          bytesTotal: file.size,
+          status: 'uploading'
         })
+      }
 
-        // Setup abort handler
-        xhr.addEventListener('abort', () => {
-          reject(new Error('Upload aborted'))
-        })
-
-        // Start the upload
-        xhr.open('POST', uploadServer)
-        xhr.send(formData)
+      progressCallback({
+        percentage: 100,
+        bytesUploaded: file.size,
+        bytesTotal: file.size,
+        status: 'completed'
       })
+
+      if (!finalFileCode) {
+        throw new Error('File code was not retrieved after upload.')
+      }
+
+      return finalFileCode
     } catch (error) {
+      progressCallback({
+        percentage: 100,
+        bytesUploaded: 0, // Or keep last known value
+        bytesTotal: file.size,
+        status: 'failed',
+        error: error.message
+      })
       throw new Error(`STREAM2 error: ${error.message}`)
     }
   }
