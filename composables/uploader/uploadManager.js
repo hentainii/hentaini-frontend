@@ -22,6 +22,7 @@ export function useUploadManager () {
     MP4Upload: useMp4Upload,
     S2: useStream2Upload,
     STREAM2: useStream2Upload,
+    Stream2: useStream2Upload,
     VH: useVHideUpload,
     VHide: useVHideUpload,
     YU: useYourUpload,
@@ -63,6 +64,7 @@ export function useUploadManager () {
             return handler.uploadToMp4Upload(file, account, onProgress)
           case 'S2':
           case 'STREAM2':
+          case 'Stream2':
             return handler.uploadToStream2(file, account, onProgress)
           case 'VH':
           case 'VHide':

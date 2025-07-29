@@ -16,7 +16,7 @@ export function useStream2Upload () {
     if (data.status === 200 && data.result) {
       return data.result
     }
-    throw new Error(`Failed to get upload server: ${data.msg}`)
+    throw new Error(`Failed to get upload server: ${data.msg}. Api key tried: ${apiKey}`)
   }
 
   /**
