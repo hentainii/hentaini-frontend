@@ -80,7 +80,7 @@
                 <tr>
                   <th>Session</th>
                   <th>Episode</th>
-                  <th v-for="player in players" :key="player.id">
+                  <th v-for="player in uploadablePlayers" :key="player.id">
                     {{ player.name }}
                   </th>
                   <th>Actions</th>
@@ -103,7 +103,7 @@
                     </template>
                     <span v-else>-</span>
                   </td>
-                  <td v-for="player in players" :key="player.id">
+                  <td v-for="player in uploadablePlayers" :key="player.id">
                     <div v-if="session.services && session.services[player.name]">
                       <v-progress-linear
                         :value="session.services[player.name].progress"
@@ -201,6 +201,11 @@ export default {
         type: 'info',
         message: ''
       }
+    }
+  },
+  computed: {
+    uploadablePlayers () {
+      return this.players.filter(p => p.up_available && p.accounts && p.accounts.length > 0)
     }
   },
   async mounted () {
@@ -312,7 +317,9 @@ export default {
     },
     getStatusColor (status) {
       switch (status) {
-        case 'success': return 'green'
+        case 'success':
+        case 'completed':
+          return 'green'
         case 'failed': return 'red'
         case 'uploading': return 'blue'
         default: return 'grey'
