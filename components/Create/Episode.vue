@@ -318,7 +318,7 @@ export default {
         // Convertimos los arrays a JSON para enviarlos
         this.episode.players = JSON.stringify(this.episode.players)
         this.episode.downloads = JSON.stringify(this.episode.downloads)
-        this.episode.serie = this.erie.id
+        this.episode.serie = this.serie.id
         this.episode.image = this.serie.images.find(image => image.image_type.name === 'screenshot').id
 
         const { data: createdEpisode } = await this.$store.dispatch('episodes/createEpisode', {
