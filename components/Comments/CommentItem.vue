@@ -23,7 +23,7 @@
             <!-- Información del autor y fecha -->
             <div class="d-flex align-center mb-1">
               <span class="font-weight-medium text-body-2 mr-2">
-                {{ commentData.is_deleted ? $t('comments.deleted_user') : author?.username }}
+                {{ commentData.is_deleted ? $t('comments.deleted_user') : isAuthorAdmin ? '' : author?.username }}
               </span>
 
               <v-chip
