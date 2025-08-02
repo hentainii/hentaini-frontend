@@ -211,7 +211,7 @@
             <v-container v-if="!episode.hasCustomScreenshot">
               <v-row>
                 <v-img
-                  :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find((image) => image.image_type.name === 'screenshot').path}`"
+                  :src="getScreenshotPath()"
                   class="rounded-xl"
                   style="box-shadow: #7b1fa2 0px -5px 0px 0px !important;"
                 />
@@ -318,7 +318,7 @@ export default {
         // Convertimos los arrays a JSON para enviarlos
         this.episode.players = JSON.stringify(this.episode.players)
         this.episode.downloads = JSON.stringify(this.episode.downloads)
-        this.episode.serie = this.serie.id
+        this.episode.serie = this.erie.id
         this.episode.image = this.serie.images.find(image => image.image_type.name === 'screenshot').id
 
         const { data: createdEpisode } = await this.$store.dispatch('episodes/createEpisode', {
@@ -473,6 +473,12 @@ export default {
         console.error('Error creating image component:', error)
         throw error
       }
+    },
+    getScreenshotPath () {
+      const screenshotImage = this.serie.images.find(image => image.image_type.name === 'screenshot')
+      return screenshotImage && screenshotImage.path
+        ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}`
+        : 'placeholder.jpg' // Cambia esto a la imagen por defecto
     }
   }
 }
