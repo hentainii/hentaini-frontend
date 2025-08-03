@@ -719,33 +719,31 @@ export default {
         })
     },
     getSimilarSeries () {
-      const currentGenres = this.episode.serie.genreList.map(g => g.text || g.name)
+      const currentGenres = this.episode.serie.genreList.map(g => g.name)
       const qs = require('qs')
       const query = qs.stringify({
-        populate: [
-          'status',
-          'images',
-          'images.image_type',
-          'genreList'
-        ],
+        filters: {
+          genreList: {
+            name: {
+              $in: currentGenres
+            }
+          },
+          id: {
+            $ne: this.episode.serie.id
+          }
+        },
         pagination: {
-          limit: 8
-        }
-      },
-      {
+          page: 1,
+          pageSize: 8
+        },
+        populate: ['genreList', 'images', 'images.image_type', 'status']
+      }, {
         encodeValuesOnly: true
       })
-
       fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
         .then(res => res.json())
         .then(({ data: series }) => {
           this.similarSeries = series
-            .filter(s => s.id !== this.episode.serie.id)
-            .filter((s) => {
-              const serieGenres = JSON.parse(s.genres).map(g => g.text || g.name)
-              return serieGenres.some(g => currentGenres.includes(g))
-            })
-            .slice(0, 8)
         })
     }
   }
