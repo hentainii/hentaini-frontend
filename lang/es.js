@@ -221,7 +221,7 @@ export default {
     funny: 'Me da risa',
     wow: 'Me sorprende',
     mad: 'Me enoja',
-    title: 'Reacciones',
+    title: '¿Te gustó?',
     tooltip_like: 'Me gusta',
     tooltip_love: 'Me encanta',
     tooltip_funny: 'Me da risa',

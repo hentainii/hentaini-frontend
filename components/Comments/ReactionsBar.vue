@@ -1,7 +1,7 @@
 <template>
   <div class="reactions-bar">
     <div class="reactions-container">
-      <div class="reactions-title text-caption mb-2" style="color:#aaa;letter-spacing:1px;">
+      <div class="reactions-title">
         {{ $t('reactions.title') }}
       </div>
       <!-- Botones de reacción -->
@@ -11,33 +11,29 @@
           :key="reaction.type"
           class="reaction-wrapper"
         >
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                :class="[
-                  'reaction-btn',
-                  { 'reaction-active': userReaction && userReaction.reaction_type === reaction.type },
-                  { 'reaction-clicked': clickedReaction === reaction.type }
-                ]"
-                :disabled="loading"
-                fab
-                small
-                v-bind="attrs"
-                v-on="on"
-                @click="handleReactionClick(reaction.type)"
-              >
-                <span
-                  class="reaction-img"
-                  :style="{
-                    backgroundPositionX: `-${getOffset(reaction)}px`
-                  }"
-                />
-              </v-btn>
-            </template>
-            <span>{{ $t(reaction.tooltip) }}</span>
-          </v-tooltip>
-          <div v-if="reactionStats[reaction.type] > 0" class="reaction-count">
-            {{ reactionStats[reaction.type] }}
+          <v-btn
+            :class="[
+              'reaction-btn',
+              { 'reaction-active': userReaction && userReaction.reaction_type === reaction.type },
+              { 'reaction-clicked': clickedReaction === reaction.type }
+            ]"
+            :disabled="loading"
+            fab
+            small
+            @click="handleReactionClick(reaction.type)"
+          >
+            <span
+              class="reaction-img"
+              :style="{
+                backgroundPositionX: `-${getOffset(reaction)}px`
+              }"
+            />
+          </v-btn>
+          <div class="reaction-label">
+            {{ $t(reaction.label) }}
+          </div>
+          <div class="reaction-count">
+            {{ reactionStats[reaction.type] || 0 }}
           </div>
         </div>
       </div>
@@ -206,6 +202,18 @@ export default {
 </script>
 
 <style scoped>
+.reactions-title {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f0f0f0;
+  text-shadow:
+    0 0 5px rgba(74, 158, 255, 0.5),
+    0 0 10px rgba(74, 158, 255, 0.4);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
 .reactions-bar {
   margin-bottom: 20px;
   padding: 20px;
@@ -223,7 +231,7 @@ export default {
 .reaction-buttons {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Align items to the top */
   gap: 24px;
   flex-wrap: wrap;
 }
@@ -234,6 +242,7 @@ export default {
   align-items: center;
   gap: 8px;
   flex: 1;
+  min-width: 100px; /* Ensure a minimum width */
 }
 
 .reaction-btn {
@@ -338,6 +347,14 @@ export default {
   }
 }
 
+.reaction-label {
+  font-size: 14px;
+  color: #e0e0e0;
+  font-weight: 500;
+  margin-top: 8px;
+  text-align: center;
+}
+
 .reaction-count {
   font-size: 16px;
   font-weight: bold;
@@ -348,6 +365,7 @@ export default {
   min-width: 28px;
   text-align: center;
   transition: all 0.3s ease;
+  margin-top: 4px; /* Add some space from the label */
 }
 
 .reaction-wrapper:hover .reaction-count {
@@ -370,6 +388,9 @@ export default {
     height: 60px;
     background-size: 500px 60px;
   }
+  .reaction-label {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -388,6 +409,9 @@ export default {
   .reaction-count {
     font-size: 12px;
     padding: 2px 8px;
+  }
+  .reaction-label {
+    font-size: 12px;
   }
 }
 </style>

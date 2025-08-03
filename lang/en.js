@@ -216,12 +216,12 @@ export default {
     hide_replies: 'Hide replies'
   },
   reactions: {
-    like: 'Like',
-    love: 'Love',
-    funny: 'Funny',
-    wow: 'Wow',
-    mad: 'Mad',
-    title: 'Reactions',
+    like: 'Like it',
+    love: 'Yaaaas',
+    funny: 'Lol',
+    wow: 'Wtf',
+    mad: 'Rage Quit',
+    title: 'Liked it?',
     tooltip_like: 'Like',
     tooltip_love: 'Love',
     tooltip_funny: 'Funny',

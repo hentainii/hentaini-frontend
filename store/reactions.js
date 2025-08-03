@@ -8,8 +8,8 @@ export const state = () => ({
     like: 0,
     love: 0,
     wow: 0,
-    dislike: 0,
-    sad: 0
+    funny: 0,
+    mad: 0
   },
   userReaction: null
 })
@@ -104,8 +104,8 @@ export const actions = {
           like: 0,
           love: 0,
           wow: 0,
-          dislike: 0,
-          sad: 0
+          funny: 0,
+          mad: 0
         }
 
         let userReaction = null
