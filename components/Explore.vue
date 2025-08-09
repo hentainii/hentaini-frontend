@@ -9,12 +9,20 @@
         <v-container class="pb-0">
           <v-row>
             <v-col v-if="$route.query.genre" cols="12" class="mt-4 px-4">
-              <h1 class="text-h4 font-weight-medium">{{ $t('explore.on_genre_title_part_1') }} <span class="primary--text font-weight-bold">{{ prettyGenre }}</span> {{ $t('explore.on_genre_title_part_2') }}</h1>
-              <p class="text-subtitle-1 mt-2">{{ $t('explore.on_genre_suntitle_part_1') }} {{ prettyGenre }} {{ $t('explore.on_genre_suntitle_part_2') }}</p>
+              <h1 class="text-h4 font-weight-medium">
+                {{ $t('explore.on_genre_title_part_1') }} <span class="primary--text font-weight-bold">{{ prettyGenre }}</span> {{ $t('explore.on_genre_title_part_2') }}
+              </h1>
+              <p class="text-subtitle-1 mt-2">
+                {{ $t('explore.on_genre_suntitle_part_1') }} {{ prettyGenre }} {{ $t('explore.on_genre_suntitle_part_2') }}
+              </p>
             </v-col>
             <v-col v-else cols="12" class="mt-4 px-4">
-              <h1 class="text-h4 font-weight-medium">{{ $t('explore.title') }}</h1>
-              <p class="text-subtitle-1 mt-2">{{ $t('explore.subtitle') }}</p>
+              <h1 class="text-h4 font-weight-medium">
+                {{ $t('explore.title') }}
+              </h1>
+              <p class="text-subtitle-1 mt-2">
+                {{ $t('explore.subtitle') }}
+              </p>
             </v-col>
           </v-row>
         </v-container>
@@ -34,16 +42,18 @@
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.filter.title') }}
                   </v-card-title>
-                  <v-divider></v-divider>
+                  <v-divider />
                   <v-list dense class="py-0">
                     <v-list-item
                       v-for="(filter, index) in filtersUI"
                       :key="filter.id"
-                      @click="selectFilter(index)"
                       :class="lastFilter === index ? 'selected-item' : ''"
+                      @click="selectFilter(index)"
                     >
                       <v-list-item-icon class="mr-2">
-                        <v-icon small>mdi-filter-outline</v-icon>
+                        <v-icon small>
+                          mdi-filter-outline
+                        </v-icon>
                       </v-list-item-icon>
                       <v-list-item-content>
                         <v-list-item-title class="body-2" v-text="filter.name" />
@@ -56,16 +66,18 @@
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.order_by.title') }}
                   </v-card-title>
-                  <v-divider></v-divider>
+                  <v-divider />
                   <v-list dense class="py-0">
                     <v-list-item
                       v-for="(order, index) in orderUI"
                       :key="order.id"
-                      @click="selectOrder(index)"
                       :class="lastOrder === index ? 'selected-item' : ''"
+                      @click="selectOrder(index)"
                     >
                       <v-list-item-icon class="mr-2">
-                        <v-icon small>mdi-sort</v-icon>
+                        <v-icon small>
+                          mdi-sort
+                        </v-icon>
                       </v-list-item-icon>
                       <v-list-item-content>
                         <v-list-item-title class="body-2" v-text="order.name" />
@@ -78,24 +90,28 @@
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.genres') }}
                   </v-card-title>
-                  <v-divider></v-divider>
+                  <v-divider />
                   <v-list dense class="py-0 genre-list">
                     <v-list-item
                       v-for="genre in genres"
                       :key="genre.name"
                       :to="$route.query.genre !== genre.url ? localePath(`/explore?genre=${genre.url}`) : undefined"
-                      @click="handleGenreSelection(genre)"
                       :class="$route.query.genre === genre.url ? 'selected-item' : ''"
+                      @click="handleGenreSelection(genre)"
                     >
                       <v-list-item-icon class="mr-2">
-                        <v-icon small>mdi-tag</v-icon>
+                        <v-icon small>
+                          mdi-tag
+                        </v-icon>
                       </v-list-item-icon>
                       <v-list-item-content>
                         <v-list-item-title class="body-2" v-text="genre.name" />
                       </v-list-item-content>
                       <v-list-item-action v-if="$route.query.genre === genre.url">
                         <v-btn icon x-small @click.stop.prevent="$router.push('/explore')">
-                          <v-icon small>mdi-close</v-icon>
+                          <v-icon small>
+                            mdi-close
+                          </v-icon>
                         </v-btn>
                       </v-list-item-action>
                     </v-list-item>
@@ -112,11 +128,13 @@
                     block
                     color="grey darken-3"
                     depressed
-                    @click="showFilterSheet = true"
                     class="rounded-lg text-capitalize py-2 px-2"
                     height="42"
+                    @click="showFilterSheet = true"
                   >
-                    <v-icon left size="18">mdi-filter-outline</v-icon>
+                    <v-icon left size="18">
+                      mdi-filter-outline
+                    </v-icon>
                     <span class="text-truncate">{{ $t('explore.filter.title') }}</span>
                   </v-btn>
                 </v-col>
@@ -125,11 +143,13 @@
                     block
                     color="grey darken-3"
                     depressed
-                    @click="showOrderSheet = true"
                     class="rounded-lg text-capitalize py-2 px-2"
                     height="42"
+                    @click="showOrderSheet = true"
                   >
-                    <v-icon left size="18">mdi-sort</v-icon>
+                    <v-icon left size="18">
+                      mdi-sort
+                    </v-icon>
                     <span class="text-truncate">{{ $t('explore.order_by.title') }}</span>
                   </v-btn>
                 </v-col>
@@ -140,13 +160,15 @@
                     block
                     color="grey darken-3"
                     depressed
-                    @click="showGenreSheet = true"
                     class="rounded-lg text-capitalize py-2 px-2"
                     height="42"
+                    @click="showGenreSheet = true"
                   >
                     <div class="d-flex align-center justify-space-between w-100">
                       <div class="d-flex align-center">
-                        <v-icon left size="18" class="mr-2">mdi-tag-multiple</v-icon>
+                        <v-icon left size="18" class="mr-2">
+                          mdi-tag-multiple
+                        </v-icon>
                         <span class="text-truncate">{{ $t('explore.genres') }}</span>
                       </div>
                       <v-chip
@@ -192,7 +214,9 @@
                     color="primary"
                     @click:close="selectFilter(lastFilter)"
                   >
-                    <v-icon left x-small>mdi-filter-outline</v-icon>
+                    <v-icon left x-small>
+                      mdi-filter-outline
+                    </v-icon>
                     {{ filtersUI[lastFilter].name }}
                   </v-chip>
                   <v-chip
@@ -204,7 +228,9 @@
                     color="primary"
                     @click:close="selectOrder(lastOrder)"
                   >
-                    <v-icon left x-small>mdi-sort</v-icon>
+                    <v-icon left x-small>
+                      mdi-sort
+                    </v-icon>
                     {{ orderUI[lastOrder].name }}
                   </v-chip>
                   <v-chip
@@ -216,7 +242,9 @@
                     color="primary"
                     @click:close="$router.push('/explore')"
                   >
-                    <v-icon left x-small>mdi-tag</v-icon>
+                    <v-icon left x-small>
+                      mdi-tag
+                    </v-icon>
                     {{ prettyGenre }}
                   </v-chip>
                 </v-col>
@@ -251,14 +279,18 @@
                 <v-progress-circular
                   indeterminate
                   color="primary"
-                ></v-progress-circular>
+                />
               </v-row>
 
               <!-- No results message -->
               <v-row v-else-if="series.length === 0" class="justify-center py-8">
                 <v-col cols="12" class="text-center">
-                  <v-icon size="64" color="grey lighten-1">mdi-emoticon-sad-outline</v-icon>
-                  <h3 class="mt-4 grey--text text--darken-1">{{ $t('explore.no_results') || 'No series found' }}</h3>
+                  <v-icon size="64" color="grey lighten-1">
+                    mdi-emoticon-sad-outline
+                  </v-icon>
+                  <h3 class="mt-4 grey--text text--darken-1">
+                    {{ $t('explore.no_results') || 'No series found' }}
+                  </h3>
                   <v-btn
                     text
                     color="primary"
@@ -287,10 +319,12 @@
 
       <!-- Mobile bottom sheets -->
       <v-bottom-sheet v-model="showFilterSheet" inset>
-        <v-sheet class="rounded-t-lg pa-4" height="auto">
+        <v-sheet class="rounded-t-lg pa-4 overflow-y-scroll" height="auto">
           <div class="d-flex align-center mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.filter.title') }}</h3>
-            <v-spacer></v-spacer>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{ $t('explore.filter.title') }}
+            </h3>
+            <v-spacer />
             <v-btn icon small @click="showFilterSheet = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -299,8 +333,8 @@
             <v-list-item
               v-for="(filter, index) in filtersUI"
               :key="filter.id"
-              @click="selectFilter(index); showFilterSheet = false"
               :class="lastFilter === index ? 'selected-item' : ''"
+              @click="selectFilter(index); showFilterSheet = false"
             >
               <v-list-item-icon>
                 <v-icon>mdi-filter-outline</v-icon>
@@ -309,7 +343,9 @@
                 <v-list-item-title v-text="filter.name" />
               </v-list-item-content>
               <v-list-item-action v-if="lastFilter === index">
-                <v-icon color="primary">mdi-check</v-icon>
+                <v-icon color="primary">
+                  mdi-check
+                </v-icon>
               </v-list-item-action>
             </v-list-item>
           </v-list>
@@ -317,10 +353,12 @@
       </v-bottom-sheet>
 
       <v-bottom-sheet v-model="showOrderSheet" inset>
-        <v-sheet class="rounded-t-lg pa-4" height="auto">
+        <v-sheet class="rounded-t-lg pa-4 overflow-y-scroll" height="auto">
           <div class="d-flex align-center mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.order_by.title') }}</h3>
-            <v-spacer></v-spacer>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{ $t('explore.order_by.title') }}
+            </h3>
+            <v-spacer />
             <v-btn icon small @click="showOrderSheet = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -329,8 +367,8 @@
             <v-list-item
               v-for="(order, index) in orderUI"
               :key="order.id"
-              @click="selectOrder(index); showOrderSheet = false"
               :class="lastOrder === index ? 'selected-item' : ''"
+              @click="selectOrder(index); showOrderSheet = false"
             >
               <v-list-item-icon>
                 <v-icon>mdi-sort</v-icon>
@@ -339,7 +377,9 @@
                 <v-list-item-title v-text="order.name" />
               </v-list-item-content>
               <v-list-item-action v-if="lastOrder === index">
-                <v-icon color="primary">mdi-check</v-icon>
+                <v-icon color="primary">
+                  mdi-check
+                </v-icon>
               </v-list-item-action>
             </v-list-item>
           </v-list>
@@ -347,10 +387,12 @@
       </v-bottom-sheet>
 
       <v-bottom-sheet v-model="showGenreSheet" inset>
-        <v-sheet class="rounded-t-lg pa-4" height="auto" max-height="70vh">
+        <v-sheet class="rounded-t-lg pa-4 overflow-y-auto" height="auto" max-height="70vh">
           <div class="d-flex align-center mb-4">
-            <h3 class="text-subtitle-1 font-weight-medium">{{ $t('explore.genres') }}</h3>
-            <v-spacer></v-spacer>
+            <h3 class="text-subtitle-1 font-weight-medium">
+              {{ $t('explore.genres') }}
+            </h3>
+            <v-spacer />
             <v-btn icon small @click="showGenreSheet = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -360,18 +402,22 @@
               v-for="genre in genres"
               :key="genre.name"
               :to="$route.query.genre !== genre.url ? localePath(`/explore?genre=${genre.url}`) : undefined"
-              @click="handleGenreSelection(genre)"
               :class="$route.query.genre === genre.url ? 'selected-item' : ''"
+              @click="handleGenreSelection(genre)"
             >
               <v-list-item-icon class="mr-2">
-                <v-icon small>mdi-tag</v-icon>
+                <v-icon small>
+                  mdi-tag
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2" v-text="genre.name" />
               </v-list-item-content>
               <v-list-item-action v-if="$route.query.genre === genre.url">
                 <v-btn icon x-small @click.stop.prevent="$router.push('/explore')">
-                  <v-icon small>mdi-close</v-icon>
+                  <v-icon small>
+                    mdi-close
+                  </v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>

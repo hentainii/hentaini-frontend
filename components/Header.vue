@@ -7,10 +7,6 @@
     <v-row>
       <v-col class="d-flex align-center justify-space-between" style="height:72px;">
         <div class="d-flex align-center">
-          <v-app-bar-nav-icon
-            class="d-flex d-md-none d-lg-none d-lx-flex"
-            @click="nav = !nav"
-          />
           <v-toolbar-title>
             <nuxt-link :to="localePath('/')">
               <LogoMini v-if="$vuetify.breakpoint.smAndDown" />
@@ -177,19 +173,21 @@
               <span>{{ $t('menu.logout_text') }}</span>
             </v-tooltip>
           </div>
+          <v-app-bar-nav-icon
+            class="d-flex d-md-none d-lg-none d-lx-flex primary--text"
+            @click="nav = !nav"
+          />
         </div>
       </v-col>
     </v-row>
     <v-navigation-drawer
       v-model="nav"
       app
-      dark
-      floating
       mobile-breakpoint="960"
       disable-resize-watcher
       width="260"
-      absolute
-      style="z-index:2!important"
+      style="background-color:rgba(0,0,0,0.3)!important;backdrop-filter: blur(10px);"
+      bottom
     >
       <v-list-item class="px-2">
         <v-list-item-avatar>

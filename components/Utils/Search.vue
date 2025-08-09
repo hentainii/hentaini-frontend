@@ -1,102 +1,93 @@
 <template>
   <v-container>
-    <v-row style="position:relative" class="justify-center mx-auto">
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        class="rounded-lg elevation-0 transparent"
-        :label="$t('menu.search_bar_text')"
-        outlined
-        dense
-        filled
-        hide-details="auto"
-        :maxlength="maxSearchLength"
-        :counter="search.length > maxSearchLength * 0.8"
-        @focus="focus = true"
-        @blur="blurFocus"
-      />
-      <v-sheet
-        v-if="search && searchResult.length > 0"
-        width="100%"
-        style="position:absolute;top:2.7rem;left:0;z-index:999!important;;background-color:rgba(32,18,36,0.8);backdrop-filter:blur(10px)"
-        class="elevation-0 rounded-xl"
-        tile
+    <v-row class="justify-center mx-auto">
+      <v-menu
+        v-model="menu"
+        bottom
+        offset-y
+        :close-on-content-click="false"
+        :close-on-click="false"
+        transition="fade-transition"
+        style="z-index: 9999 !important;"
       >
-        <nuxt-link
-          v-for="serie in searchResult"
-          :key="serie.id"
-          :to="localePath(`/h/${serie.url}`)"
-          class="my-3"
-          style="color:inherit;"
+        <template #activator="{ on, attrs }">
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            class="rounded-lg elevation-0 transparent"
+            :label="$t('menu.search_bar_text')"
+            outlined
+            dense
+            filled
+            hide-details="auto"
+            :maxlength="maxSearchLength"
+            :counter="search.length > maxSearchLength * 0.8"
+            v-bind="attrs"
+            v-on="on"
+            @focus="onFocus"
+            @blur="blurFocus"
+          />
+        </template>
+
+        <div
+          class="search-menu-content"
         >
-          <v-card
-            class="py-4 transparent elevation-0"
-          >
-            <ul>
-              <li class="d-flex">
-                <div>
+          <template v-if="search && search.length > 0 && search.length <= 2">
+            <v-card class="transparent elevation-0">
+              <v-card-text class="text-center grey--text">
+                {{ $t('search.min_characters') || 'Mínimo 3 caracteres para buscar' }}
+              </v-card-text>
+            </v-card>
+          </template>
+
+          <template v-else-if="isSearching && search && search.length > 2">
+            <v-card class="transparent elevation-0">
+              <v-card-text class="text-center">
+                <v-progress-circular
+                  indeterminate
+                  size="20"
+                  width="2"
+                  color="primary"
+                  class="mr-2"
+                />
+                <span class="grey--text">
+                  {{ $t('search.searching') || 'Buscando...' }}
+                </span>
+              </v-card-text>
+            </v-card>
+          </template>
+
+          <template v-else-if="search && searchResult.length > 0">
+            <nuxt-link
+              v-for="serie in searchResult"
+              :key="serie.id"
+              :to="localePath(`/h/${serie.url}`)"
+              class="my-1 search-result-link"
+              style="color:inherit;display:block;"
+              @click.native="menu = false"
+            >
+              <v-card class="transparent elevation-0 search-result-item">
+                <div class="search-result-row">
                   <v-img
                     :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-                    width="76px"
-                    height="76px"
-                    class="mr-3 rounded-lg"
-                    style="display:inline-block;vertical-align:middle;"
+                    width="76"
+                    height="76"
+                    class="thumb rounded-lg"
                   />
+                  <div class="search-result-text">
+                    <div class="search-result-title">
+                      {{ serie.title }}
+                    </div>
+                    <div class="caption grey--text text-left search-synopsis">
+                      {{ serie.synopsis }}
+                    </div>
+                  </div>
                 </div>
-                <div class="d-flex flex-column">
-                  <span
-                    class=""
-                  >
-                    {{ serie.title }}
-                  </span>
-                  <caption class="caption grey--text text-truncate text-left" style="width:600px;">
-                    {{ serie.synopsis }}
-                  </caption>
-                </div>
-              </li>
-            </ul>
-          </v-card>
-        </nuxt-link>
-      </v-sheet>
-
-      <!-- Indicador de búsqueda activa -->
-      <v-sheet
-        v-if="isSearching && search && search.length > 2"
-        width="100%"
-        style="position:absolute;top:2.7rem;left:0;z-index:999!important;;background-color:rgba(32,18,36,0.8);backdrop-filter:blur(10px)"
-        class="elevation-0 rounded-xl pa-3"
-        tile
-      >
-        <v-card class="transparent elevation-0">
-          <v-card-text class="text-center">
-            <v-progress-circular
-              indeterminate
-              size="20"
-              width="2"
-              color="primary"
-              class="mr-2"
-            />
-            <span class="grey--text">
-              {{ $t('search.searching') || 'Buscando...' }}
-            </span>
-          </v-card-text>
-        </v-card>
-      </v-sheet>
-
-      <!-- Mostrar mensaje si la búsqueda es muy corta -->
-      <v-sheet
-        v-if="search && search.length > 0 && search.length <= 2"
-        width="100%"
-        style="position:absolute;top:2.7rem;left:0;z-index:999!important;;background-color:rgba(32,18,36,0.8);backdrop-filter:blur(10px)"
-        class="elevation-0 rounded-xl pa-3"
-        tile
-      >
-        <v-card class="transparent elevation-0">
-          <v-card-text class="text-center grey--text">
-            {{ $t('search.min_characters') || 'Mínimo 3 caracteres para buscar' }}
-          </v-card-text>
-        </v-card>
-      </v-sheet>
+              </v-card>
+            </nuxt-link>
+          </template>
+        </div>
+      </v-menu>
     </v-row>
   </v-container>
 </template>
@@ -113,7 +104,8 @@ export default {
       searchTimeout: null, // Para debouncing
       lastSearchTime: 0, // Control de rate limiting
       minSearchInterval: 500, // Mínimo 0.5 segundos entre búsquedas
-      isSearching: false // Estado de búsqueda activa
+      isSearching: false, // Estado de búsqueda activa
+      menu: false // Control del overlay de resultados
     }
   },
   watch: {
@@ -144,7 +136,8 @@ export default {
         return
       }
 
-      // Activar indicador de búsqueda
+      // Abrir overlay y activar indicador de búsqueda
+      this.menu = !!sanitizedQuery
       this.isSearching = true
 
       // Debouncing - esperar 1 segundo antes de hacer la búsqueda
@@ -160,11 +153,21 @@ export default {
       clearTimeout(this.searchTimeout)
     }
     this.isSearching = false
+    this.menu = false
   },
   methods: {
     // eslint-disable-next-line object-shorthand
     blurFocus: function () {
-      setTimeout(() => { this.focus = false }, 100)
+      setTimeout(() => {
+        // this.focus = false
+        // this.menu = false
+      }, 100)
+    },
+
+    // eslint-disable-next-line object-shorthand
+    onFocus: function () {
+      this.focus = true
+      this.menu = !!this.search
     },
 
     // eslint-disable-next-line object-shorthand
@@ -209,21 +212,68 @@ export default {
               this.searchResult = []
             }
             this.isSearching = false
+            // Mantener abierto si aún hay texto
+            this.menu = !!this.search
           })
           .catch((error) => {
             console.warn('Error en búsqueda:', error.message)
             this.searchResult = []
             this.isSearching = false
+            this.menu = !!this.search
           })
       } catch (error) {
         console.error('Error al realizar búsqueda:', error)
         this.searchResult = []
         this.isSearching = false
+        this.menu = !!this.search
       }
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
+/* El contenido del v-menu se monta en body, por eso estas clases no pueden ser scoped */
+.search-menu-overlay {
+  z-index: 9999 !important;
+  bottom: 150px !important;
+}
+.search-menu-content {
+  width: 100%;
+  background-color: rgba(32, 18, 36, 0.92);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 8px 12px;
+  z-index: 9999 !important;
+}
+.search-result-item {
+  padding: 8px 0;
+}
+.search-result-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+.search-result-row .thumb {
+  flex: 0 0 76px;
+}
+.search-result-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* permite truncado/wrap correcto */
+}
+.search-result-title {
+  font-weight: 500;
+}
+.search-synopsis {
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* limita a 3 líneas dentro de 400px */
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+}
 </style>
