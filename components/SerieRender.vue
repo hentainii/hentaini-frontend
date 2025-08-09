@@ -69,7 +69,7 @@
           md="8"
           lg="10"
         >
-          <v-row class="px-4">
+          <v-row>
             <v-col cols="12" class="pb-0">
               <h1 class="mb-2">
                 {{ serie.title }}
@@ -233,6 +233,10 @@ export default {
       head: 'Loading you serie...',
       favorites: [],
       showRatingModal: false,
+      serieRating: {
+        averageRating: 0,
+        totalVotes: 0
+      },
       breadcrumb: [
         {
           text: 'Home',
@@ -250,21 +254,27 @@ export default {
     return this.head
   },
   computed: {
-    ...mapGetters('ratings', ['getSerieRating', 'getUserRating', 'isLoading']),
+    ...mapGetters('ratings', ['isLoading']),
     serieIsPresentInFavorites () {
       return this.favorites.some(favorite => favorite.url === this.serie.url)
     },
-    serieRating () {
-      return this.serie ? this.getSerieRating(this.serie.id) : { averageRating: 0, totalVotes: 0 }
-    },
     userRating () {
-      return this.serie ? this.getUserRating(this.serie.id) : 0
+      if (!this.serie) { return 0 }
+      return this.$store.state.ratings.userRatings[this.serie.id] || 0
     },
     formattedRating () {
       if (this.serieRating.averageRating === 0) {
         return '0.0'
       }
       return this.serieRating.averageRating.toFixed(1)
+    }
+  },
+  watch: {
+    // Recargar rating cuando cambie el estado de autenticación
+    '$store.state.auth' (newAuth, oldAuth) {
+      if (this.serie && newAuth !== oldAuth) {
+        this.loadSerieRating()
+      }
     }
   },
   mounted () {
@@ -366,16 +376,19 @@ export default {
         })
     },
     async loadSerieRating () {
-      if (this.serie) {
-        try {
-          const userId = this.$store.state.auth?.id
-          await this.fetchSerieRating({
-            serieId: this.serie.id,
-            userId
-          })
-        } catch (error) {
-          console.error('Error loading serie rating:', error)
+      try {
+        const userId = this.$store.state.auth?.id
+        const ratingData = await this.fetchSerieRating({
+          serieId: this.serie.id,
+          userId
+        })
+        this.serieRating = {
+          averageRating: ratingData.averageRating,
+          totalVotes: ratingData.totalVotes
         }
+        this.userRating = ratingData.userRating || 0
+      } catch (error) {
+        console.error('Error loading serie rating:', error)
       }
     },
     openRatingModal () {

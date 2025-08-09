@@ -22,13 +22,32 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchSerieRating ({ commit }, { serieId, userId }) {
+  async fetchSerieRating ({ commit, rootState }, { serieId, userId }) {
     try {
       commit('SET_LOADING', true)
 
-      const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}ratings/serie/${serieId}`)
+      // Preparar headers con autenticación si el usuario está logueado
+      const headers = {
+        'Content-Type': 'application/json'
+      }
+
+      const token = rootState.auth?.token
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+
+      const response = await fetch(`${this.app.$config.API_STRAPI_ENDPOINT}ratings/serie/${serieId}`, {
+        headers
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const data = await response.json()
       const { averageRating, totalVotes, userRating } = data
+
+      console.log('data: ', data)
 
       commit('SET_SERIE_RATING', { serieId, averageRating, totalVotes })
 
@@ -45,15 +64,23 @@ export const actions = {
     }
   },
 
-  async submitRating ({ commit }, { serieId, rating, userId }) {
+  async submitRating ({ commit, rootState }, { serieId, rating, userId }) {
     try {
       commit('SET_LOADING', true)
 
-      const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}ratings/serie/${serieId}`, {
+      // Preparar headers con autenticación
+      const headers = {
+        'Content-Type': 'application/json'
+      }
+
+      const token = rootState.auth?.token
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+
+      const response = await fetch(`${this.app.$config.API_STRAPI_ENDPOINT}ratings/serie/${serieId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({
           rating,
           userId
@@ -89,9 +116,19 @@ export const actions = {
     }
   },
 
-  async removeRating ({ commit }, { serieId, userId }) {
+  async removeRating ({ commit, rootState }, { serieId, userId }) {
     try {
       commit('SET_LOADING', true)
+
+      // Preparar headers con autenticación
+      const headers = {
+        'Content-Type': 'application/json'
+      }
+
+      const token = rootState.auth?.token
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
 
       // Buscar el rating del usuario para eliminarlo
       const query = qs.stringify({
@@ -101,7 +138,9 @@ export const actions = {
         }
       })
 
-      const existingRatingsResponse = await fetch(`${this.$config.API_STRAPI_ENDPOINT}ratings?${query}`)
+      const existingRatingsResponse = await fetch(`${this.app.$config.API_STRAPI_ENDPOINT}ratings?${query}`, {
+        headers
+      })
 
       if (!existingRatingsResponse.ok) {
         throw new Error(`HTTP error! status: ${existingRatingsResponse.status}`)
@@ -111,11 +150,9 @@ export const actions = {
 
       if (existingRatings.data && existingRatings.data.length > 0) {
         const ratingId = existingRatings.data[0].id
-        const deleteResponse = await fetch(`${this.$config.API_STRAPI_ENDPOINT}ratings/${ratingId}`, {
+        const deleteResponse = await fetch(`${this.app.$config.API_STRAPI_ENDPOINT}ratings/${ratingId}`, {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers
         })
 
         if (!deleteResponse.ok) {

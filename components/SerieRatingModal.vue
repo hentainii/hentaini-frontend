@@ -83,21 +83,6 @@
             </v-btn>
           </v-col>
         </v-row>
-
-        <v-row v-if="currentUserRating > 0" no-gutters class="mt-2">
-          <v-col cols="12">
-            <v-btn
-              block
-              text
-              color="error"
-              small
-              :disabled="loading"
-              @click="handleRemoveRating"
-            >
-              {{ $t('rating.modal.remove') }}
-            </v-btn>
-          </v-col>
-        </v-row>
       </v-card-actions>
     </v-card>
   </v-dialog>
