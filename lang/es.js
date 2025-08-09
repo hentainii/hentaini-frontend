@@ -256,6 +256,9 @@ export default {
     button: 'Calificar Serie',
     tooltip: 'Califica esta serie',
     stars: 'estrella | estrellas',
+    rate: 'Calificar',
+    update: 'Actualizar',
+    votes: 'sin votos | {n} voto | {n} votos',
     modal: {
       title: 'Califica esta Serie',
       instruction: 'Selecciona tu puntuación de 1 a 5 estrellas',

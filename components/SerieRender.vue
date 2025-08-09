@@ -70,9 +70,45 @@
           lg="10"
         >
           <v-row class="px-4">
-            <h1>
-              {{ serie.title }}
-            </h1>
+            <v-col cols="12" class="pb-0">
+              <h1 class="mb-2">
+                {{ serie.title }}
+              </h1>
+              <!-- Rating Section -->
+              <div class="rating-section-compact d-flex align-center mb-3">
+                <!-- Rating Number -->
+                <div class="rating-number mr-4">
+                  <span class="text-h4 font-weight-bold primary--text">
+                    {{ formattedRating }}
+                  </span>
+                  <span class="text-body-2 grey--text">/5</span>
+                </div>
+
+                <!-- Rating Info and Actions -->
+                <div class="rating-info-stack d-flex flex-column mr-4">
+                  <span class="text-subtitle-2 font-weight-medium grey--text text--lighten-1">
+                    Ratings
+                  </span>
+                  <span class="text-body-2 grey--text">
+                    {{ $tc('rating.votes', serieRating.totalVotes, { n: serieRating.totalVotes }) }}
+                  </span>
+                </div>
+
+                <!-- Rating Button -->
+                <v-btn
+                  small
+                  color="primary"
+                  outlined
+                  class="rating-btn-compact"
+                  @click="openRatingModal"
+                >
+                  <v-icon small class="mr-1">
+                    mdi-star
+                  </v-icon>
+                  {{ userRating > 0 ? $t('rating.update') : $t('rating.rate') }}
+                </v-btn>
+              </div>
+            </v-col>
           </v-row>
           <v-row v-if="serie.title_english" class="px-4 pb-4">
             <span style="color:#b9b9b9;">English: {{ serie.title_english }}</span>
@@ -173,15 +209,30 @@
         />
       </v-row>
     </v-container>
+    <!-- Serie Rating Modal -->
+    <SerieRatingModal
+      :visible="showRatingModal"
+      :serie="serie"
+      :user-rating="userRating"
+      @close="showRatingModal = false"
+      @rated="onRated"
+    />
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import SerieRatingModal from './SerieRatingModal.vue'
+
 export default {
+  components: {
+    SerieRatingModal
+  },
   data () {
     return {
       serie: null,
       head: 'Loading you serie...',
       favorites: [],
+      showRatingModal: false,
       breadcrumb: [
         {
           text: 'Home',
@@ -199,8 +250,21 @@ export default {
     return this.head
   },
   computed: {
+    ...mapGetters('ratings', ['getSerieRating', 'getUserRating', 'isLoading']),
     serieIsPresentInFavorites () {
       return this.favorites.some(favorite => favorite.url === this.serie.url)
+    },
+    serieRating () {
+      return this.serie ? this.getSerieRating(this.serie.id) : { averageRating: 0, totalVotes: 0 }
+    },
+    userRating () {
+      return this.serie ? this.getUserRating(this.serie.id) : 0
+    },
+    formattedRating () {
+      if (this.serieRating.averageRating === 0) {
+        return '0.0'
+      }
+      return this.serieRating.averageRating.toFixed(1)
     }
   },
   mounted () {
@@ -226,6 +290,7 @@ export default {
     this.getSerie()
   },
   methods: {
+    ...mapActions('ratings', ['fetchSerieRating']),
     async getSerie () {
       const qs = require('qs')
       const query = qs.stringify({
@@ -251,6 +316,7 @@ export default {
           this.serie = serie.data[0]
           this.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
           this.getFavorites()
+          this.loadSerieRating()
           this.breadcrumb[1].text = serie.data[0].title
           this.head = {
             title: this.serie.title,
@@ -299,6 +365,27 @@ export default {
           }
         })
     },
+    async loadSerieRating () {
+      if (this.serie) {
+        try {
+          const userId = this.$store.state.auth?.id
+          await this.fetchSerieRating({
+            serieId: this.serie.id,
+            userId
+          })
+        } catch (error) {
+          console.error('Error loading serie rating:', error)
+        }
+      }
+    },
+    openRatingModal () {
+      this.showRatingModal = true
+    },
+    async onRated (ratingData) {
+      // Recargar el rating después de que el usuario vote
+      await this.loadSerieRating()
+      this.showRatingModal = false
+    },
     async getFavorites () {
       this.favorites = await this.$store.dispatch('favorite/getFavorites', {
         user: this.$store.state.auth,
@@ -338,5 +425,90 @@ export default {
     right: 0;
     height: 100%;
     pointer-events: none;
+  }
+
+  /* Compact Rating Section Styles */
+  .rating-section-compact {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    max-width: fit-content;
+  }
+
+  .rating-section-compact:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .rating-number {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  .rating-info-stack {
+    min-width: 60px;
+    line-height: 1.2;
+  }
+
+  .rating-btn-compact {
+    border-radius: 20px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    min-width: auto !important;
+  }
+
+  .rating-btn-compact:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4) !important;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 600px) {
+    .rating-section-compact {
+      padding: 10px 12px;
+      margin: 0 -4px;
+      max-width: 100%;
+    }
+
+    .rating-number {
+      margin-right: 12px !important;
+    }
+
+    .rating-info-stack {
+      margin-right: 12px !important;
+      min-width: 50px;
+    }
+
+    .rating-btn-compact {
+      font-size: 12px !important;
+      padding: 6px 10px !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .rating-section-compact {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 8px;
+    }
+
+    .rating-number {
+      margin-right: 0 !important;
+    }
+
+    .rating-info-stack {
+      margin-right: 0 !important;
+    }
+
+    .rating-btn-compact {
+      align-self: stretch;
+    }
   }
 </style>

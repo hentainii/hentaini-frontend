@@ -256,6 +256,9 @@ export default {
     button: 'Rate Series',
     tooltip: 'Rate this series',
     stars: 'star | stars',
+    rate: 'Rate',
+    update: 'Update',
+    votes: 'no votes | {n} vote | {n} votes',
     modal: {
       title: 'Rate this Series',
       instruction: 'Select your rating from 1 to 5 stars',
