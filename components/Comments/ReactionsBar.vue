@@ -242,7 +242,7 @@ export default {
   align-items: center;
   gap: 8px;
   flex: 1;
-  min-width: 100px; /* Ensure a minimum width */
+  min-width: 50px; /* Ensure a minimum width */
 }
 
 .reaction-btn {

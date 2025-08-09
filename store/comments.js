@@ -189,35 +189,6 @@ export const actions = {
 
       const response = await fetch(url)
       const result = await response.json()
-      // CONSULTA ADICIONAL: Obtener TODOS los comentarios para comparar
-      const queryAllComments = qs.stringify({
-        filters: {
-          comment_type: {
-            $eq: contentType
-          },
-          content_id: {
-            $eq: contentId
-          }
-        },
-        populate: [
-          'author',
-          'reply',
-          'parent',
-          'liked_by'
-        ],
-        sort: ['createdAt:desc']
-      }, {
-        encodeValuesOnly: true
-      })
-
-      const responseAll = await fetch(`${this.$config.API_STRAPI_ENDPOINT}comments?${queryAllComments}`)
-      const resultAll = await responseAll.json()
-
-      if (resultAll.data) {
-        resultAll.data.forEach((comment, index) => {
-          getCommentData(comment)
-        })
-      }
 
       if (response.ok) {
         // Log detallado de la estructura de comentarios

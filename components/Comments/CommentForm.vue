@@ -51,7 +51,7 @@
                   <v-icon left x-small>
                     mdi-shield-crown
                   </v-icon>
-                  {{ $t('comments.admin') }}
+                  <span class="d-none d-md-inline">{{ $t('comments.admin') }}</span>
                 </v-chip>
               </div>
             </div>
@@ -75,7 +75,7 @@
                 <v-icon left>
                   mdi-send
                 </v-icon>
-                {{ dynamicSubmitText }}
+                <span class="d-none d-md-inline">{{ dynamicSubmitText }}</span>
               </v-btn>
             </div>
           </div>

@@ -79,7 +79,7 @@
                   <v-tooltip bottom>
                     <template #activator="{ on }">
                       <v-btn
-                        color="primary"
+                        color="grey darken-1"
                         small
                         fab
                         class="mr-2"
@@ -166,7 +166,7 @@
         <!-- Título y Navegación -->
         <v-row align="center" class="mb-2 px-1">
           <v-col cols="12" md="8" class="py-2">
-            <h1 class="text-h6 text-md-h5 font-weight-black text-truncate">
+            <h1 class="text-h6 text-md-h5 font-weight-black text-truncate text-center text-md-left">
               {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
             </h1>
           </v-col>
@@ -185,7 +185,7 @@
               </v-btn>
               <v-btn
                 :to="localePath(`/h/${episode.serie.url}`)"
-                color="primary"
+                color="white"
                 text
                 class="px-3"
               >
@@ -220,10 +220,129 @@
 
       <!-- Columna lateral con información y episodios -->
       <v-col cols="12" md="4">
+        <!-- Información de la serie -->
+        <v-card class="rounded-lg mb-4 elevation-3">
+          <v-card-title class="white--text">
+            <v-icon left color="white">
+              mdi-information
+            </v-icon>
+            {{ $t('episode.serie_info') }}
+          </v-card-title>
+
+          <v-card-text class="pt-2">
+            <p class="mb-3 text-body-2">
+              {{ episode.serie.synopsis }}
+            </p>
+
+            <v-divider class="my-3" />
+
+            <!-- Rating Display -->
+            <div class="mb-3 d-flex align-center" style="gap:15px;">
+              <div class="text-subtitle-2 font-weight-medium">
+                {{ $t('rating.display.average') }}:
+              </div>
+              <RatingDisplay
+                :average-rating="serieRating.averageRating"
+                :total-votes="serieRating.totalVotes"
+                compact
+              />
+
+              <!-- Rating Button -->
+              <div>
+                <v-btn
+                  v-if="$store.state.auth"
+                  color="amber darken-1"
+                  text
+                  small
+                  @click="openRatingModal"
+                >
+                  <v-icon left small>
+                    mdi-star
+                  </v-icon>
+                  {{ $t('rating.button') }}
+                </v-btn>
+                <v-btn
+                  v-else
+                  color="grey darken-1"
+                  text
+                  small
+                  :to="localePath('/login')"
+                >
+                  <v-icon left small>
+                    mdi-star
+                  </v-icon>
+                  {{ $t('rating.button') }}
+                </v-btn>
+              </div>
+            </div>
+
+            <v-divider class="my-3" />
+
+            <!-- Géneros -->
+            <div class="mb-2 text-subtitle-2 font-weight-medium">
+              {{ $t('episode.genres') }}:
+            </div>
+            <v-chip-group>
+              <v-chip
+                v-for="genre in JSON.parse(episode.serie.genres)"
+                :key="genre.text ? genre.text : genre"
+                :to="localePath(`/explore?genre=${genre.url}`)"
+                small
+                class="mr-1 mb-1"
+                color="grey lighten-1"
+                outlined
+              >
+                {{ genre.text ? genre.text : genre.name }}
+              </v-chip>
+            </v-chip-group>
+          </v-card-text>
+        </v-card>
+
+        <!-- Lista de episodios -->
+        <v-card class="rounded-lg mb-4 elevation-3">
+          <v-card-title class="d-flex justify-space-between align-center white--text">
+            <div>
+              <v-icon left color="white">
+                mdi-format-list-numbered
+              </v-icon>
+              {{ $t('episode.show_episodes') }}
+            </div>
+            <v-btn
+              icon
+              @click="show = !show"
+            >
+              <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-expand-transition>
+            <div v-show="show">
+              <v-list class="episode-list py-0">
+                <v-list-item
+                  v-for="episode_item in episode.serie.episodes"
+                  :key="episode_item.episode_number"
+                  :to="localePath(`/h/${episode.serie.url}/${episode_item.episode_number}`)"
+                  :class="[
+                    episode_item.episode_number == episode.episode_number ? 'current-episode' : '',
+                    $vuetify.breakpoint.smAndDown ? 'compact-list-item' : ''
+                  ]"
+                  class="episode-list-item"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title :class="{'text-body-2': $vuetify.breakpoint.smAndDown}">
+                      {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode_item.episode_number }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
+          </v-expand-transition>
+        </v-card>
+
         <!-- Series Similares -->
         <v-card class="mb-4 rounded-lg elevation-3">
-          <v-card-title class="primary--text">
-            <v-icon left color="primary">
+          <v-card-title class="white--text">
+            <v-icon left color="white">
               mdi-video-vintage
             </v-icon>
             {{ $t('serie.similar_series') }}
@@ -256,94 +375,6 @@
             </v-slide-group>
           </v-card-text>
         </v-card>
-        <!-- Información de la serie -->
-        <v-card class="rounded-lg mb-4 elevation-3">
-          <v-card-title class="primary--text">
-            <v-icon left color="primary">
-              mdi-information
-            </v-icon>
-            {{ $t('episode.serie_info') }}
-          </v-card-title>
-
-          <v-card-text class="pt-2">
-            <p class="mb-3 text-body-2">
-              {{ episode.serie.synopsis }}
-            </p>
-
-            <v-divider class="my-3" />
-
-            <!-- Géneros -->
-            <div class="mb-2 text-subtitle-2 font-weight-medium">
-              {{ $t('episode.genres') }}:
-            </div>
-            <v-chip-group>
-              <v-chip
-                v-for="genre in JSON.parse(episode.serie.genres)"
-                :key="genre.text ? genre.text : genre"
-                :to="localePath(`/explore?genre=${genre.url}`)"
-                small
-                class="mr-1 mb-1"
-                color="primary"
-                outlined
-              >
-                {{ genre.text ? genre.text : genre.name }}
-              </v-chip>
-            </v-chip-group>
-          </v-card-text>
-        </v-card>
-
-        <!-- Lista de episodios -->
-        <v-card class="rounded-lg mb-4 elevation-3">
-          <v-card-title class="d-flex justify-space-between align-center primary--text">
-            <div>
-              <v-icon left color="primary">
-                mdi-format-list-numbered
-              </v-icon>
-              {{ $t('episode.show_episodes') }}
-            </div>
-            <v-btn
-              icon
-              @click="show = !show"
-            >
-              <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <v-expand-transition>
-            <div v-show="show">
-              <v-list class="episode-list py-0">
-                <v-list-item
-                  v-for="episode_item in episode.serie.episodes"
-                  :key="episode_item.episode_number"
-                  :to="localePath(`/h/${episode.serie.url}/${episode_item.episode_number}`)"
-                  :class="[
-                    episode_item.episode_number == episode.episode_number ? 'current-episode' : '',
-                    $vuetify.breakpoint.smAndDown ? 'compact-list-item' : ''
-                  ]"
-                  class="episode-list-item"
-                >
-                  <v-list-item-avatar
-                    :class="{'compact-avatar': $vuetify.breakpoint.smAndDown}"
-                    class="mr-3 episode-number"
-                  >
-                    <v-chip
-                      :small="$vuetify.breakpoint.smAndDown"
-                      color="primary"
-                      dark
-                    >
-                      {{ episode_item.episode_number }}
-                    </v-chip>
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title :class="{'text-body-2': $vuetify.breakpoint.smAndDown}">
-                      {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode_item.episode_number }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </div>
-          </v-expand-transition>
-        </v-card>
 
         <!-- Anuncios -->
         <v-row class="mt-3 justify-center">
@@ -354,6 +385,15 @@
         </v-row>
       </v-col>
     </v-row>
+
+    <!-- Modal de Rating -->
+    <SerieRatingModal
+      :visible="showRatingModal"
+      :serie="episode.serie"
+      :user-rating="userRating"
+      @close="showRatingModal = false"
+      @rated="onRated"
+    />
 
     <!-- Modal de descargas -->
     <v-dialog
@@ -412,9 +452,16 @@
 </template>
 
 <script>
-
 import parse from 'url-parse'
+import { mapActions, mapGetters } from 'vuex'
+import SerieRatingModal from './SerieRatingModal.vue'
+import RatingDisplay from './RatingDisplay.vue'
+
 export default {
+  components: {
+    SerieRatingModal,
+    RatingDisplay
+  },
   data () {
     return {
       CDN: process.env.CDN_URI,
@@ -451,10 +498,16 @@ export default {
       ],
       modalDownload: false,
       rating: 0,
-      show: false,
+      show: true,
       user_id: '',
       watchlaters: [],
-      similarSeries: []
+      similarSeries: [],
+      showRatingModal: false,
+      serieRating: {
+        averageRating: 0,
+        totalVotes: 0
+      },
+      userRating: 0
     }
   },
   head () {
@@ -491,6 +544,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('ratings', ['getSerieRating', 'getUserRating', 'isLoading']),
     serieId () {
       return this.$route.params.serie
     },
@@ -542,6 +596,7 @@ export default {
     this.isDesktopScreen()
   },
   methods: {
+    ...mapActions('ratings', ['fetchSerieRating', 'submitRating']),
     resolveImages (type, serie) {
       if (type === 'screenshot') {
         return `${this.$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`
@@ -579,6 +634,7 @@ export default {
         this.setUserId()
         this.addVisit()
         this.getSimilarSeries()
+        this.loadSerieRating()
       }, 100)
     },
     async getFavorites () {
@@ -745,6 +801,29 @@ export default {
         .then(({ data: series }) => {
           this.similarSeries = series
         })
+    },
+    async loadSerieRating () {
+      try {
+        const userId = this.$store.state.auth?.id
+        const ratingData = await this.fetchSerieRating({
+          serieId: this.episode.serie.id,
+          userId
+        })
+        this.serieRating = {
+          averageRating: ratingData.averageRating,
+          totalVotes: ratingData.totalVotes
+        }
+        this.userRating = ratingData.userRating || 0
+      } catch (error) {
+        console.error('Error loading serie rating:', error)
+      }
+    },
+    openRatingModal () {
+      this.showRatingModal = true
+    },
+    onRated (data) {
+      this.userRating = data.rating
+      this.loadSerieRating()
     }
   }
 }

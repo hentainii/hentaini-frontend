@@ -251,5 +251,26 @@ export default {
     required: 'Este campo es obligatorio',
     min_length: 'Se requieren mínimo {min} caracteres',
     max_length: 'Máximo {max} caracteres permitidos'
+  },
+  rating: {
+    button: 'Calificar Serie',
+    tooltip: 'Califica esta serie',
+    stars: 'estrella | estrellas',
+    modal: {
+      title: 'Califica esta Serie',
+      instruction: 'Selecciona tu puntuación de 1 a 5 estrellas',
+      selected: 'Puntuación seleccionada',
+      current_rating: 'Tu calificación actual',
+      submit: 'Enviar Calificación',
+      remove: 'Eliminar Calificación',
+      success: 'Calificación enviada exitosamente',
+      removed: 'Calificación eliminada exitosamente',
+      error: 'Error al procesar la calificación'
+    },
+    display: {
+      votes: 'sin votos | {n} voto | {n} votos',
+      average: 'Promedio',
+      your_rating: 'Tu calificación'
+    }
   }
 }

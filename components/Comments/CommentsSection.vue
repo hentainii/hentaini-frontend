@@ -202,11 +202,6 @@ export default {
     }
   },
 
-  mounted () {
-    // Cargar comentarios iniciales
-    this.initializeComments()
-  },
-
   methods: {
     ...mapActions('comments', [
       'loadComments',

@@ -251,5 +251,26 @@ export default {
     required: 'This field is required',
     min_length: 'Minimum {min} characters required',
     max_length: 'Maximum {max} characters allowed'
+  },
+  rating: {
+    button: 'Rate Series',
+    tooltip: 'Rate this series',
+    stars: 'star | stars',
+    modal: {
+      title: 'Rate this Series',
+      instruction: 'Select your rating from 1 to 5 stars',
+      selected: 'Selected rating',
+      current_rating: 'Your current rating',
+      submit: 'Submit Rating',
+      remove: 'Remove Rating',
+      success: 'Rating submitted successfully',
+      removed: 'Rating removed successfully',
+      error: 'Error processing rating'
+    },
+    display: {
+      votes: 'no votes | {n} vote | {n} votes',
+      average: 'Average',
+      your_rating: 'Your rating'
+    }
   }
 }
