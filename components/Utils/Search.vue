@@ -157,8 +157,8 @@ export default {
     // eslint-disable-next-line object-shorthand
     blurFocus: function () {
       setTimeout(() => {
-        // this.focus = false
-        // this.menu = false
+        this.focus = false
+        this.menu = false
       }, 100)
     },
 
