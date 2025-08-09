@@ -71,16 +71,13 @@
                 <div class="search-result-row">
                   <v-img
                     :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-                    width="76"
-                    height="76"
+                    width="50"
+                    height="50"
                     class="thumb rounded-lg"
                   />
                   <div class="search-result-text">
                     <div class="search-result-title">
                       {{ serie.title }}
-                    </div>
-                    <div class="caption grey--text text-left search-synopsis">
-                      {{ serie.synopsis }}
                     </div>
                   </div>
                 </div>
@@ -257,14 +254,17 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  align-items: center;
   gap: 12px;
 }
 .search-result-row .thumb {
-  flex: 0 0 76px;
+  flex: 0 0 50px;
 }
 .search-result-text {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-width: 0; /* permite truncado/wrap correcto */
 }
 .search-result-title {
