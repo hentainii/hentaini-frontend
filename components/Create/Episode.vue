@@ -408,6 +408,7 @@ export default {
     },
     playerListModel () {
       this.episode.players = [
+        { name: 'PXD', url: '' },
         { name: 'Yourupload', url: '' },
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' },
