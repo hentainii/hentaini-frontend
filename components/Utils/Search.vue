@@ -8,7 +8,8 @@
         :close-on-content-click="false"
         :close-on-click="false"
         transition="fade-transition"
-        style="z-index: 9999 !important;"
+        content-class="search-menu-background"
+        style="z-index: 9999 !important;height:300px;"
       >
         <template #activator="{ on, attrs }">
           <v-text-field
@@ -238,10 +239,13 @@ export default {
   z-index: 9999 !important;
   bottom: 150px !important;
 }
-.search-menu-content {
-  width: 100%;
-  background-color: rgba(32, 18, 36, 0.92);
+.search-menu-background {
+  background-color: rgba(32, 18, 36, 0.52);
   backdrop-filter: blur(10px);
+}
+.search-menu-content {
+  height: 300px;
+  width: 100%;
   border-radius: 12px;
   padding: 8px 12px;
   z-index: 9999 !important;

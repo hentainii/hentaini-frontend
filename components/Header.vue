@@ -186,8 +186,9 @@
       mobile-breakpoint="960"
       disable-resize-watcher
       width="260"
-      style="background-color:rgba(0,0,0,0.3)!important;backdrop-filter: blur(10px);"
+      style="background-color:rgba(0,0,0,0.3)!important;backdrop-filter: blur(10px);max-height: 70%!important;"
       bottom
+      max-height="500px"
     >
       <v-list-item class="px-2">
         <v-list-item-avatar>
