@@ -13,7 +13,8 @@
           />
           <v-toolbar-title>
             <nuxt-link :to="localePath('/')">
-              <LayoutLogo />
+              <LogoMini v-if="$vuetify.breakpoint.smAndDown" />
+              <LayoutLogo v-else />
             </nuxt-link>
           </v-toolbar-title>
         </div>
@@ -69,7 +70,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Line Icons by Vjacheslav Trushkin - https://github.com/cyberalien/line-md/blob/master/license.txt --><g fill="currentColor" fill-opacity="0"><circle cx="9" cy="12" r="1.5"><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.15s" values="0;1"/></circle><circle cx="15" cy="12" r="1.5"><animate fill="freeze" attributeName="fill-opacity" begin="1.45s" dur="0.15s" values="0;1"/></circle></g><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="32" stroke-dashoffset="32" d="M12 6h2l1 -2c0 0 2.5 0.5 4 1.5c3.53 2.35 3 9.5 3 10.5c-1.33 2.17 -5.5 3.5 -5.5 3.5l-1 -2M12 6h-2l-0.97 -2c0 0 -2.5 0.5 -4 1.5c-3.53 2.35 -3 9.5 -3 10.5c1.33 2.17 5.5 3.5 5.5 3.5l1 -2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.7s" values="32;0"/></path><path stroke-dasharray="16" stroke-dashoffset="16" d="M5.5 16c5 2.5 8 2.5 13 0"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="16;0"/></path></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Line Icons by Vjacheslav Trushkin - https://github.com/cyberalien/line-md/blob/master/license.txt --><g fill="currentColor" fill-opacity="0"><circle cx="9" cy="12" r="1.5"><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.15s" values="0;1" /></circle><circle cx="15" cy="12" r="1.5"><animate fill="freeze" attributeName="fill-opacity" begin="1.45s" dur="0.15s" values="0;1" /></circle></g><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="32" stroke-dashoffset="32" d="M12 6h2l1 -2c0 0 2.5 0.5 4 1.5c3.53 2.35 3 9.5 3 10.5c-1.33 2.17 -5.5 3.5 -5.5 3.5l-1 -2M12 6h-2l-0.97 -2c0 0 -2.5 0.5 -4 1.5c-3.53 2.35 -3 9.5 -3 10.5c1.33 2.17 5.5 3.5 5.5 3.5l1 -2"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.7s" values="32;0" /></path><path stroke-dasharray="16" stroke-dashoffset="16" d="M5.5 16c5 2.5 8 2.5 13 0"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="16;0" /></path></g></svg>
               </v-btn>
             </template>
             <span>Join our Discord</span>
@@ -84,7 +85,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Line Icons by Vjacheslav Trushkin - https://github.com/cyberalien/line-md/blob/master/license.txt --><g fill="currentColor"><path d="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z"><animate fill="freeze" attributeName="d" dur="0.4s" values="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z;M1 2h2.5L18.5 22h-2.5zM5.5 2h2.5L23 22h-2.5z"/></path><path d="M3 2h5v0h-5zM16 22h5v0h-5z"><animate fill="freeze" attributeName="d" begin="0.4s" dur="0.4s" values="M3 2h5v0h-5zM16 22h5v0h-5z;M3 2h5v2h-5zM16 22h5v-2h-5z"/></path><path d="M18.5 2h3.5L22 2h-3.5z"><animate fill="freeze" attributeName="d" begin="0.5s" dur="0.4s" values="M18.5 2h3.5L22 2h-3.5z;M18.5 2h3.5L5 22h-3.5z"/></path></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Line Icons by Vjacheslav Trushkin - https://github.com/cyberalien/line-md/blob/master/license.txt --><g fill="currentColor"><path d="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z"><animate fill="freeze" attributeName="d" dur="0.4s" values="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z;M1 2h2.5L18.5 22h-2.5zM5.5 2h2.5L23 22h-2.5z" /></path><path d="M3 2h5v0h-5zM16 22h5v0h-5z"><animate fill="freeze" attributeName="d" begin="0.4s" dur="0.4s" values="M3 2h5v0h-5zM16 22h5v0h-5z;M3 2h5v2h-5zM16 22h5v-2h-5z" /></path><path d="M18.5 2h3.5L22 2h-3.5z"><animate fill="freeze" attributeName="d" begin="0.5s" dur="0.4s" values="M18.5 2h3.5L22 2h-3.5z;M18.5 2h3.5L5 22h-3.5z" /></path></g></svg>
               </v-btn>
             </template>
             <span>Follow us on X for news and updates</span>
@@ -190,58 +191,48 @@
       absolute
       style="z-index:2!important"
     >
-      <v-img
-        src="/img/nav-bg.jpg"
-        height="100%"
-      >
-        <v-layout
-          tag="v-list"
-          column
-        >
-          <v-list-item class="px-2">
-            <v-list-item-avatar>
-              <v-img src="/img/user_default.jpg" />
-            </v-list-item-avatar>
-          </v-list-item>
+      <v-list-item class="px-2">
+        <v-list-item-avatar>
+          <v-img src="/img/user_default.jpg" />
+        </v-list-item-avatar>
+      </v-list-item>
 
-          <v-list-item v-if="$store.state.auth" link>
+      <v-list-item v-if="$store.state.auth" link>
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            {{ $store.state.auth.username }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item v-else link to="/login">
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            {{ $t('menu.login_register_nav') }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item class="px-2">
+        <UtilsSearch />
+      </v-list-item>
+
+      <v-list>
+        <v-list-item-group>
+          <v-list-item
+            v-for="link in navs"
+            :key="link.id"
+            :to="link.url"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="link.icon" />
+            </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="title">
-                {{ $store.state.auth.username }}
-              </v-list-item-title>
+              <v-list-item-title v-text="link.name" />
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-else link to="/login">
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                {{ $t('menu.login_register_nav') }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-divider />
-          <v-row class="px-4 d-flex d-sm-flex d-sx-flex d-md-none d-lg-none d-lx-none">
-            <UtilsSearch />
-          </v-row>
-          <v-list>
-            <v-list-item-group>
-              <v-list-item
-                v-for="link in navs"
-                :key="link.id"
-                :to="link.url"
-              >
-                <v-list-item-icon>
-                  <v-icon v-text="link.icon" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="link.name" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-          <LayoutLogo class="ml-4" />
-        </v-layout>
-      </v-img>
+        </v-list-item-group>
+      </v-list>
+      <LayoutLogo class="ml-4" />
     </v-navigation-drawer>
   </v-container>
 </template>
@@ -250,6 +241,9 @@
 import Cookie from 'js-cookie'
 export default {
   name: 'Header',
+  components: {
+    LogoMini: () => import('~/components/Layout/Logo-mini.vue')
+  },
   data () {
     return {
       nav: false,
