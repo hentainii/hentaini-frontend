@@ -7,15 +7,15 @@
           width="120"
           class="subtitle-skeleton"
           dark
-        ></v-skeleton-loader>
+        />
         <v-skeleton-loader
           type="heading"
           width="250"
           class="mt-1"
           dark
-        ></v-skeleton-loader>
+        />
       </div>
-      <div class="animated-bar-skeleton"></div>
+      <div class="animated-bar-skeleton" />
     </div>
 
     <v-row class="episodes-grid-skeleton">
@@ -42,13 +42,13 @@
               width="70%"
               class="mt-2"
               dark
-            ></v-skeleton-loader>
+            />
             <v-skeleton-loader
               type="text"
               width="40%"
               class="mt-1"
               dark
-            ></v-skeleton-loader>
+            />
           </div>
         </v-skeleton-loader>
       </v-col>

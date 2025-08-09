@@ -31,7 +31,7 @@
                 <v-card-title class="subtitle-1 font-weight-bold">
                   <v-skeleton-loader type="text" width="80" />
                 </v-card-title>
-                <v-divider></v-divider>
+                <v-divider />
                 <v-list dense class="py-0">
                   <v-list-item
                     v-for="n in 3"
@@ -51,7 +51,7 @@
                 <v-card-title class="subtitle-1 font-weight-bold">
                   <v-skeleton-loader type="text" width="100" />
                 </v-card-title>
-                <v-divider></v-divider>
+                <v-divider />
                 <v-list dense class="py-0">
                   <v-list-item
                     v-for="n in 2"
@@ -71,7 +71,7 @@
                 <v-card-title class="subtitle-1 font-weight-bold">
                   <v-skeleton-loader type="text" width="60" />
                 </v-card-title>
-                <v-divider></v-divider>
+                <v-divider />
                 <v-list dense class="py-0" style="max-height: 300px;">
                   <v-list-item
                     v-for="n in 6"

@@ -6,7 +6,7 @@
       style="height: 400px;"
       dark
     >
-      <div class="carousel-skeleton-gradient fill-height"></div>
+      <div class="carousel-skeleton-gradient fill-height" />
       <v-row align="end" class="lightbox white--text pa-0 ma-0 fill-height">
         <v-col cols="12" md="8" lg="6" class="carousel-skeleton-content pa-6">
           <!-- Featured badge skeleton -->
@@ -15,20 +15,20 @@
             width="100"
             dark
             class="mb-2"
-          ></v-skeleton-loader>
+          />
           <!-- Status chip skeleton -->
           <v-skeleton-loader
             type="chip"
             width="90"
             dark
             class="mt-2 mb-2"
-          ></v-skeleton-loader>
+          />
           <!-- Title skeleton -->
           <v-skeleton-loader
             type="heading"
             class="mt-2 mb-2"
             dark
-          ></v-skeleton-loader>
+          />
 
           <!-- Genre chips skeleton -->
           <div class="d-flex mt-2 mb-3">
@@ -39,7 +39,7 @@
               width="60"
               class="mr-2"
               dark
-            ></v-skeleton-loader>
+            />
           </div>
 
           <!-- Synopsis skeleton -->
@@ -47,20 +47,20 @@
             type="paragraph"
             class="mt-2"
             dark
-          ></v-skeleton-loader>
+          />
           <!-- Button skeleton -->
           <v-skeleton-loader
             type="button"
             class="mt-4"
             width="150"
             dark
-          ></v-skeleton-loader>
+          />
         </v-col>
       </v-row>
 
       <!-- Indicator dots skeleton -->
       <div class="carousel-skeleton-indicators">
-        <div v-for="i in 4" :key="i" class="skeleton-indicator-dot"></div>
+        <div v-for="i in 4" :key="i" class="skeleton-indicator-dot" />
       </div>
     </v-skeleton-loader>
   </div>

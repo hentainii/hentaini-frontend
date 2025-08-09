@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <div class="comment-item">
     <v-card
@@ -33,7 +34,9 @@
                 text-color="white"
                 class="mr-2 admin-badge"
               >
-                <v-icon left x-small>mdi-shield-crown</v-icon>
+                <v-icon left x-small>
+                  mdi-shield-crown
+                </v-icon>
                 {{ $t('comments.admin') }}
               </v-chip>
 
