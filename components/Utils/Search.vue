@@ -187,7 +187,7 @@ export default {
       this.lastSearchTime = currentTime
 
       try {
-        const query = `filters[title][$containsi]=${encodeURIComponent(searchQuery)}&populate[0]=images&populate[1]=images.image_type&pagination[limit]=5`
+        const query = `filters[title][$containsi]=${encodeURIComponent(searchQuery)}&populate[0]=images&populate[1]=images.image_type&pagination[limit]=50`
 
         // Agregar timeout a la petición
         const controller = new AbortController()
