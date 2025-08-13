@@ -5,6 +5,9 @@
 
 export const useHLSUpload = () => {
   const uploadToHLS = async (file, account, progressCallback, onComplete, onError, context) => {
+    // Crear AbortController para poder cancelar el monitoreo
+    const abortController = new AbortController()
+
     try {
       console.log(context.$store.$config)
       // Validar parámetros requeridos
@@ -50,15 +53,25 @@ export const useHLSUpload = () => {
       const conversionData = await conversionResponse.json()
       const { jobId, hlsCode } = conversionData.data
 
-      if (progressCallback) {
+      // Almacenar jobId y AbortController en la sesión para poder recuperarlo después
+      if (context.updateUploadProgress) {
+        context.updateUploadProgress(account.service, {
+          percentage: 10,
+          status: 'Conversión iniciada, monitoreando progreso...',
+          jobId, // Guardar jobId para recuperación
+          abortController // Guardar AbortController para cancelación
+        })
+      } else if (progressCallback) {
         progressCallback({
           percentage: 10,
-          status: 'Conversión iniciada, monitoreando progreso...'
+          status: 'Conversión iniciada, monitoreando progreso...',
+          jobId,
+          abortController
         })
       }
 
       // Monitorear progreso de la conversión
-      const finalResult = await monitorConversionProgress(backendUrl, jobId, progressCallback)
+      const finalResult = await monitorConversionProgress(backendUrl, jobId, progressCallback, abortController)
 
       if (finalResult.status === 'completado') {
         return hlsCode
@@ -73,11 +86,16 @@ export const useHLSUpload = () => {
   /**
    * Monitorear el progreso de conversión HLS
    */
-  const monitorConversionProgress = async (backendUrl, jobId, progressCallback) => {
+  const monitorConversionProgress = async (backendUrl, jobId, progressCallback, abortController = null) => {
     const maxAttempts = 120 // 10 minutos máximo (5 segundos * 120)
     let attempts = 0
 
     while (attempts < maxAttempts) {
+      // Verificar si la operación fue cancelada
+      if (abortController && abortController.signal.aborted) {
+        throw new Error('Monitoreo HLS cancelado')
+      }
+
       try {
         const statusResponse = await fetch(`${backendUrl}hls-converter/status/${jobId}`)
 
@@ -95,20 +113,35 @@ export const useHLSUpload = () => {
           })
         }
 
-        // Si la conversión está completa o falló
-        if (job.status === 'completado' || job.status === 'error') {
+        // Si la conversión está completa, falló o fue cancelada
+        if (job.status === 'completado' || job.status === 'error' || job.status === 'cancelado') {
           return job
+        }
+
+        // Verificar cancelación antes de esperar
+        if (abortController && abortController.signal.aborted) {
+          throw new Error('Monitoreo HLS cancelado')
         }
 
         // Esperar 5 segundos antes del siguiente chequeo
         await new Promise(resolve => setTimeout(resolve, 5000))
         attempts++
       } catch (error) {
+        // Si es una cancelación, propagar el error inmediatamente
+        if (error.message === 'Monitoreo HLS cancelado') {
+          throw error
+        }
+
         console.error('Error monitoreando progreso:', error)
         attempts++
 
         if (attempts >= maxAttempts) {
           throw new Error('Timeout monitoreando conversión HLS')
+        }
+
+        // Verificar cancelación antes de reintentar
+        if (abortController && abortController.signal.aborted) {
+          throw new Error('Monitoreo HLS cancelado')
         }
 
         // Esperar antes de reintentar

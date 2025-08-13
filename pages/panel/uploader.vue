@@ -108,6 +108,9 @@
                       <!-- Status text above progress bar -->
                       <div v-if="session.services[player.name].status && session.services[player.name].status !== 'success' && session.services[player.name].status !== 'failed'" class="caption text--secondary mb-1">
                         {{ session.services[player.name].message || session.services[player.name].status }}
+                        <span v-if="session.services[player.name].progress > 0" class="float-right">
+                          {{ Math.round(session.services[player.name].progress) }}%
+                        </span>
                       </div>
                       <v-progress-linear
                         :value="session.services[player.name].progress"
@@ -278,6 +281,7 @@ export default {
   async mounted () {
     await this.fetchAccounts()
     await this.fetchSessions()
+    await this.checkAndResumeActiveSessions()
   },
   methods: {
     onSerieChange (serieObj) {
@@ -323,6 +327,178 @@ export default {
       })
       const data = await res.json()
       this.players = data.data
+    },
+    async checkAndResumeActiveSessions () {
+      console.log('[RECOVERY] Verificando sesiones activas al cargar la página...')
+
+      // Buscar sesiones con estados activos (incluyendo estados específicos de HLS)
+      const activeSessions = this.sessions.filter((session) => {
+        if (!session.services) { return false }
+
+        return Object.values(session.services).some(service =>
+          service.status === 'uploading' ||
+          service.status === 'processing' ||
+          service.status === 'retrying' ||
+          service.status === 'Convirtiendo a HLS...' ||
+          service.status === 'Subiendo a HLS...' ||
+          service.status === 'Procesando HLS...' ||
+          (service.status && service.status.includes('HLS') && service.status !== 'success' && service.status !== 'failed')
+        )
+      })
+
+      console.log(`[RECOVERY] Encontradas ${activeSessions.length} sesiones activas`)
+
+      if (activeSessions.length === 0) {
+        console.log('[RECOVERY] No hay sesiones activas para recuperar')
+        return
+      }
+
+      // Verificar cada sesión activa en el backend
+      for (const session of activeSessions) {
+        console.log(`[RECOVERY] Verificando sesión ${session.id} con servicios activos`)
+        await this.verifyAndResumeSession(session)
+      }
+    },
+    async verifyAndResumeSession (session) {
+      console.log(`[RECOVERY] Verificando sesión ${session.id} - ${session.file_name}`)
+
+      // Verificar cada servicio activo en la sesión (incluyendo estados específicos de HLS)
+      const activeServices = Object.entries(session.services || {})
+        .filter(([, service]) =>
+          service.status === 'uploading' ||
+          service.status === 'processing' ||
+          service.status === 'retrying' ||
+          service.status === 'Convirtiendo a HLS...' ||
+          service.status === 'Subiendo a HLS...' ||
+          service.status === 'Procesando HLS...' ||
+          (service.status && service.status.includes('HLS') && service.status !== 'success' && service.status !== 'failed')
+        )
+
+      console.log(`[RECOVERY] Servicios activos encontrados: ${activeServices.map(([name]) => name).join(', ')}`)
+
+      for (const [serviceName, serviceData] of activeServices) {
+        console.log(`[RECOVERY] Verificando servicio ${serviceName} en sesión ${session.id}`)
+
+        try {
+          // Solo HLS tiene monitoreo de progreso en backend
+          if (serviceName === 'HLS' || serviceName === 'HLS Player') {
+            console.log(`[RECOVERY] Retomando monitoreo HLS para sesión ${session.id}`)
+            await this.resumeHLSMonitoring(session, serviceName, serviceData)
+          } else {
+            // Para otros servicios (como MEGA), solo marcar como fallido si realmente han fallado
+            // No marcar automáticamente como fallido por recarga de página
+            console.log(`[RECOVERY] Servicio ${serviceName} no tiene monitoreo de backend, manteniendo estado actual`)
+            // Los servicios como MEGA se procesan en el cliente, por lo que al recargar la página
+            // es normal que se pierda el progreso, pero no significa que hayan fallado
+            if (serviceData.status === 'uploading' || serviceData.status === 'processing') {
+              console.log(`[RECOVERY] Servicio ${serviceName} estaba en progreso, marcando como interrumpido`)
+              await this.markServiceAsFailed(session, serviceName, 'Sesión interrumpida por recarga de página - reinicie la subida si es necesario')
+            }
+          }
+        } catch (error) {
+          console.error(`[RECOVERY] Error verificando servicio ${serviceName}:`, error)
+          await this.markServiceAsFailed(session, serviceName, error.message)
+        }
+      }
+    },
+    async resumeHLSMonitoring (session, serviceName, serviceData) {
+      console.log(`[RECOVERY] Retomando monitoreo HLS para sesión ${session.id}`)
+      console.log('[RECOVERY] Datos del servicio recibidos:', JSON.stringify(serviceData, null, 2))
+      console.log('[RECOVERY] Estructura completa de session.services:', JSON.stringify(session.services, null, 2))
+
+      // Establecer currentSession para que los callbacks funcionen correctamente
+      this.currentSession = session
+      console.log(`[RECOVERY] currentSession establecida para sesión ${session.id}`)
+
+      // Buscar el jobId en los datos del servicio
+      let jobId = null
+
+      // Intentar obtener jobId de diferentes ubicaciones en la estructura JSON
+      if (session.services && session.services[serviceName] && session.services[serviceName].jobId) {
+        jobId = session.services[serviceName].jobId
+        console.log(`[RECOVERY] JobId encontrado en session.services[${serviceName}]: ${jobId}`)
+      } else if (serviceData && serviceData.jobId) {
+        jobId = serviceData.jobId
+        console.log(`[RECOVERY] JobId encontrado en serviceData: ${jobId}`)
+      } else if (session.services && session.services.HLS && session.services.HLS.jobId) {
+        jobId = session.services.HLS.jobId
+        console.log(`[RECOVERY] JobId encontrado en session.services.HLS: ${jobId}`)
+      }
+
+      if (!jobId) {
+        console.error(`[RECOVERY] No se pudo encontrar jobId para el servicio ${serviceName}`)
+        console.log('[RECOVERY] Estructura de servicios disponible:', JSON.stringify(session.services, null, 2))
+        await this.markServiceAsFailed(session, serviceName, 'No se encontró jobId para recuperar la conversión')
+        return
+      }
+
+      try {
+        console.log(`[RECOVERY] Retomando monitoreo con jobId: ${jobId}`)
+
+        // Usar el composable HLS para reanudar el monitoreo
+        const { useHLSUpload } = await import('~/composables/uploader/handlers/hls')
+        const { monitorConversionProgress } = useHLSUpload()
+
+        // Crear callbacks con el contexto correcto
+        const updateProgressCallback = (progress) => {
+          console.log(`[RECOVERY] Callback updateProgress: ${serviceName}, ${progress.percentage}%, ${progress.status}`)
+          return this.updateUploadProgress(serviceName, progress)
+        }
+
+        const backendUrl = this.$config.API_STRAPI_ENDPOINT
+
+        console.log(`[RECOVERY] Iniciando monitoreo de progreso para job ${jobId}`)
+
+        // Retomar el monitoreo de progreso
+        const result = await monitorConversionProgress(
+          backendUrl,
+          jobId,
+          updateProgressCallback
+        )
+
+        if (result.status === 'completado') {
+          console.log(`[RECOVERY] Conversión HLS completada para sesión ${session.id}`)
+          await this.handleUploadSuccess(serviceName, result.hlsCode || result.code)
+        } else {
+          console.log(`[RECOVERY] Conversión HLS falló para sesión ${session.id}:`, result.error)
+          await this.handleUploadError(serviceName, new Error(result.error || 'Error en conversión HLS'))
+        }
+      } catch (error) {
+        console.error('[RECOVERY] Error retomando monitoreo HLS:', error)
+        await this.handleUploadError(serviceName, error)
+      }
+    },
+    async markServiceAsFailed (session, serviceName, errorMessage) {
+      console.log(`[RECOVERY] Marcando servicio ${serviceName} como fallido en sesión ${session.id}: ${errorMessage}`)
+
+      try {
+        // Actualizar el estado local
+        if (session.services && session.services[serviceName]) {
+          session.services[serviceName].status = 'failed'
+          session.services[serviceName].error = errorMessage
+          session.services[serviceName].progress = 0
+        }
+
+        // Actualizar en el backend
+        const token = this.$store.state.auth.token
+        await this.$axios.put(
+             `${this.$config.API_STRAPI_ENDPOINT}uploader-sessions/${session.id}`,
+             {
+               data: {
+                 services: session.services
+               }
+             },
+             {
+               headers: {
+                 Authorization: `Bearer ${token}`
+               }
+             }
+        )
+
+        console.log(`[RECOVERY] Estado actualizado para servicio ${serviceName} en sesión ${session.id}`)
+      } catch (error) {
+        console.error(`[RECOVERY] Error actualizando estado de servicio ${serviceName}:`, error)
+      }
     },
     async fetchSessions () {
       const token = this.$store.state.auth.token
@@ -532,16 +708,32 @@ export default {
         if (!sessionToUpdate.services[service]) { this.$set(sessionToUpdate.services, service, {}) }
         this.$set(sessionToUpdate.services[service], 'progress', progress.percentage)
         this.$set(sessionToUpdate.services[service], 'status', progress.status)
+        // Almacenar jobId si se proporciona (para HLS)
+        if (progress.jobId) {
+          this.$set(sessionToUpdate.services[service], 'jobId', progress.jobId)
+        }
+        // Almacenar AbortController si se proporciona (para HLS)
+        if (progress.abortController) {
+          this.$set(sessionToUpdate.services[service], 'abortController', progress.abortController)
+        }
       }
 
       const token = this.$store.state.auth.token
+      const serviceData = {
+        ...this.currentSession.services[service],
+        progress: progress.percentage,
+        status: progress.status
+      }
+
+      // Almacenar jobId si se proporciona (para HLS)
+      if (progress.jobId) {
+        serviceData.jobId = progress.jobId
+      }
+      // Nota: AbortController no se envía al backend, solo se mantiene localmente
+
       const services = {
         ...this.currentSession.services,
-        [service]: {
-          ...this.currentSession.services[service],
-          progress: progress.percentage,
-          status: progress.status
-        }
+        [service]: serviceData
       }
       this.currentSession.services = services
 
@@ -755,6 +947,10 @@ export default {
       this.deletingSessionId = session.id
       try {
         const token = this.$store.state.auth.token
+
+        // Cancel active HLS jobs before deleting session
+        await this.cancelActiveHLSJobs(session, token)
+
         const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}uploader-sessions/${session.id}`, {
           method: 'DELETE',
           headers: {
@@ -775,6 +971,60 @@ export default {
         this.showAlert('error', `Error deleting session: ${error.message}`)
       } finally {
         this.deletingSessionId = null
+      }
+    },
+    cancelActiveHLSJobs (session, token) {
+      if (!session.services) { return }
+
+      // Find active HLS services with jobId
+      const hlsService = session.services.HLS
+      if (!hlsService) { return }
+
+      // Check if HLS service is active and has a jobId
+      const isHLSActive = hlsService.status &&
+        hlsService.status !== 'success' &&
+        hlsService.status !== 'failed' &&
+        (hlsService.status.includes('HLS') ||
+         hlsService.status === 'uploading' ||
+         hlsService.status === 'processing' ||
+         hlsService.status === 'retrying')
+
+      const jobId = hlsService.jobId || (hlsService.data && hlsService.data.jobId)
+
+      if (isHLSActive && jobId) {
+        try {
+          console.log(`[CANCEL] Cancelling HLS job ${jobId} for session ${session.id}`)
+
+          // Abortar el monitoreo usando AbortController si existe
+          if (hlsService.abortController) {
+            console.log(`[CANCEL] Aborting HLS monitoring for job ${jobId}`)
+            hlsService.abortController.abort()
+          }
+
+          // Marcar inmediatamente el servicio como cancelado localmente
+          hlsService.status = 'cancelled'
+          hlsService.percentage = 0
+
+          // Enviar cancelación al backend (sin esperar respuesta para continuar)
+          fetch(`${this.$config.API_STRAPI_ENDPOINT}hls-converter/cancel/${jobId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          }).then((cancelRes) => {
+            if (cancelRes.ok) {
+              console.log(`[CANCEL] Successfully cancelled HLS job ${jobId}`)
+            } else {
+              console.warn(`[CANCEL] Failed to cancel HLS job ${jobId}:`, cancelRes.statusText)
+            }
+          }).catch((error) => {
+            console.error(`[CANCEL] Error cancelling HLS job ${jobId}:`, error)
+          })
+        } catch (error) {
+          console.error(`[CANCEL] Error cancelling HLS job ${jobId}:`, error)
+          // Don't throw error - continue with session deletion even if cancellation fails
+        }
       }
     },
     createEpisodeFromLastUpload () {
