@@ -469,6 +469,7 @@
 <script>
 import parse from 'url-parse'
 import { mapActions, mapGetters } from 'vuex'
+import Hls, { Events, ErrorTypes } from 'hls.js'
 import SerieRatingModal from './SerieRatingModal.vue'
 import RatingDisplay from './RatingDisplay.vue'
 
@@ -522,7 +523,8 @@ export default {
         averageRating: 0,
         totalVotes: 0
       },
-      userRating: 0
+      userRating: 0,
+      hlsInstance: null
     }
   },
   head () {
@@ -593,6 +595,25 @@ export default {
           this.initHLSPlayer()
         })
       }
+    },
+    currentUrl () {
+      // Limpiar instancia HLS anterior cuando cambie la URL
+      if (this.hlsInstance) {
+        this.hlsInstance.destroy()
+        this.hlsInstance = null
+      }
+      if (this.showVideo && this.isHLSPlayer) {
+        this.$nextTick(() => {
+          this.initHLSPlayer()
+        })
+      }
+    }
+  },
+  beforeDestroy () {
+    // Limpiar instancia HLS al destruir el componente
+    if (this.hlsInstance) {
+      this.hlsInstance.destroy()
+      this.hlsInstance = null
     }
   },
   mounted () {
@@ -837,16 +858,56 @@ export default {
         })
     },
     initHLSPlayer () {
-      if (!this.isHLSPlayer || !this.$refs.hlsVideo || !this.currentUrl) { return }
-
       const video = this.$refs.hlsVideo
+      if (!video || !this.currentUrl) { return }
 
-      // Si el navegador soporta HLS nativamente
-      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Limpiar instancia anterior si existe
+      if (this.hlsInstance) {
+        this.hlsInstance.destroy()
+        this.hlsInstance = null
+      }
+
+      if (Hls.isSupported()) {
+        // Usar HLS.js para navegadores que lo soportan
+        this.hlsInstance = new Hls({
+          enableWorker: true,
+          lowLatencyMode: false,
+          backBufferLength: 90
+        })
+
+        this.hlsInstance.loadSource(this.currentUrl)
+        this.hlsInstance.attachMedia(video)
+
+        this.hlsInstance.on(Events.MANIFEST_PARSED, () => {
+          console.log('HLS manifest parsed successfully')
+        })
+
+        this.hlsInstance.on(Events.ERROR, (event, data) => {
+          console.error('HLS error:', data)
+          if (data.fatal) {
+            switch (data.type) {
+              case ErrorTypes.NETWORK_ERROR:
+                console.log('Network error, trying to recover...')
+                this.hlsInstance.startLoad()
+                break
+              case ErrorTypes.MEDIA_ERROR:
+                console.log('Media error, trying to recover...')
+                this.hlsInstance.recoverMediaError()
+                break
+              default:
+                console.log('Fatal error, destroying HLS instance')
+                this.hlsInstance.destroy()
+                this.hlsInstance = null
+                break
+            }
+          }
+        })
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Soporte nativo de HLS (Safari)
         video.src = this.currentUrl
       } else {
-        // Fallback para navegadores que no soportan HLS nativamente
-        // En este caso, intentamos cargar la URL directamente
+        console.warn('HLS no es soportado en este navegador')
+        // Intentar cargar directamente como último recurso
         video.src = this.currentUrl
       }
     },

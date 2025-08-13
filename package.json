@@ -17,6 +17,7 @@
     "aws-sdk": "^2.1692.0",
     "babel-eslint": "^10.1.0",
     "cookieparser": "^0.1.0",
+    "hls.js": "^1.6.9",
     "js-cookie": "^3.0.0",
     "nuxt": "^2.15.7",
     "postscribe": "^2.0.8",
