@@ -105,6 +105,10 @@
                   </td>
                   <td v-for="player in uploadablePlayers" :key="player.id">
                     <div v-if="session.services && session.services[player.name]">
+                      <!-- Status text above progress bar -->
+                      <div v-if="session.services[player.name].status && session.services[player.name].status !== 'success' && session.services[player.name].status !== 'failed'" class="caption text--secondary mb-1">
+                        {{ session.services[player.name].message || session.services[player.name].status }}
+                      </div>
                       <v-progress-linear
                         :value="session.services[player.name].progress"
                         :color="getStatusColor(session.services[player.name].status)"
@@ -180,15 +184,28 @@
                     </div>
                   </td>
                   <td>
-                    <v-btn
-                      v-if="shouldShowCreateEpisodeButton(session) && !session.episodeCreated"
-                      small
-                      color="primary"
-                      :loading="isCreatingEpisode"
-                      @click="createEpisodeFromSession(session)"
-                    >
-                      Create Episode
-                    </v-btn>
+                    <div class="d-flex align-center gap-2">
+                      <v-btn
+                        v-if="shouldShowCreateEpisodeButton(session) && !session.episodeCreated"
+                        small
+                        color="primary"
+                        :loading="isCreatingEpisode"
+                        @click="createEpisodeFromSession(session)"
+                      >
+                        Create Episode
+                      </v-btn>
+                      <v-btn
+                        small
+                        color="red"
+                        icon
+                        :loading="deletingSessionId === session.id"
+                        @click="confirmDeleteSession(session)"
+                      >
+                        <v-icon small>
+                          mdi-close
+                        </v-icon>
+                      </v-btn>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -245,6 +262,7 @@ export default {
       fetchingEpisodeForSessionId: null,
       availableEpisodes: [],
       loadingApplyPlayer: null,
+      deletingSessionId: null,
       alert: {
         show: false,
         type: 'info',
@@ -726,6 +744,37 @@ export default {
         this.showAlert('error', `Error creating episode: ${error.message}`)
       } finally {
         this.isCreatingEpisode = false
+      }
+    },
+    confirmDeleteSession (session) {
+      if (confirm(`¿Estás seguro de que quieres eliminar la sesión "${session.file_name || 'Sin título'}"?`)) {
+        this.deleteSession(session)
+      }
+    },
+    async deleteSession (session) {
+      this.deletingSessionId = session.id
+      try {
+        const token = this.$store.state.auth.token
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}uploader-sessions/${session.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        if (!res.ok) {
+          throw new Error('Failed to delete session')
+        }
+
+        // Remove from local sessions array
+        this.sessions = this.sessions.filter(s => s.id !== session.id)
+        this.showAlert('success', 'Session deleted successfully')
+      } catch (error) {
+        console.error('Delete session error:', error)
+        this.showAlert('error', `Error deleting session: ${error.message}`)
+      } finally {
+        this.deletingSessionId = null
       }
     },
     createEpisodeFromLastUpload () {

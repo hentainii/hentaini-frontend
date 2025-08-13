@@ -370,7 +370,7 @@ export default {
     createPlayerUrl (player, code, index) {
       const playerFromList = this.players.filter(p => p.name === player)
       if (playerFromList.length) {
-        const playerUrl = playerFromList[0].player_code.replace('codigo', code)
+        const playerUrl = playerFromList[0].player_code.replaceAll('codigo', code)
         this.episode.players[index].url = playerUrl
       }
     },

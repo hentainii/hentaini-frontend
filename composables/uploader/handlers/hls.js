@@ -18,7 +18,7 @@ export const useHLSUpload = () => {
       // Progreso inicial
       if (progressCallback) {
         progressCallback({
-          progress: 0,
+          percentage: 0,
           status: 'Preparando archivo para conversión HLS...'
         })
       }
@@ -31,7 +31,7 @@ export const useHLSUpload = () => {
 
       if (progressCallback) {
         progressCallback({
-          progress: 5,
+          percentage: 5,
           status: 'Enviando video al servidor para conversión...'
         })
       }
@@ -52,7 +52,7 @@ export const useHLSUpload = () => {
 
       if (progressCallback) {
         progressCallback({
-          progress: 10,
+          percentage: 10,
           status: 'Conversión iniciada, monitoreando progreso...'
         })
       }
@@ -90,7 +90,7 @@ export const useHLSUpload = () => {
 
         if (progressCallback) {
           progressCallback({
-            progress: job.progress || 0,
+            percentage: job.progress || 0,
             status: job.message || 'Procesando...'
           })
         }
