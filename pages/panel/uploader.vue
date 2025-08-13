@@ -126,6 +126,53 @@
                           mdi-check-circle
                         </v-icon>
                         <span class="caption">{{ session.services[player.name].code }}</span>
+                        <v-menu
+                          v-if="session.serie && session.episodeCreated"
+                          offset-y
+                          :close-on-content-click="false"
+                        >
+                          <template #activator="{ on, attrs }">
+                            <v-btn
+                              small
+                              color="blue"
+                              class="mt-1"
+                              :loading="loadingApplyPlayer === `${session.id}-${player.name}`"
+                              v-bind="attrs"
+                              v-on="on"
+                              @click="fetchEpisodesForSerie(session.serie.id, session.id, player.name)"
+                            >
+                              <v-icon left small>
+                                mdi-plus
+                              </v-icon>
+                              Aplicar a capítulo
+                            </v-btn>
+                          </template>
+                          <v-list>
+                            <v-list-item
+                              v-for="episode in availableEpisodes"
+                              :key="episode.id"
+                              @click="applyPlayerToEpisode(episode.id, player.name, session.services[player.name].code, session.id)"
+                            >
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  Episodio {{ episode.episode_number }}
+                                  <span v-if="episode.title"> - {{ episode.title }}</span>
+                                </v-list-item-title>
+                                <v-list-item-subtitle v-if="episodeHasPlayer(episode, player.name)">
+                                  <v-icon small color="orange">
+                                    mdi-alert
+                                  </v-icon>
+                                  Ya tiene reproductor {{ player.name }}
+                                </v-list-item-subtitle>
+                              </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item v-if="!availableEpisodes.length">
+                              <v-list-item-content>
+                                <v-list-item-title>No hay episodios disponibles</v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
                       </div>
                     </div>
                     <div v-else>
@@ -196,6 +243,8 @@ export default {
       lastUploadResults: null,
       isCreatingEpisode: false,
       fetchingEpisodeForSessionId: null,
+      availableEpisodes: [],
+      loadingApplyPlayer: null,
       alert: {
         show: false,
         type: 'info',
@@ -734,6 +783,134 @@ export default {
         this.showAlert('error', 'An error occurred while searching for the episode.')
       } finally {
         this.fetchingEpisodeForSessionId = null
+      }
+    },
+    async fetchEpisodesForSerie (serieId, sessionId, playerName) {
+      this.loadingApplyPlayer = `${sessionId}-${playerName}`
+      try {
+        const token = this.$store.state.auth.token
+        const query = qs.stringify({
+          filters: {
+            serie: { id: { $eq: serieId } }
+          },
+          populate: ['id', 'episode_number', 'title', 'players'],
+          sort: ['episode_number:asc'],
+          pagination: { page: 1, pageSize: 100 }
+        }, { encodeValuesOnly: true })
+
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        if (!res.ok) {
+          throw new Error('Error al obtener episodios')
+        }
+
+        const data = await res.json()
+        this.availableEpisodes = data.data || []
+      } catch (error) {
+        console.error('Error fetching episodes:', error)
+        this.showAlert('error', `Error al obtener episodios: ${error.message}`)
+        this.availableEpisodes = []
+      } finally {
+        this.loadingApplyPlayer = null
+      }
+    },
+    episodeHasPlayer (episode, playerName) {
+      if (!episode.players) { return false }
+      try {
+        const players = typeof episode.players === 'string' ? JSON.parse(episode.players) : episode.players
+        return players.some(player => player.name === playerName)
+      } catch (error) {
+        console.error('Error parsing episode players:', error)
+        return false
+      }
+    },
+    async applyPlayerToEpisode (episodeId, playerName, playerCode, sessionId) {
+      this.loadingApplyPlayer = `${sessionId}-${playerName}`
+      try {
+        const token = this.$store.state.auth.token
+
+        // 1. Obtener el episodio actual
+        const episodeRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${episodeId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        if (!episodeRes.ok) {
+          throw new Error('Error al obtener el episodio')
+        }
+
+        const episodeData = await episodeRes.json()
+        const episode = episodeData.data
+
+        // 2. Parsear reproductores existentes
+        let existingPlayers = []
+        try {
+          existingPlayers = episode.players ? JSON.parse(episode.players) : []
+        } catch (error) {
+          console.error('Error parsing existing players:', error)
+          existingPlayers = []
+        }
+
+        // 3. Verificar si el reproductor ya existe
+        const playerExists = existingPlayers.some(player => player.name === playerName)
+        if (playerExists) {
+          this.showAlert('warning', `El reproductor ${playerName} ya existe en este episodio`)
+          return
+        }
+
+        // 4. Obtener información del reproductor
+        const playerInfo = this.players.find(p => p.name === playerName)
+        if (!playerInfo) {
+          throw new Error(`No se encontró información del reproductor ${playerName}`)
+        }
+
+        // 5. Crear nuevo reproductor
+        const newPlayer = {
+          name: playerName,
+          code: playerCode,
+          url: playerInfo.player_code.replace('codigo', playerCode)
+        }
+
+        // 6. Agregar el nuevo reproductor
+        const updatedPlayers = [...existingPlayers, newPlayer]
+
+        // 7. Actualizar el episodio
+        const updateRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${episodeId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            data: {
+              players: JSON.stringify(updatedPlayers)
+            }
+          })
+        })
+
+        if (!updateRes.ok) {
+          throw new Error('Error al actualizar el episodio')
+        }
+
+        this.showAlert('success', `Reproductor ${playerName} agregado exitosamente al episodio ${episode.episode_number}`)
+
+        // 8. Actualizar la lista de episodios disponibles
+        const updatedEpisode = this.availableEpisodes.find(ep => ep.id === episodeId)
+        if (updatedEpisode) {
+          updatedEpisode.players = JSON.stringify(updatedPlayers)
+        }
+      } catch (error) {
+        console.error('Error applying player to episode:', error)
+        this.showAlert('error', `Error al aplicar reproductor: ${error.message}`)
+      } finally {
+        this.loadingApplyPlayer = null
       }
     }
   }
