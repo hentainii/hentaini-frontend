@@ -61,12 +61,7 @@ export const useHLSUpload = () => {
       const finalResult = await monitorConversionProgress(backendUrl, jobId, progressCallback)
 
       if (finalResult.status === 'completado') {
-        return {
-          success: true,
-          code: hlsCode,
-          url: finalResult.playlistUrl,
-          message: 'Video convertido y subido exitosamente como HLS'
-        }
+        return hlsCode
       } else {
         throw new Error(finalResult.error || 'Error en la conversión HLS')
       }
