@@ -133,53 +133,6 @@
                           mdi-check-circle
                         </v-icon>
                         <span class="caption">{{ session.services[player.name].code }}</span>
-                        <v-menu
-                          v-if="session.serie && session.episodeCreated"
-                          offset-y
-                          :close-on-content-click="false"
-                        >
-                          <template #activator="{ on, attrs }">
-                            <v-btn
-                              small
-                              color="blue"
-                              class="mt-1"
-                              :loading="loadingApplyPlayer === `${session.id}-${player.name}`"
-                              v-bind="attrs"
-                              v-on="on"
-                              @click="fetchEpisodesForSerie(session.serie.id, session.id, player.name)"
-                            >
-                              <v-icon left small>
-                                mdi-plus
-                              </v-icon>
-                              Aplicar a capítulo
-                            </v-btn>
-                          </template>
-                          <v-list>
-                            <v-list-item
-                              v-for="episode in availableEpisodes"
-                              :key="episode.id"
-                              @click="applyPlayerToEpisode(episode.id, player.name, session.services[player.name].code, session.id)"
-                            >
-                              <v-list-item-content>
-                                <v-list-item-title>
-                                  Episodio {{ episode.episode_number }}
-                                  <span v-if="episode.title"> - {{ episode.title }}</span>
-                                </v-list-item-title>
-                                <v-list-item-subtitle v-if="episodeHasPlayer(episode, player.name)">
-                                  <v-icon small color="orange">
-                                    mdi-alert
-                                  </v-icon>
-                                  Ya tiene reproductor {{ player.name }}
-                                </v-list-item-subtitle>
-                              </v-list-item-content>
-                            </v-list-item>
-                            <v-list-item v-if="!availableEpisodes.length">
-                              <v-list-item-content>
-                                <v-list-item-title>No hay episodios disponibles</v-list-item-title>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </v-list>
-                        </v-menu>
                       </div>
                     </div>
                     <div v-else>
@@ -190,13 +143,63 @@
                     <div class="d-flex align-center gap-2">
                       <v-btn
                         v-if="shouldShowCreateEpisodeButton(session) && !session.episodeCreated"
-                        small
-                        color="primary"
+                        x-small
+                        color="grey darken-1"
                         :loading="isCreatingEpisode"
                         @click="createEpisodeFromSession(session)"
                       >
+                        <v-icon small>
+                          mdi-plus-box
+                        </v-icon>
                         Create Episode
                       </v-btn>
+                      <v-menu
+                        v-if="session.serie && hasSuccessfulUploads(session)"
+                        offset-y
+                        :close-on-content-click="false"
+                      >
+                        <template #activator="{ on, attrs }">
+                          <v-btn
+                            x-small
+                            color="grey darken-1"
+                            :loading="loadingApplyPlayer === session.id"
+                            class="ml-2"
+                            v-bind="attrs"
+                            v-on="on"
+                            @click="fetchEpisodesForSerie(session.serie.id, session.id)"
+                          >
+                            <v-icon small>
+                              mdi-plus
+                            </v-icon>
+                            Aplicar a capítulo
+                          </v-btn>
+                        </template>
+                        <v-list>
+                          <v-list-item
+                            v-for="episode in availableEpisodes"
+                            :key="episode.id"
+                            @click="showPlayerSelectionForEpisode(episode, session)"
+                          >
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                Episodio {{ episode.episode_number }}
+                                <span v-if="episode.title"> - {{ episode.title }}</span>
+                              </v-list-item-title>
+                              <v-list-item-subtitle v-if="episodeHasPlayer(episode, 'HLS')">
+                                <v-icon small color="orange">
+                                  mdi-alert
+                                </v-icon>
+                                Ya tiene reproductor HLS
+                              </v-list-item-subtitle>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item v-if="!availableEpisodes.length">
+                            <v-list-item-content>
+                              <v-list-item-title>No hay episodios disponibles</v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
                       <v-btn
                         small
                         color="red"
@@ -777,6 +780,37 @@ export default {
         },
         body: JSON.stringify({ data: { services } })
       })
+
+      // Check if episode exists and update episodeCreated flag
+      if (sessionToUpdate && sessionToUpdate.serie && sessionToUpdate.episode) {
+        try {
+          const qs = require('qs')
+          const query = qs.stringify({
+            filters: {
+              serie: { id: { $eq: sessionToUpdate.serie.id } },
+              episode_number: { $eq: sessionToUpdate.episode }
+            },
+            fields: ['id']
+          }, { encodeValuesOnly: true })
+
+          const checkRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+
+          if (checkRes.ok) {
+            const episodes = await checkRes.json()
+            if (episodes.data && episodes.data.length > 0) {
+              // Episode exists, update episodeCreated flag
+              this.$set(sessionToUpdate, 'episodeCreated', true)
+            }
+          }
+        } catch (error) {
+          console.error('Error checking episode existence:', error)
+        }
+      }
     },
     async handleUploadError (service, error) {
       if (!this.currentSession) { return }
@@ -1084,8 +1118,8 @@ export default {
         this.fetchingEpisodeForSessionId = null
       }
     },
-    async fetchEpisodesForSerie (serieId, sessionId, playerName) {
-      this.loadingApplyPlayer = `${sessionId}-${playerName}`
+    async fetchEpisodesForSerie (serieId, sessionId) {
+      this.loadingApplyPlayer = sessionId
       try {
         const token = this.$store.state.auth.token
         const query = qs.stringify({
@@ -1128,8 +1162,39 @@ export default {
         return false
       }
     },
+    hasSuccessfulUploads (session) {
+      if (!session.services) { return false }
+      return Object.values(session.services).some(service => service.status === 'success')
+    },
+    showPlayerSelectionForEpisode (episode, session) {
+      // Obtener reproductores exitosos de la sesión
+      const successfulPlayers = Object.entries(session.services || {})
+        .filter(([, service]) => service.status === 'success')
+        .map(([playerName, service]) => ({ playerName, code: service.code }))
+
+      if (successfulPlayers.length === 0) {
+        this.showAlert('warning', 'No hay reproductores exitosos para aplicar')
+        return
+      }
+
+      // Si solo hay un reproductor exitoso, aplicarlo directamente
+      if (successfulPlayers.length === 1) {
+        const { playerName, code } = successfulPlayers[0]
+        this.applyPlayerToEpisode(episode.id, playerName, code, session.id)
+        return
+      }
+
+      // Si hay múltiples reproductores, mostrar diálogo de selección
+      this.showPlayerSelectionDialog(episode, successfulPlayers, session)
+    },
+    showPlayerSelectionDialog (episode, players, session) {
+      // Por simplicidad, aplicar todos los reproductores exitosos
+      players.forEach(({ playerName, code }) => {
+        this.applyPlayerToEpisode(episode.id, playerName, code, session.id)
+      })
+    },
     async applyPlayerToEpisode (episodeId, playerName, playerCode, sessionId) {
-      this.loadingApplyPlayer = `${sessionId}-${playerName}`
+      this.loadingApplyPlayer = sessionId
       try {
         const token = this.$store.state.auth.token
 
