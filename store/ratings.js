@@ -47,8 +47,6 @@ export const actions = {
       const data = await response.json()
       const { averageRating, totalVotes, userRating } = data
 
-      console.log('data: ', data)
-
       commit('SET_SERIE_RATING', { serieId, averageRating, totalVotes })
 
       if (userRating !== null) {

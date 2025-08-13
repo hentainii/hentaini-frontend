@@ -171,7 +171,7 @@
                             <v-icon small>
                               mdi-plus
                             </v-icon>
-                            Aplicar a capítulo
+                            Apply to existent
                           </v-btn>
                         </template>
                         <v-list>
@@ -182,20 +182,20 @@
                           >
                             <v-list-item-content>
                               <v-list-item-title>
-                                Episodio {{ episode.episode_number }}
+                                Episode {{ episode.episode_number }}
                                 <span v-if="episode.title"> - {{ episode.title }}</span>
                               </v-list-item-title>
                               <v-list-item-subtitle v-if="episodeHasPlayer(episode, 'HLS')">
                                 <v-icon small color="orange">
                                   mdi-alert
                                 </v-icon>
-                                Ya tiene reproductor HLS
+                                Already have HLS
                               </v-list-item-subtitle>
                             </v-list-item-content>
                           </v-list-item>
                           <v-list-item v-if="!availableEpisodes.length">
                             <v-list-item-content>
-                              <v-list-item-title>No hay episodios disponibles</v-list-item-title>
+                              <v-list-item-title>No episodes</v-list-item-title>
                             </v-list-item-content>
                           </v-list-item>
                         </v-list>
@@ -582,39 +582,6 @@ export default {
         return
       }
 
-      // Check if episode already exists
-      try {
-        const token = this.$store.state.auth.token
-        const query = qs.stringify({
-          filters: {
-            serie: { id: { $eq: this.selectedSerie } },
-            episode_number: { $eq: this.episodeNumber }
-          }
-        }, { encodeValuesOnly: true })
-
-        const checkRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        })
-
-        if (!checkRes.ok) {
-          throw new Error('Failed to check if episode exists')
-        }
-
-        const existingEpisodes = await checkRes.json()
-
-        if (existingEpisodes.data && existingEpisodes.data.length > 0) {
-          this.showAlert('error', `Episode ${this.episodeNumber} already exists for this series. Please delete it before proceeding.`)
-          return // Stop the upload
-        }
-      } catch (error) {
-        console.error('Error checking if episode exists:', error)
-        this.showAlert('error', 'Error checking if episode exists. Please try again.')
-        return
-      }
-
       this.isUploading = true
       this.lastUploadResults = null
 
@@ -933,7 +900,7 @@ export default {
             image: defaultImage.id,
             players: JSON.stringify(successfulUploads.map((upload) => {
               const playerInfo = this.players.find(p => p.name === upload.service)
-              const url = playerInfo ? playerInfo.player_code.replace('codigo', upload.code) : ''
+              const url = playerInfo ? playerInfo.player_code.replaceAll('codigo', upload.code) : ''
 
               return {
                 name: upload.service,
@@ -1239,11 +1206,11 @@ export default {
         const newPlayer = {
           name: playerName,
           code: playerCode,
-          url: playerInfo.player_code.replace('codigo', playerCode)
+          url: playerInfo.player_code.replaceAll('codigo', playerCode)
         }
 
         // 6. Agregar el nuevo reproductor
-        const updatedPlayers = [...existingPlayers, newPlayer]
+        const updatedPlayers = [newPlayer, ...existingPlayers]
 
         // 7. Actualizar el episodio
         const updateRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes/${episodeId}`, {
@@ -1281,7 +1248,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .glass-card {
   background: rgba(255,255,255,0.12);
   border-radius: 18px;
