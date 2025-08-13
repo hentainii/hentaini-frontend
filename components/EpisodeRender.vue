@@ -38,7 +38,22 @@
 
           <!-- Reproductor de video -->
           <div v-if="showVideo" class="video-player-container">
-            <VideoElement :src="currentUrl" />
+            <!-- Reproductor HLS nativo para archivos m3u8 -->
+            <div v-if="isHLSPlayer" style="position:relative;overflow: hidden;padding-top:56.25%" class="rounded-lg">
+              <video
+                ref="hlsVideo"
+                width="100%"
+                height="100%"
+                controls
+                preload="metadata"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
+                class="rounded-lg"
+              >
+                Tu navegador no soporta el elemento video.
+              </video>
+            </div>
+            <!-- Reproductor iframe para otros players -->
+            <VideoElement v-else :src="currentUrl" />
           </div>
 
           <!-- Controles del reproductor -->
@@ -554,6 +569,10 @@ export default {
     serieIsPresentInFavorites () {
       return this.favorites.some(favorite => favorite.url === this.episode.serie.url)
     },
+    isHLSPlayer () {
+      const currentPlayer = this.filteredPlayers.find(player => player.url === this.currentUrl)
+      return currentPlayer && currentPlayer.name === 'HLS Player'
+    },
     filteredPlayers () {
       return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA')
     },
@@ -565,6 +584,15 @@ export default {
     },
     serieScreenshot () {
       return this.episode.image ? this.episode.image.path : this.episode.serie.images.find(image => image.image_type.name === 'screenshot').path
+    }
+  },
+  watch: {
+    showVideo (newVal) {
+      if (newVal && this.isHLSPlayer) {
+        this.$nextTick(() => {
+          this.initHLSPlayer()
+        })
+      }
     }
   },
   mounted () {
@@ -653,6 +681,12 @@ export default {
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
       this.showVideo = false
+      // Reinicializar HLS cuando cambie la URL
+      this.$nextTick(() => {
+        if (this.isHLSPlayer && this.showVideo) {
+          this.initHLSPlayer()
+        }
+      })
     },
     genCurrentUrl () {
       this.currentUrl = this.filteredPlayers[0].url
@@ -801,6 +835,20 @@ export default {
         .then(({ data: series }) => {
           this.similarSeries = series
         })
+    },
+    initHLSPlayer () {
+      if (!this.isHLSPlayer || !this.$refs.hlsVideo || !this.currentUrl) { return }
+
+      const video = this.$refs.hlsVideo
+
+      // Si el navegador soporta HLS nativamente
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = this.currentUrl
+      } else {
+        // Fallback para navegadores que no soportan HLS nativamente
+        // En este caso, intentamos cargar la URL directamente
+        video.src = this.currentUrl
+      }
     },
     async loadSerieRating () {
       try {
