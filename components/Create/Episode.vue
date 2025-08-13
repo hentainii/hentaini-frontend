@@ -289,7 +289,7 @@ export default {
               return {
                 name: p.service,
                 code: p.result,
-                url: playerInfo.player_code.replace('codigo', p.result)
+                url: playerInfo.player_code.replaceAll('codigo', p.result)
               }
             }
             return null

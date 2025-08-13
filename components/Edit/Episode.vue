@@ -341,7 +341,7 @@ export default {
       } else {
         playerUrl = this.players.find(p => p.short_name === player.name).player_code
       }
-      playerUrl = playerUrl.replace('codigo', player.code)
+      playerUrl = playerUrl.replaceAll('codigo', player.code)
       this.episode.players[index].url = playerUrl
     }
   }
