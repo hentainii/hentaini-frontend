@@ -430,6 +430,7 @@ export default {
           this.selectedFile,
           latestAccount,
           this.$store,
+          this,
           (service, progress) => {
             this.$store.dispatch('uploader/updateProgress', { service, progress })
             this.updateUploadProgress(service, progress)

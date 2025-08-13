@@ -8,6 +8,7 @@ import { useMp4Upload } from './handlers/mp4upload'
 import { useStream2Upload } from './handlers/stream2'
 import { useVHideUpload } from './handlers/vhide'
 import { useYourUpload } from './handlers/yourupload'
+import { useHLSUpload } from './handlers/hls'
 import { useRetryLogic, useUploadQueue } from './utils/retryLogic'
 
 export function useUploadManager () {
@@ -26,7 +27,9 @@ export function useUploadManager () {
     VH: useVHideUpload,
     VHide: useVHideUpload,
     YU: useYourUpload,
-    YourUpload: useYourUpload
+    YourUpload: useYourUpload,
+    HLS: useHLSUpload,
+    'HLS Player': useHLSUpload
   }
 
   /**
@@ -47,8 +50,9 @@ export function useUploadManager () {
    * @param {Object} account - Account credentials
    * @param {Function} onProgress - Progress callback
    * @param {Object} store - Vuex store instance
+   * @param {Object} context - Vue context for accessing $config
    */
-  const uploadToService = async (file, account, onProgress, store) => {
+  const uploadToService = async (file, account, onProgress, store, context) => {
     try {
       const handler = getServiceHandler(account.service)
 
@@ -71,6 +75,9 @@ export function useUploadManager () {
           case 'YU':
           case 'YourUpload':
             return handler.uploadToYourUpload(file, account, onProgress)
+          case 'HLS':
+          case 'HLS Player':
+            return handler.uploadToHLS(file, account, onProgress, null, null, context)
           default:
             throw new Error(`Unsupported service: ${account.service}`)
         }
@@ -114,8 +121,9 @@ export function useUploadManager () {
    * @param {File} file - File to upload
    * @param {Array} accounts - Array of account objects
    * @param {Object} store - Vuex store instance
+   * @param {Object} context - Vue context for accessing $config
    */
-  const uploadToMultipleServices = async (file, accounts, store, onProgress, onSuccess, onError) => {
+  const uploadToMultipleServices = async (file, accounts, store, context, onProgress, onSuccess, onError) => {
     if (!file) {
       throw new Error('No file provided for upload')
     }
@@ -145,7 +153,7 @@ export function useUploadManager () {
       const priority = getServicePriority(account.service)
 
       return addToQueue(
-        () => uploadToService(file, account, progressCallback, store),
+        () => uploadToService(file, account, progressCallback, store, context),
         priority
       ).catch((error) => {
         console.error(`Upload to ${account.service} failed:`, error)
@@ -204,6 +212,7 @@ export function useUploadManager () {
     const priorities = {
       Mega: 10,
       M: 10,
+      HLS: 9,
       YourUpload: 8,
       YU: 8,
       MP4Upload: 6,
@@ -270,6 +279,9 @@ export function useUploadManager () {
         case 'YU':
         case 'YourUpload':
           return await handler.validateYourUploadAccount(account)
+        case 'HLS':
+        case 'HLS Player':
+          return await handler.validateHLSAccount(account)
         default:
           throw new Error(`Validation not implemented for service: ${account.service}`)
       }
