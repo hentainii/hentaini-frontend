@@ -47,6 +47,8 @@
                 height="100%"
                 controls
                 preload="metadata"
+                playsinline
+                crossorigin="anonymous"
                 style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
                 class="rounded-lg"
               >
@@ -81,7 +83,7 @@
                         active-class="primary white--text"
                         depressed
                         rounded
-                        @click="toggle"
+                        @click="toggle; changeCurrentUrl(player.url)"
                         @focus="changeCurrentUrl(player.url)"
                       >
                         {{ player.name }}
@@ -470,10 +472,9 @@
 <script>
 import parse from 'url-parse'
 import { mapActions, mapGetters } from 'vuex'
-import * as HLS from 'hls.js'
+import Hls, { Events, ErrorTypes } from 'hls.js'
 import SerieRatingModal from './SerieRatingModal.vue'
 import RatingDisplay from './RatingDisplay.vue'
-const { default: Hls, Events, ErrorTypes, isSupported } = HLS
 
 export default {
   components: {
@@ -575,7 +576,10 @@ export default {
     },
     isHLSPlayer () {
       const currentPlayer = this.filteredPlayers.find(player => player.url === this.currentUrl)
-      return currentPlayer && currentPlayer.name === 'HLS Player'
+      if (!currentPlayer) { return false }
+      // Detectar HLS por nombre del reproductor o por extensión .m3u8
+      return currentPlayer.name === 'HLS Player' ||
+             (currentPlayer.url && currentPlayer.url.toLowerCase().includes('.m3u8'))
     },
     filteredPlayers () {
       return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA')
@@ -703,13 +707,13 @@ export default {
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
-      this.showVideo = false
-      // Reinicializar HLS cuando cambie la URL
-      this.$nextTick(() => {
-        if (this.isHLSPlayer && this.showVideo) {
+      // No resetear showVideo aquí para mantener el estado del reproductor
+      // Reinicializar HLS cuando cambie la URL si el video ya está siendo mostrado
+      if (this.showVideo && this.isHLSPlayer) {
+        this.$nextTick(() => {
           this.initHLSPlayer()
-        }
-      })
+        })
+      }
     },
     genCurrentUrl () {
       this.currentUrl = this.filteredPlayers[0].url
@@ -869,12 +873,20 @@ export default {
         this.hlsInstance = null
       }
 
-      if (isSupported()) {
+      // Limpiar el src del video antes de configurar HLS
+      video.src = ''
+      video.load()
+
+      if (Hls.isSupported()) {
         // Usar HLS.js para navegadores que lo soportan
         this.hlsInstance = new Hls({
           enableWorker: true,
           lowLatencyMode: false,
-          backBufferLength: 90
+          backBufferLength: 90,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 600,
+          startLevel: -1,
+          capLevelToPlayerSize: true
         })
 
         this.hlsInstance.loadSource(this.currentUrl)
@@ -882,6 +894,10 @@ export default {
 
         this.hlsInstance.on(Events.MANIFEST_PARSED, () => {
           console.log('HLS manifest parsed successfully')
+          // Intentar reproducir automáticamente después de cargar el manifest
+          video.play().catch((e) => {
+            console.log('Autoplay prevented:', e)
+          })
         })
 
         this.hlsInstance.on(Events.ERROR, (event, data) => {
@@ -907,10 +923,12 @@ export default {
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // Soporte nativo de HLS (Safari)
         video.src = this.currentUrl
+        video.load()
       } else {
         console.warn('HLS no es soportado en este navegador')
         // Intentar cargar directamente como último recurso
         video.src = this.currentUrl
+        video.load()
       }
     },
     async loadSerieRating () {
