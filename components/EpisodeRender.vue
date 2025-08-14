@@ -48,7 +48,10 @@
                 controls
                 preload="metadata"
                 playsinline
+                webkit-playsinline
                 crossorigin="anonymous"
+                muted="false"
+                autoplay="false"
                 style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
                 class="rounded-lg"
               >
@@ -877,8 +880,37 @@ export default {
       video.src = ''
       video.load()
 
-      if (Hls.isSupported()) {
-        // Usar HLS.js para navegadores que lo soportan
+      // Detectar Safari/WebKit de manera más precisa
+      const isSafari = (/Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor)) ||
+                       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                       /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+
+      // Para Safari/iOS, usar HLS nativo siempre que sea posible
+      if (isSafari && video.canPlayType('application/vnd.apple.mpegurl')) {
+        console.log('Using native HLS for Safari/WebKit')
+        video.src = this.currentUrl
+
+        // Configurar eventos para Safari
+        video.addEventListener('loadstart', () => {
+          console.log('HLS loading started')
+        })
+
+        video.addEventListener('canplay', () => {
+          console.log('HLS can start playing')
+          // Intentar reproducir automáticamente
+          video.play().catch((e) => {
+            console.log('Autoplay prevented:', e)
+          })
+        })
+
+        video.addEventListener('error', (e) => {
+          console.error('Native HLS error:', e)
+        })
+
+        video.load()
+      } else if (Hls.isSupported()) {
+        // Usar HLS.js para otros navegadores
+        console.log('Using HLS.js')
         this.hlsInstance = new Hls({
           enableWorker: true,
           lowLatencyMode: false,
@@ -886,7 +918,11 @@ export default {
           maxBufferLength: 30,
           maxMaxBufferLength: 600,
           startLevel: -1,
-          capLevelToPlayerSize: true
+          capLevelToPlayerSize: true,
+          // Configuraciones específicas para mejor compatibilidad
+          xhrSetup: (xhr, url) => {
+            xhr.withCredentials = false
+          }
         })
 
         this.hlsInstance.loadSource(this.currentUrl)
@@ -920,10 +956,6 @@ export default {
             }
           }
         })
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Soporte nativo de HLS (Safari)
-        video.src = this.currentUrl
-        video.load()
       } else {
         console.warn('HLS no es soportado en este navegador')
         // Intentar cargar directamente como último recurso
