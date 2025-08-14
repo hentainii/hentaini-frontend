@@ -475,7 +475,7 @@
 <script>
 import parse from 'url-parse'
 import { mapActions, mapGetters } from 'vuex'
-import Hls, { Events, ErrorTypes } from 'hls.js'
+import Hls from 'hls.js'
 import SerieRatingModal from './SerieRatingModal.vue'
 import RatingDisplay from './RatingDisplay.vue'
 
@@ -876,91 +876,24 @@ export default {
         this.hlsInstance = null
       }
 
-      // Limpiar el src del video antes de configurar HLS
-      video.src = ''
-      video.load()
-
-      // Detectar Safari/WebKit de manera más precisa
-      const isSafari = (/Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor)) ||
-                       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                       /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-
-      // Para Safari/iOS, usar HLS nativo siempre que sea posible
-      if (isSafari && video.canPlayType('application/vnd.apple.mpegurl')) {
-        console.log('Using native HLS for Safari/WebKit')
-        video.src = this.currentUrl
-
-        // Configurar eventos para Safari
-        video.addEventListener('loadstart', () => {
-          console.log('HLS loading started')
-        })
-
-        video.addEventListener('canplay', () => {
-          console.log('HLS can start playing')
-          // Intentar reproducir automáticamente
-          video.play().catch((e) => {
-            console.log('Autoplay prevented:', e)
-          })
-        })
-
-        video.addEventListener('error', (e) => {
-          console.error('Native HLS error:', e)
-        })
-
-        video.load()
-      } else if (Hls.isSupported()) {
-        // Usar HLS.js para otros navegadores
-        console.log('Using HLS.js')
-        this.hlsInstance = new Hls({
-          enableWorker: true,
-          lowLatencyMode: false,
-          backBufferLength: 90,
-          maxBufferLength: 30,
-          maxMaxBufferLength: 600,
-          startLevel: -1,
-          capLevelToPlayerSize: true,
-          // Configuraciones específicas para mejor compatibilidad
-          xhrSetup: (xhr, url) => {
-            xhr.withCredentials = false
-          }
-        })
-
+      if (Hls.isSupported()) {
+        // Usar HLS.js para navegadores que lo soportan
+        this.hlsInstance = new Hls()
         this.hlsInstance.loadSource(this.currentUrl)
         this.hlsInstance.attachMedia(video)
-
-        this.hlsInstance.on(Events.MANIFEST_PARSED, () => {
-          console.log('HLS manifest parsed successfully')
-          // Intentar reproducir automáticamente después de cargar el manifest
+        this.hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
           video.play().catch((e) => {
             console.log('Autoplay prevented:', e)
           })
         })
-
-        this.hlsInstance.on(Events.ERROR, (event, data) => {
-          console.error('HLS error:', data)
-          if (data.fatal) {
-            switch (data.type) {
-              case ErrorTypes.NETWORK_ERROR:
-                console.log('Network error, trying to recover...')
-                this.hlsInstance.startLoad()
-                break
-              case ErrorTypes.MEDIA_ERROR:
-                console.log('Media error, trying to recover...')
-                this.hlsInstance.recoverMediaError()
-                break
-              default:
-                console.log('Fatal error, destroying HLS instance')
-                this.hlsInstance.destroy()
-                this.hlsInstance = null
-                break
-            }
-          }
-        })
-      } else {
-        console.warn('HLS no es soportado en este navegador')
-        // Intentar cargar directamente como último recurso
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Soporte nativo de HLS (Safari/iOS)
         video.src = this.currentUrl
-        video.load()
+        video.addEventListener('canplay', () => {
+          video.play().catch((e) => {
+            console.log('Autoplay prevented:', e)
+          })
+        })
       }
     },
     async loadSerieRating () {
