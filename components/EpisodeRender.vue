@@ -470,9 +470,10 @@
 <script>
 import parse from 'url-parse'
 import { mapActions, mapGetters } from 'vuex'
-import HlsService, { Events, ErrorTypes, isSupported } from 'hls.js'
+import * as HLS from 'hls.js'
 import SerieRatingModal from './SerieRatingModal.vue'
 import RatingDisplay from './RatingDisplay.vue'
+const { default: Hls, Events, ErrorTypes, isSupported } = HLS
 
 export default {
   components: {
@@ -870,7 +871,7 @@ export default {
 
       if (isSupported()) {
         // Usar HLS.js para navegadores que lo soportan
-        this.hlsInstance = new HlsService({
+        this.hlsInstance = new Hls({
           enableWorker: true,
           lowLatencyMode: false,
           backBufferLength: 90
