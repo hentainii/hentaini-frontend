@@ -104,7 +104,7 @@
                     <span v-else>-</span>
                   </td>
                   <td v-for="player in uploadablePlayers" :key="player.id">
-                    <div v-if="session.services && session.services[player.name]">
+                    <div v-if="session.services && session.services[player.name]" style="display:flex;align-items:center;">
                       <!-- Status text above progress bar -->
                       <div v-if="session.services[player.name].status && session.services[player.name].status !== 'success' && session.services[player.name].status !== 'failed'" class="caption text--secondary mb-1">
                         {{ session.services[player.name].message || session.services[player.name].status }}
@@ -117,9 +117,10 @@
                         :color="getStatusColor(session.services[player.name].status)"
                         height="8"
                         rounded
+                        class="mr-2"
                       />
-                      <div v-if="session.services[player.name].status === 'failed'">
-                        <v-btn small color="red" @click="retryUploadService(session.id, player.name)">
+                      <div v-if="session.services[player.name].status === 'failed'" style="display:flex;align-items:center;text-wrap-mode:nowrap;">
+                        <v-btn x-small color="red" @click="retryUploadService(session.id, player.name)">
                           <v-icon left>
                             mdi-refresh
                           </v-icon>Retry
@@ -128,7 +129,7 @@
                           {{ session.services[player.name].error }}
                         </div>
                       </div>
-                      <div v-else-if="session.services[player.name].status === 'success'">
+                      <div v-else-if="session.services[player.name].status === 'success'" style="display:flex;align-items:center;text-wrap-mode:nowrap;">
                         <v-icon color="green">
                           mdi-check-circle
                         </v-icon>
@@ -145,6 +146,7 @@
                         v-if="shouldShowCreateEpisodeButton(session) && !session.episodeCreated"
                         x-small
                         color="grey darken-1"
+                        class="mr-2"
                         :loading="isCreatingEpisode"
                         @click="createEpisodeFromSession(session)"
                       >
@@ -163,7 +165,6 @@
                             x-small
                             color="grey darken-1"
                             :loading="loadingApplyPlayer === session.id"
-                            class="ml-2"
                             v-bind="attrs"
                             v-on="on"
                             @click="fetchEpisodesForSerie(session.serie.id, session.id)"
@@ -461,7 +462,8 @@ export default {
 
         if (result.status === 'completado') {
           console.log(`[RECOVERY] Conversión HLS completada para sesión ${session.id}`)
-          await this.handleUploadSuccess(serviceName, result.hlsCode || result.code)
+          console.log(`[RECOVERY] hlsCode recibido: ${result.hlsCode}`)
+          await this.handleUploadSuccess(serviceName, result.hlsCode)
         } else {
           console.log(`[RECOVERY] Conversión HLS falló para sesión ${session.id}:`, result.error)
           await this.handleUploadError(serviceName, new Error(result.error || 'Error en conversión HLS'))
