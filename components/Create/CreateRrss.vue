@@ -48,7 +48,7 @@
                 sort-by="calories"
                 class="elevation-1"
               >
-                <template v-slot:actions="{ item }">
+                <template #actions="{ item }">
                   <v-dialog v-model="dialogEdit" max-width="500px" :retain-focus="false">
                     <v-card>
                       <v-card-title>
@@ -65,7 +65,7 @@
                     </v-card>
                   </v-dialog>
                   <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
+                    <template #activator="{ on, attrs }">
                       <v-btn
                         v-bind="attrs"
                         class="yellow darken-4"

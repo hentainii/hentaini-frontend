@@ -42,7 +42,9 @@
             </div>
 
             <div class="card-title-container">
-              <h3 class="card-title">{{ title }}</h3>
+              <h3 class="card-title">
+                {{ title }}
+              </h3>
               <div v-if="status" class="status-indicator">
                 <span class="status-dot" :class="statusClass" />
                 <span class="status-text">{{ status }}</span>
@@ -298,6 +300,7 @@ export default {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   overflow: hidden;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;

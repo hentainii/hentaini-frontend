@@ -26,18 +26,22 @@
         ).path}`"
         :to="localePath(`/h/${serie.url}`)"
       >
-        <template v-slot:default>
-          <div class="carousel-gradient fill-height"></div>
+        <template #default>
+          <div class="carousel-gradient fill-height" />
           <v-row align="end" class="fill-height pa-0 ma-0">
             <v-col cols="12" md="8" lg="6" class="carousel-content pa-6">
               <!-- Featured badge -->
               <div class="featured-badge">
-                <v-icon small class="mr-1 yellow--text">mdi-star</v-icon>
+                <v-icon small class="mr-1 yellow--text">
+                  mdi-star
+                </v-icon>
                 <span>{{ $t('landpage.featured') || 'Featured' }}</span>
               </div>
 
               <!-- Title with animation -->
-              <h1 class="carousel-title mb-2">{{ serie.title }}</h1>
+              <h1 class="carousel-title mb-2">
+                {{ serie.title }}
+              </h1>
 
               <!-- Genres -->
               <div class="genre-chips mb-3">
@@ -66,7 +70,9 @@
                 rounded
                 elevation="2"
               >
-                <v-icon left>mdi-play-circle</v-icon>
+                <v-icon left>
+                  mdi-play-circle
+                </v-icon>
                 {{ $t('landpage.watch_now') || 'Watch Now' }}
               </v-btn>
             </v-col>
@@ -80,7 +86,7 @@
               class="indicator-dot"
               :class="{ 'active': i === model }"
               @click="model = i"
-            ></div>
+            />
           </div>
         </template>
       </v-carousel-item>

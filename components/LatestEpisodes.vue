@@ -1,3 +1,5 @@
+<!-- eslint-disable vue/html-self-closing -->
+<!-- eslint-disable vue/html-quotes -->
 <template>
   <v-container class="latest-episodes-container">
     <misc-latest-episodes-skeleton v-if="loading" />

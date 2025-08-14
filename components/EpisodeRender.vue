@@ -1,3 +1,4 @@
+<!-- eslint-disable import/no-named-as-default-member -->
 <template>
   <v-container v-if="episode.id" class="episode-container pa-2 pa-lg-4">
     <!-- Breadcrumbs -->
@@ -469,7 +470,7 @@
 <script>
 import parse from 'url-parse'
 import { mapActions, mapGetters } from 'vuex'
-import Hls, { Events, ErrorTypes } from 'hls.js'
+import HlsService, { Events, ErrorTypes, isSupported } from 'hls.js'
 import SerieRatingModal from './SerieRatingModal.vue'
 import RatingDisplay from './RatingDisplay.vue'
 
@@ -867,9 +868,9 @@ export default {
         this.hlsInstance = null
       }
 
-      if (Hls.isSupported()) {
+      if (isSupported()) {
         // Usar HLS.js para navegadores que lo soportan
-        this.hlsInstance = new Hls({
+        this.hlsInstance = new HlsService({
           enableWorker: true,
           lowLatencyMode: false,
           backBufferLength: 90

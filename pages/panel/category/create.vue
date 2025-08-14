@@ -9,11 +9,11 @@
 <script>
 import CreateCategory from '../../../components/Create/CreateCategory'
 export default {
-  layout: 'panel',
-  middleware: 'authenticated',
   components: {
     CreateCategory
   },
+  layout: 'panel',
+  middleware: 'authenticated',
   data () {
     return {
     }

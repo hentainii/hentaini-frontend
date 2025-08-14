@@ -16,11 +16,11 @@
 <script>
 import CreateRrss from '../../../components/Create/CreateRrss'
 export default {
-  layout: 'panel',
-  middleware: 'authenticated',
   components: {
     CreateRrss
-  }
+  },
+  layout: 'panel',
+  middleware: 'authenticated'
 }
 </script>
 

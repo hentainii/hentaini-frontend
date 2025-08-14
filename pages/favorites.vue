@@ -50,7 +50,9 @@
             <h1> {{ $t('favorites.no_favorites') }}</h1>
           </v-row>
           <v-row class="justify-center">
-            <nuxt-link to="/explore"> {{ $t('landpage.latest_series_little') }}</nuxt-link>
+            <nuxt-link to="/explore">
+              {{ $t('landpage.latest_series_little') }}
+            </nuxt-link>
           </v-row>
         </v-container>
       </v-row>
