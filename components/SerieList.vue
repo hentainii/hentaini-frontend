@@ -126,7 +126,7 @@
               </v-tooltip>
             </template>
             <template #[`item.updatedAt`]="{ item }">
-              <span>{{ formatDateWithNoTime(item.newUpdatedAt || item.updatedAt) }}</span>
+              <span>{{ formatDateWithNoTime(item.updatedAt) }}</span>
             </template>
             <template #[`item.createdAt`]="{ item }">
               <span>{{ formatDateWithNoTime(item.createdAt) }}</span>
@@ -243,7 +243,7 @@ export default {
       { text: 'Studio', sortable: true, value: 'studio.name' },
       { text: 'Producer', sortable: true, value: 'producer.name' },
       { text: 'Featured', sortable: true, value: 'featured' },
-      { text: 'Last Episode Updated', sortable: true, value: 'updatedAt' },
+      { text: 'Last Updated', sortable: true, value: 'updatedAt' },
       { text: 'Created At', sortable: true, value: 'createdAt' },
       { text: 'Actions', sortable: false, value: 'actions' }
     ],
