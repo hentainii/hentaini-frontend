@@ -125,6 +125,13 @@
                 <span>Toggle Featured</span>
               </v-tooltip>
             </template>
+            <template #[`item.updatedAt`]="{ item }">
+              <span>{{ formatDateWithNoTime(item.updatedAt) }}</span>
+            </template>
+            <template #[`item.createdAt`]="{ item }">
+              <span>{{ formatDateWithNoTime(item.createdAt) }}</span>
+            </template>
+
             <template #[`item.actions`]="{ item }">
               <v-tooltip top>
                 <template #activator="{ on, attrs }">
@@ -236,6 +243,8 @@ export default {
       { text: 'Studio', sortable: true, value: 'studio.name' },
       { text: 'Producer', sortable: true, value: 'producer.name' },
       { text: 'Featured', sortable: true, value: 'featured' },
+      { text: 'Last Updated', sortable: true, value: 'updatedAt' },
+      { text: 'Created At', sortable: true, value: 'createdAt' },
       { text: 'Actions', sortable: false, value: 'actions' }
     ],
     pagination: {
@@ -295,6 +304,13 @@ export default {
     await this.getSeries()
   },
   methods: {
+    formatDateWithNoTime (date) {
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
+    },
     async getSeries () {
       await this.$store.dispatch('series/getPanelSerieList', {
         search: this.search,
