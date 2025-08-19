@@ -117,7 +117,17 @@ export const actions = {
       .then((seriList) => {
         if (seriList.data !== null) {
           const pagination = seriList.meta.pagination
-          const series = seriList.data
+          let series = seriList.data
+
+          // Si estamos ordenando por updatedAt, ordenar por newUpdatedAt en el frontend
+          if (payload.options.sortBy[0] === 'updatedAt' || payload.options.sortBy[0] === 'newUpdatedAt') {
+            series = series.sort((a, b) => {
+              const dateA = new Date(a.newUpdatedAt || a.updatedAt)
+              const dateB = new Date(b.newUpdatedAt || b.updatedAt)
+              return payload.options.sortDesc[0] ? dateB - dateA : dateA - dateB
+            })
+          }
+
           commit('getPanelSerieList', {
             series,
             pagination
