@@ -348,7 +348,7 @@ export default {
       ],
       refreshInterval: null,
       statsInterval: null,
-      API_BASE: this.$config.STRAPI_ENDPOINT
+      API_BASE: this.$config.API_STRAPI_ENDPOINT
     }
   },
   mounted () {
