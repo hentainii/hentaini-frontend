@@ -184,7 +184,6 @@
               <v-img
                 :src="getImageUrl(item.path)"
                 :alt="`Image ${item.id}`"
-                @error="handleImageError"
               />
             </v-avatar>
             <div>
@@ -293,352 +292,302 @@
   </v-container>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-
-// Reactive data
-const stats = ref({
-  total: 0,
-  migrated: 0,
-  pending: 0,
-  failed: 0
-})
-const processStatus = ref({
-  isRunning: false,
-  isPaused: false,
-  processId: null,
-  startedAt: null,
-  pausedAt: null,
-  batchSize: 10,
-  currentBatch: 0,
-  totalProcessed: 0,
-  successCount: 0,
-  errorCount: 0,
-  retryFailedOnly: false
-})
-const images = ref([])
-const loading = ref(false)
-const selectedStatus = ref('')
-const pagination = ref({
-  page: 1,
-  limit: 25,
-  total: 0,
-  totalPages: 0
-})
-
-const notification = ref({
-  show: false,
-  type: 'info',
-  title: '',
-  message: ''
-})
-
-// Table configuration
-const tableHeaders = [
-  { text: 'ID', value: 'id', sortable: false, width: '60px' },
-  { text: 'Imagen', value: 'image', sortable: false },
-  { text: 'Serie', value: 'series', sortable: false },
-  { text: 'Estado', value: 'status', sortable: false, width: '100px' },
-  { text: 'CF', value: 'cf_path', sortable: false, width: '50px' },
-  { text: '', value: 'actions', sortable: false, width: '50px' }
-]
-
-const statusOptions = [
-  { text: 'Todos', value: '' },
-  { text: 'Pendientes', value: 'pending' },
-  { text: 'Migradas', value: 'migrated' },
-  { text: 'Fallidas', value: 'failed' }
-]
-
-// Auto-refresh interval
-let refreshInterval = null
-let statsInterval = null
-
-// API base URL
-const API_BASE = 'http://localhost:1337/api'
-
-// Methods
-const showNotification = (type, title, message) => {
-  notification.value = {
-    show: true,
-    type,
-    title,
-    message
-  }
-
-  setTimeout(() => {
-    hideNotification()
-  }, 5000)
-}
-
-const hideNotification = () => {
-  notification.value.show = false
-}
-
-const loadStats = async () => {
-  try {
-    const response = await fetch(`${API_BASE}/images/migration-status`)
-    const data = await response.json()
-
-    if (data.success) {
-      stats.value = data.data.stats
-      processStatus.value = data.data.process
-
-      // Log para debug - más detallado
-      console.log('Stats updated:', JSON.stringify(stats.value, null, 2))
-      console.log('Process status:', JSON.stringify(processStatus.value, null, 2))
-      console.log('isRunning:', processStatus.value.isRunning)
-      console.log('isPaused:', processStatus.value.isPaused)
-    }
-  } catch (error) {
-    console.error('Error loading stats:', error)
-  }
-}
-
-const loadImages = async () => {
-  try {
-    const params = new URLSearchParams({
-      page: pagination.value.page,
-      limit: pagination.value.limit
-    })
-
-    if (selectedStatus.value) {
-      params.append('status', selectedStatus.value)
-    }
-
-    const response = await fetch(`${API_BASE}/images/pending-migration?${params}`)
-    const data = await response.json()
-
-    if (data.success) {
-      images.value = data.data
-      pagination.value = {
-        ...pagination.value,
-        ...data.meta
-      }
-
-      // Update stats if provided
-      if (data.stats) {
-        stats.value = data.stats
-      }
-    }
-  } catch (error) {
-    console.error('Error loading images:', error)
-    showNotification('error', 'Error', 'No se pudieron cargar las imágenes')
-  }
-}
-
-const startMigration = async () => {
-  loading.value = true
-  try {
-    const response = await fetch(`${API_BASE}/images/start-migration`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+<script>
+export default {
+  data () {
+    return {
+      stats: {
+        total: 0,
+        migrated: 0,
+        pending: 0,
+        failed: 0,
+        progress: 0
       },
-      body: JSON.stringify({
+      processStatus: {
+        isRunning: false,
+        isPaused: false,
+        processId: null,
+        startedAt: null,
+        pausedAt: null,
         batchSize: 10,
+        currentBatch: 0,
+        totalProcessed: 0,
+        successCount: 0,
+        errorCount: 0,
         retryFailedOnly: false
-      })
-    })
-
-    const data = await response.json()
-
-    if (data.success) {
-      showNotification('success', 'Éxito', 'Proceso de migración iniciado')
-      // Actualizar inmediatamente el estado
-      setTimeout(async () => {
-        await loadStats()
-      }, 1000)
-    } else {
-      throw new Error(data.message || 'Error al iniciar migración')
-    }
-  } catch (error) {
-    console.error('Error starting migration:', error)
-    showNotification('error', 'Error', error.message)
-  } finally {
-    loading.value = false
-  }
-}
-
-const pauseMigration = async () => {
-  loading.value = true
-  try {
-    const response = await fetch(`${API_BASE}/images/pause-migration`, {
-      method: 'POST'
-    })
-
-    const data = await response.json()
-
-    if (data.success) {
-      showNotification('info', 'Pausado', 'Proceso de migración pausado')
-      // Actualizar inmediatamente el estado
-      setTimeout(async () => {
-        await loadStats()
-      }, 500)
-    } else {
-      throw new Error(data.message || 'Error al pausar migración')
-    }
-  } catch (error) {
-    console.error('Error pausing migration:', error)
-    showNotification('error', 'Error', error.message)
-  } finally {
-    loading.value = false
-  }
-}
-
-const resumeMigration = async () => {
-  loading.value = true
-  try {
-    const response = await fetch(`${API_BASE}/images/resume-migration`, {
-      method: 'POST'
-    })
-
-    const data = await response.json()
-
-    if (data.success) {
-      showNotification('success', 'Reanudado', 'Proceso de migración reanudado')
-      // Actualizar inmediatamente el estado
-      setTimeout(async () => {
-        await loadStats()
-      }, 500)
-    } else {
-      throw new Error(data.message || 'Error al reanudar migración')
-    }
-  } catch (error) {
-    console.error('Error resuming migration:', error)
-    showNotification('error', 'Error', error.message)
-  } finally {
-    loading.value = false
-  }
-}
-
-const retryFailed = async () => {
-  loading.value = true
-  try {
-    const response = await fetch(`${API_BASE}/images/start-migration`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        batchSize: 10,
-        retryFailedOnly: true
-      })
-    })
-
-    const data = await response.json()
-
-    if (data.success) {
-      showNotification('success', 'Éxito', 'Reintentando imágenes fallidas')
-      await loadStats()
-    } else {
-      throw new Error(data.message || 'Error al reintentar migración')
+      images: [],
+      loading: false,
+      selectedStatus: '',
+      pagination: {
+        page: 1,
+        limit: 25,
+        total: 0,
+        totalPages: 0
+      },
+      notification: {
+        show: false,
+        type: 'info',
+        title: '',
+        message: ''
+      },
+      tableHeaders: [
+        { text: 'ID', value: 'id', sortable: false, width: '60px' },
+        { text: 'Imagen', value: 'image', sortable: false },
+        { text: 'Serie', value: 'series', sortable: false },
+        { text: 'Estado', value: 'status', sortable: false, width: '100px' },
+        { text: 'CF', value: 'cf_path', sortable: false, width: '50px' },
+        { text: '', value: 'actions', sortable: false, width: '50px' }
+      ],
+      statusOptions: [
+        { text: 'Todos', value: '' },
+        { text: 'Pendientes', value: 'pending' },
+        { text: 'Migradas', value: 'migrated' },
+        { text: 'Fallidas', value: 'failed' }
+      ],
+      refreshInterval: null,
+      statsInterval: null,
+      API_BASE: 'http://localhost:1337/api'
     }
-  } catch (error) {
-    console.error('Error retrying failed:', error)
-    showNotification('error', 'Error', error.message)
-  } finally {
-    loading.value = false
-  }
-}
+  },
+  mounted () {
+    this.loadStats()
+    this.loadImages()
 
-const retryImage = async (imageId) => {
-  loading.value = true
-  try {
-    const response = await fetch(`${API_BASE}/images/${imageId}/retry-migration`, {
-      method: 'POST'
-    })
+    this.statsInterval = setInterval(() => {
+      this.loadStats()
+    }, 2000)
 
-    const data = await response.json()
-
-    if (data.success) {
-      showNotification('success', 'Éxito', 'Imagen reintentada exitosamente')
-      await loadImages()
-      await loadStats()
-    } else {
-      throw new Error(data.message || 'Error al reintentar imagen')
+    this.refreshInterval = setInterval(() => {
+      if (!this.loading) {
+        this.loadImages()
+      }
+    }, 10000)
+  },
+  beforeDestroy () {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval)
     }
-  } catch (error) {
-    console.error('Error retrying image:', error)
-    showNotification('error', 'Error', error.message)
-  } finally {
-    loading.value = false
-  }
-}
-
-const changePage = (page) => {
-  pagination.value.page = page
-  loadImages()
-}
-
-const getProcessStatusText = () => {
-  if (!processStatus.value.isRunning) { return 'Detenido' }
-  if (processStatus.value.isPaused) { return 'Pausado' }
-  return 'Ejecutándose'
-}
-
-const getImageUrl = (path) => {
-  if (!path) { return '/placeholder-image.jpg' }
-  return `https://admin.hentaini.com/uploads${path}`
-}
-
-const getImageName = (path) => {
-  if (!path) { return 'Sin nombre' }
-  return path.split('/').pop()
-}
-
-const getProcessStatusColor = () => {
-  if (!processStatus.value.isRunning) { return 'grey' }
-  if (processStatus.value.isPaused) { return 'orange' }
-  return 'green'
-}
-
-const getProcessStatusIcon = () => {
-  if (!processStatus.value.isRunning) { return 'mdi-stop' }
-  if (processStatus.value.isPaused) { return 'mdi-pause' }
-  return 'mdi-play'
-}
-
-const getStatusChipColor = (image) => {
-  if (image.cf_path) { return 'success' }
-  if (image.migration_status === 'failed') { return 'error' }
-  return 'warning'
-}
-
-const getStatusText = (image) => {
-  if (image.cf_path) {
-    return 'Migrada'
-  } else if (image.migration_status === 'failed') {
-    return 'Fallida'
-  } else {
-    return 'Pendiente'
-  }
-}
-
-// Lifecycle
-onMounted(async () => {
-  await loadStats()
-  await loadImages()
-
-  // Auto-refresh stats every 2 seconds for real-time updates
-  statsInterval = setInterval(async () => {
-    await loadStats()
-  }, 2000)
-
-  // Auto-refresh images every 10 seconds
-  refreshInterval = setInterval(async () => {
-    if (!loading.value) {
-      await loadImages()
+    if (this.statsInterval) {
+      clearInterval(this.statsInterval)
     }
-  }, 10000)
-})
-
-onUnmounted(() => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
+  },
+  methods: {
+    showNotification (type, title, message) {
+      this.notification = {
+        show: true,
+        type,
+        title,
+        message
+      }
+      setTimeout(() => {
+        this.hideNotification()
+      }, 5000)
+    },
+    hideNotification () {
+      this.notification.show = false
+    },
+    async loadStats () {
+      try {
+        const response = await fetch(`${this.API_BASE}/images/migration-status?t=${new Date().getTime()}`)
+        const data = await response.json()
+        if (data.success) {
+          this.stats = data.data.stats
+          this.processStatus = data.data.process
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error)
+      }
+    },
+    async loadImages () {
+      try {
+        const params = new URLSearchParams({
+          page: this.pagination.page,
+          limit: this.pagination.limit
+        })
+        if (this.selectedStatus) {
+          params.append('status', this.selectedStatus)
+        }
+        const response = await fetch(`${this.API_BASE}/images/pending-migration?${params}`)
+        const data = await response.json()
+        if (data.success) {
+          this.images = data.data
+          this.pagination = {
+            ...this.pagination,
+            ...data.meta
+          }
+          if (data.stats) {
+            this.stats = data.stats
+          }
+        }
+      } catch (error) {
+        console.error('Error loading images:', error)
+        this.showNotification('error', 'Error', 'No se pudieron cargar las imágenes')
+      }
+    },
+    async startMigration () {
+      this.loading = true
+      try {
+        const response = await fetch(`${this.API_BASE}/images/start-migration`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            batchSize: 10,
+            retryFailedOnly: false
+          })
+        })
+        const data = await response.json()
+        if (data.success) {
+          this.showNotification('success', 'Éxito', 'Proceso de migración iniciado')
+          await this.loadStats()
+          // Esperar un poco más para asegurar que el estado se actualice
+          await new Promise(resolve => setTimeout(resolve, 1500))
+          await this.loadStats()
+          this.loading = false
+        } else {
+          throw new Error(data.message || 'Error al iniciar migración')
+        }
+      } catch (error) {
+        console.error('Error starting migration:', error)
+        this.showNotification('error', 'Error', error.message)
+        this.loading = false
+      }
+    },
+    async pauseMigration () {
+      this.loading = true
+      try {
+        const response = await fetch(`${this.API_BASE}/images/pause-migration`, {
+          method: 'POST'
+        })
+        const data = await response.json()
+        if (data.success) {
+          this.showNotification('info', 'Pausado', 'Proceso de migración pausado')
+          setTimeout(() => {
+            this.loadStats()
+          }, 500)
+        } else {
+          throw new Error(data.message || 'Error al pausar migración')
+        }
+      } catch (error) {
+        console.error('Error pausing migration:', error)
+        this.showNotification('error', 'Error', error.message)
+      } finally {
+        this.loading = false
+      }
+    },
+    async resumeMigration () {
+      this.loading = true
+      try {
+        const response = await fetch(`${this.API_BASE}/images/resume-migration`, {
+          method: 'POST'
+        })
+        const data = await response.json()
+        if (data.success) {
+          this.showNotification('success', 'Reanudado', 'Proceso de migración reanudado')
+          setTimeout(() => {
+            this.loadStats()
+          }, 500)
+        } else {
+          throw new Error(data.message || 'Error al reanudar migración')
+        }
+      } catch (error) {
+        console.error('Error resuming migration:', error)
+        this.showNotification('error', 'Error', error.message)
+      } finally {
+        this.loading = false
+      }
+    },
+    async retryFailed () {
+      this.loading = true
+      try {
+        const response = await fetch(`${this.API_BASE}/images/start-migration`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            batchSize: 10,
+            retryFailedOnly: true
+          })
+        })
+        const data = await response.json()
+        if (data.success) {
+          this.showNotification('success', 'Éxito', 'Reintentando imágenes fallidas')
+          await this.loadStats()
+        } else {
+          throw new Error(data.message || 'Error al reintentar migración')
+        }
+      } catch (error) {
+        console.error('Error retrying failed:', error)
+        this.showNotification('error', 'Error', error.message)
+      } finally {
+        this.loading = false
+      }
+    },
+    async retryImage (imageId) {
+      this.loading = true
+      try {
+        const response = await fetch(`${this.API_BASE}/images/${imageId}/retry-migration`, {
+          method: 'POST'
+        })
+        const data = await response.json()
+        if (data.success) {
+          this.showNotification('success', 'Éxito', 'Imagen reintentada exitosamente')
+          await this.loadImages()
+          await this.loadStats()
+        } else {
+          throw new Error(data.message || 'Error al reintentar imagen')
+        }
+      } catch (error) {
+        console.error('Error retrying image:', error)
+        this.showNotification('error', 'Error', error.message)
+      } finally {
+        this.loading = false
+      }
+    },
+    changePage (page) {
+      this.pagination.page = page
+      this.loadImages()
+    },
+    getProcessStatusText () {
+      if (!this.processStatus.isRunning) { return 'Detenido' }
+      if (this.processStatus.isPaused) { return 'Pausado' }
+      return 'Ejecutándose'
+    },
+    getImageUrl (path) {
+      if (!path) { return '/placeholder-image.jpg' }
+      return `https://admin.hentaini.com/uploads/${path}`
+    },
+    getImageName (path) {
+      if (!path) { return 'Sin nombre' }
+      return path.split('/').pop()
+    },
+    getProcessStatusColor () {
+      if (!this.processStatus.isRunning) { return 'grey' }
+      if (this.processStatus.isPaused) { return 'orange' }
+      return 'green'
+    },
+    getProcessStatusIcon () {
+      if (!this.processStatus.isRunning) { return 'mdi-stop' }
+      if (this.processStatus.isPaused) { return 'mdi-pause' }
+      return 'mdi-play'
+    },
+    getStatusChipColor (image) {
+      if (image.cf_path) { return 'success' }
+      if (image.migration_status === 'failed') { return 'error' }
+      return 'warning'
+    },
+    getStatusText (image) {
+      if (image.cf_path) {
+        return 'Migrada'
+      } else if (image.migration_status === 'failed') {
+        return 'Fallida'
+      } else {
+        return 'Pendiente'
+      }
+    }
   }
-  if (statsInterval) {
-    clearInterval(statsInterval)
-  }
-})
+}
 </script>
