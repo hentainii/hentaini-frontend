@@ -89,8 +89,8 @@
                 @save="saveStatus(item.id, item.status)"
                 @cancel="cancel"
               >
-                <v-chip small label :class="getColorPill(item.status.name)">
-                  {{ item.status.name }}
+                <v-chip small label :class="getColorPill(item.status ? item.status.name : 'grey')">
+                  {{ item.status ? item.status.name : 'No Status' }}
                 </v-chip>
                 <template #input>
                   <v-select

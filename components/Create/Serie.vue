@@ -167,6 +167,28 @@
         </v-btn>
       </v-col>
     </v-row>
+
+    <!-- Toast Notifications -->
+    <v-snackbar
+      v-model="notification.show"
+      :color="notification.type === 'success' ? 'success' : notification.type === 'error' ? 'error' : notification.type === 'warning' ? 'warning' : 'info'"
+      :timeout="5000"
+      top
+      right
+    >
+      <strong>{{ notification.title }}</strong><br>
+      {{ notification.message }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="hideNotification"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -212,7 +234,13 @@ export default {
     studioSearch: '',
     studioToCreate: null,
     producerSearch: '',
-    producerToCreate: null
+    producerToCreate: null,
+    notification: {
+      show: false,
+      type: 'info',
+      title: '',
+      message: ''
+    }
   }),
   computed: {
     genreList () {
@@ -365,21 +393,55 @@ export default {
       return str.replace(/[^a-zA-Z0-9]/g, '')
     },
     async createImageComponent (image, imageType, serieId) {
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.token}`
-        },
-        body: JSON.stringify({
-          data: {
-            path: `${image.hash}${image.ext}`,
-            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
-            image_type: imageType === 'cover' ? 1 : 2,
-            series: serieId
-          }
+      try {
+        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-with-cloudflare`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: JSON.stringify({
+            data: {
+              path: `${image.hash}${image.ext}`,
+              placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+              image_type: imageType === 'cover' ? 1 : 2,
+              series: serieId
+            }
+          })
         })
-      })
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Manejar la respuesta según el estado de subida a Cloudflare
+            if (result.data.cloudflare_uploaded === true) {
+              console.log(`Image ${imageType} uploaded successfully to Cloudflare:`, result.data.cf_path)
+              // Mostrar notificación de éxito si está disponible
+              if (this.showNotification) {
+                this.showNotification('success', 'Éxito', `Imagen ${imageType} guardada localmente y subida a Cloudflare correctamente`)
+              }
+            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
+              console.log(`Image ${imageType} saved locally (Cloudflare upload failed but image was created)`)
+              if (this.showNotification) {
+                this.showNotification('warning', 'Guardado Local', `Imagen ${imageType} guardada localmente (fallback), pero falló la subida a Cloudflare`)
+              }
+            } else {
+              this.showNotification('success', 'Éxito', `Imagen ${imageType} guardada localmente correctamente`)
+            }
+          }
+        } else {
+          console.error(`Failed to upload ${imageType} image:`, response.statusText)
+          if (this.showNotification) {
+            this.showNotification('error', 'Upload Error', `Failed to upload ${imageType} image`)
+          }
+        }
+      } catch (error) {
+        console.error(`Error uploading ${imageType} image:`, error)
+        if (this.showNotification) {
+          this.showNotification('error', 'Upload Error', `Error uploading ${imageType} image: ${error.message}`)
+        }
+      }
     },
     async getGenres () {
       await this.$store.dispatch('genres/getGenres', {
@@ -452,6 +514,20 @@ export default {
       } else {
         this.serie.studio = val && val.id ? val.id : val
       }
+    },
+    showNotification (type, title, message) {
+      this.notification = {
+        show: true,
+        type,
+        title,
+        message
+      }
+      setTimeout(() => {
+        this.hideNotification()
+      }, 5000)
+    },
+    hideNotification () {
+      this.notification.show = false
     }
   }
 }

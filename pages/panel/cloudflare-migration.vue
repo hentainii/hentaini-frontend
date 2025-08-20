@@ -390,7 +390,13 @@ export default {
     },
     async loadStats () {
       try {
-        const response = await fetch(`${this.API_BASE}/images/migration-status?t=${new Date().getTime()}`)
+        const response = await fetch(`${this.API_BASE}/images/migration-status?t=${new Date().getTime()}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
+        })
         const data = await response.json()
         if (data.success) {
           this.stats = data.data.stats
@@ -409,7 +415,13 @@ export default {
         if (this.selectedStatus) {
           params.append('status', this.selectedStatus)
         }
-        const response = await fetch(`${this.API_BASE}/images/pending-migration?${params}`)
+        const response = await fetch(`${this.API_BASE}/images/pending-migration?${params}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
+        })
         const data = await response.json()
         if (data.success) {
           this.images = data.data
@@ -432,7 +444,8 @@ export default {
         const response = await fetch(`${this.API_BASE}/images/start-migration`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
           },
           body: JSON.stringify({
             batchSize: 10,
@@ -460,7 +473,11 @@ export default {
       this.loading = true
       try {
         const response = await fetch(`${this.API_BASE}/images/pause-migration`, {
-          method: 'POST'
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
         })
         const data = await response.json()
         if (data.success) {
@@ -482,7 +499,11 @@ export default {
       this.loading = true
       try {
         const response = await fetch(`${this.API_BASE}/images/resume-migration`, {
-          method: 'POST'
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
         })
         const data = await response.json()
         if (data.success) {
@@ -506,7 +527,8 @@ export default {
         const response = await fetch(`${this.API_BASE}/images/start-migration`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
           },
           body: JSON.stringify({
             batchSize: 10,
@@ -531,7 +553,11 @@ export default {
       this.loading = true
       try {
         const response = await fetch(`${this.API_BASE}/images/${imageId}/retry-migration`, {
-          method: 'POST'
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
         })
         const data = await response.json()
         if (data.success) {
@@ -559,7 +585,7 @@ export default {
     },
     getImageUrl (path) {
       if (!path) { return '/placeholder-image.jpg' }
-      return `https://admin.hentaini.com/uploads/${path}`
+      return `${this.$config.CDN_ENDPOINT}${path}`
     },
     getImageName (path) {
       if (!path) { return 'Sin nombre' }

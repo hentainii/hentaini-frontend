@@ -168,7 +168,7 @@
               {{ genre.text ? genre.text : genre.name }}
             </v-chip>
           </v-row>
-          <v-row v-if="serie.studio && (serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name))" class="px-4 pb-2 mt-4">
+          <v-row v-if="serie.studio && (serie.studio.name || (serie.studio && serie.studio.name))" class="px-4 pb-2 mt-4">
             <span style="color:#b9b9b9;">
               <v-icon small color="blue" class="mr-1">mdi-camera-outline</v-icon>
               {{ $t('serie.studio') }}
@@ -176,19 +176,19 @@
                 :to="localePath(`/studios/${serie.studio.id || (serie.studio.data && serie.studio.data.id) || '1'}`)"
                 class="primary--text text-decoration-none"
               >
-                {{ serie.studio.name || (serie.studio.data && serie.studio.data.attributes && serie.studio.data.attributes.name) }}
+                {{ serie.studio.name || (serie.studio && serie.studio.name) }}
               </nuxt-link>
             </span>
           </v-row>
-          <v-row v-if="serie.producer && (serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name))" class="px-4 pb-2">
+          <v-row v-if="serie.producer && (serie.producer.name || (serie.producer && serie.producer.name))" class="px-4 pb-2">
             <span style="color:#b9b9b9;">
               <v-icon small color="orange" class="mr-1">mdi-office-building</v-icon>
               {{ $t('serie.producer') }}
               <nuxt-link
-                :to="localePath(`/producers/${serie.producer.id || (serie.producer.data && serie.producer.data.id) || '1'}`)"
+                :to="localePath(`/producers/${serie.producer.id || '1'}`)"
                 class="primary--text text-decoration-none"
               >
-                {{ serie.producer.name || (serie.producer.data && serie.producer.data.attributes && serie.producer.data.attributes.name) }}
+                {{ serie.producer.name || (serie.producer && serie.producer.name) }}
               </nuxt-link>
             </span>
           </v-row>
