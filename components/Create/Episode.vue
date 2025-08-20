@@ -408,9 +408,9 @@ export default {
     },
     playerListModel () {
       this.episode.players = [
-        { name: 'PXD', url: '' },
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' },
+        { name: 'PXD', url: '' },
         { name: 'Yourupload', url: '' },
         { name: 'HNI', url: '' },
         { name: 'Stream2', url: '' },
