@@ -120,7 +120,8 @@ export default {
       { id: 10, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
       { id: 11, name: 'Comentarios', url: '/panel/comments', icon: 'mdi-comment' },
       { id: 12, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' },
-      { id: 13, name: 'Uploader', url: '/panel/uploader', icon: 'mdi-cloud-upload' }
+      { id: 13, name: 'Uploader', url: '/panel/uploader', icon: 'mdi-cloud-upload' },
+      { id: 14, name: 'Cloudflare Migration', url: '/panel/cloudflare-migration', icon: 'mdi-cloud-sync' }
     ]
   })
 }
