@@ -69,6 +69,7 @@
                 <!-- Selección de reproductor -->
                 <v-col cols="12" sm="12" md="8" class="player-selection d-flex align-center py-2">
                   <v-slide-group
+                    v-model="selectedPlayerIndex"
                     :show-arrows="$store.state.isDesktop"
                     center-active
                     mandatory
@@ -530,7 +531,8 @@ export default {
         totalVotes: 0
       },
       userRating: 0,
-      hlsInstance: null
+      hlsInstance: null,
+      selectedPlayerIndex: 0
     }
   },
   head () {
@@ -615,6 +617,12 @@ export default {
         this.$nextTick(() => {
           this.initHLSPlayer()
         })
+      }
+    },
+    selectedPlayerIndex (newIndex) {
+      // Actualizar currentUrl cuando cambie el índice seleccionado
+      if (this.filteredPlayers[newIndex]) {
+        this.currentUrl = this.filteredPlayers[newIndex].url
       }
     }
   },
@@ -710,6 +718,11 @@ export default {
     },
     changeCurrentUrl (currentUrl) {
       this.currentUrl = currentUrl
+      // Actualizar el índice seleccionado para sincronizar con v-slide-group
+      const playerIndex = this.filteredPlayers.findIndex(player => player.url === currentUrl)
+      if (playerIndex !== -1) {
+        this.selectedPlayerIndex = playerIndex
+      }
       // No resetear showVideo aquí para mantener el estado del reproductor
       // Reinicializar HLS cuando cambie la URL si el video ya está siendo mostrado
       if (this.showVideo && this.isHLSPlayer) {
@@ -720,6 +733,7 @@ export default {
     },
     genCurrentUrl () {
       this.currentUrl = this.filteredPlayers[0].url
+      this.selectedPlayerIndex = 0
     },
     genBreadcrumb () {
       this.breadcrumb[2].text = 'Episode ' + this.episode.episode_number
