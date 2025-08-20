@@ -34,8 +34,8 @@
               :componentgenres="serie.genreList"
               :status="serie.status.name"
               :url="serie.url"
-              :screenshot="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
-              :placeholder="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder ? serie.images.find(image => image.image_type.name === 'cover').placeholder : serie.images.find(image => image.image_type.name === 'cover').path}`"
+              :screenshot="getScreenshotUrl(serie)"
+              :placeholder="getPlaceholderUrl(serie)"
             />
           </article>
         </v-col>
@@ -88,6 +88,30 @@ export default {
           console.error('Error loading latest series:', error)
           this.loading = false
         })
+    },
+    getScreenshotUrl (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return ''
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage || !coverImage.path) {
+        return ''
+      }
+      return `${this.$config.COVER_ENDPOINT}${coverImage.path}`
+    },
+    getPlaceholderUrl (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return ''
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return ''
+      }
+      const placeholderPath = coverImage.placeholder || coverImage.path
+      if (!placeholderPath) {
+        return ''
+      }
+      return `${this.$config.COVER_ENDPOINT}${placeholderPath}`
     }
   }
 }
