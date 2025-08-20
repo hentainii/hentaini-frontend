@@ -597,7 +597,7 @@ export default {
     serieScreenshot () {
       const screenshotImage = this.episode.image || this.episode.serie.images?.find(image => image.image_type?.name === 'screenshot')
       if (screenshotImage?.cf_path) {
-        return `${this.$config.CLOUDFLARE_ENDPOINT}${screenshotImage.cf_path}`
+        return `${screenshotImage.cf_path}`
       }
       return screenshotImage?.path ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}` : ''
     }

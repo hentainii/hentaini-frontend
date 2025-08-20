@@ -126,12 +126,12 @@ export default {
     },
     getCfCoverImageUrl (serie) {
       const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
-      return coverImage?.cf_path ? `${this.$config.CLOUDFLARE_ENDPOINT}${coverImage.cf_path}` : ''
+      return coverImage?.cf_path ? `${coverImage.cf_path}` : ''
     },
     getCfCoverPlaceholderUrl (serie) {
       const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
       const cfPlaceholderPath = coverImage?.cf_placeholder || coverImage?.cf_path
-      return cfPlaceholderPath ? `${this.$config.CLOUDFLARE_ENDPOINT}${cfPlaceholderPath}` : ''
+      return cfPlaceholderPath ? `${cfPlaceholderPath}` : ''
     }
   }
 }

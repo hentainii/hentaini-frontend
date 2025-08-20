@@ -268,10 +268,7 @@
                     :componentgenres="serie.genreList"
                     :status="serie.status.name"
                     :url="serie.url"
-                    :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
-                    :placeholder="`${$config.COVER_ENDPOINT}${serie.images.placeholder || serie.images.path}`"
-                    :cf_screenshot="serie.images.cf_path ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_path}` : ''"
-                    :cf_placeholder="serie.images.cf_placeholder ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_placeholder}` : (serie.images.cf_path ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_path}` : '')"
+                    :image="getCoverImage(serie)"
                     :visits="serie.visits"
                   />
                 </v-col>
@@ -554,7 +551,6 @@ export default {
         .then((series) => {
           const resSerie = series.data.map((serie) => {
             serie.genres = JSON.parse(serie.genres)
-            serie.images = serie.images.filter(image => image.image_type.name === 'cover')[0]
             this.pagination = series.meta.pagination
             return {
               ...serie
@@ -683,6 +679,31 @@ export default {
         this.$router.push({ path: '/explore', query: { genre: genre.url } })
       }
       this.showGenreSheet = false
+    },
+    getCoverImage (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      return {
+        path: coverImage.path || '',
+        placeholder: coverImage.placeholder || '',
+        cf_path: coverImage.cf_path || null,
+        cf_placeholder: coverImage.cf_placeholder || null
+      }
     }
   }
 }

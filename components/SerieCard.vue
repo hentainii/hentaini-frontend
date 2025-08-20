@@ -165,16 +165,16 @@ export default {
     },
     finalScreenshot () {
       if (this.image.cf_path) {
-        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+        return `${this.image.cf_path}`
       }
       return `${this.$config.COVER_ENDPOINT}${this.image.path}`
     },
     finalPlaceholder () {
       if (this.image.cf_placeholder) {
-        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_placeholder}`
+        return `${this.image.cf_placeholder}`
       }
       if (this.image.cf_path) {
-        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+        return `${this.image.cf_path}`
       }
       const placeholderPath = this.image.placeholder || this.image.path
       return `${this.$config.COVER_ENDPOINT}${placeholderPath}`
