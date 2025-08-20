@@ -348,7 +348,7 @@ export default {
       ],
       refreshInterval: null,
       statsInterval: null,
-      API_BASE: 'http://localhost:1337/api'
+      API_BASE: this.$config.STRAPI_ENDPOINT
     }
   },
   mounted () {
