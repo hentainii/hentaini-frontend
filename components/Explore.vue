@@ -269,6 +269,9 @@
                     :status="serie.status.name"
                     :url="serie.url"
                     :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
+                    :placeholder="`${$config.COVER_ENDPOINT}${serie.images.placeholder || serie.images.path}`"
+                    :cf_screenshot="serie.images.cf_path ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_path}` : ''"
+                    :cf_placeholder="serie.images.cf_placeholder ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_placeholder}` : (serie.images.cf_path ? `${$config.CLOUDFLARE_ENDPOINT}${serie.images.cf_path}` : '')"
                     :visits="serie.visits"
                   />
                 </v-col>

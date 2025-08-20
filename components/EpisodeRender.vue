@@ -15,7 +15,7 @@
           <!-- Imagen de portada con botón de reproducción -->
           <div v-if="!showVideo" class="video-container position-relative">
             <v-img
-              :src="`${$config.SCREENSHOT_ENDPOINT}${serieScreenshot}`"
+              :src="serieScreenshot"
               width="100%"
               cover
               :aspect-ratio="16/9"
@@ -595,7 +595,11 @@ export default {
       return this.watchlaters.find(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber)) || null
     },
     serieScreenshot () {
-      return this.episode.image ? this.episode.image.path : this.episode.serie.images.find(image => image.image_type.name === 'screenshot').path
+      const screenshotImage = this.episode.image || this.episode.serie.images?.find(image => image.image_type?.name === 'screenshot')
+      if (screenshotImage?.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${screenshotImage.cf_path}`
+      }
+      return screenshotImage?.path ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}` : ''
     }
   },
   watch: {

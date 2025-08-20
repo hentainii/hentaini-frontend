@@ -14,16 +14,8 @@
       <v-carousel-item
         v-for="(serie) in featuredSeries"
         :key="serie.title"
-        :src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(
-          image => image.image_type.name === 'screenshot'
-        ).path}`"
-        :lazy-src="`${$config.SCREENSHOT_ENDPOINT}${serie.images.find(
-          image => image.image_type.name === 'screenshot'
-        ).placeholder ? serie.images.find(
-          image => image.image_type.name === 'screenshot'
-        ).placeholder : serie.images.find(
-          image => image.image_type.name === 'screenshot'
-        ).path}`"
+        :src="getScreenshotUrl(serie)"
+        :lazy-src="getScreenshotPlaceholderUrl(serie)"
         :to="localePath(`/h/${serie.url}`)"
       >
         <template #default>
@@ -147,6 +139,24 @@ export default {
         return text.substring(0, length) + '...'
       }
       return text
+    },
+    getScreenshotUrl (serie) {
+      const screenshotImage = serie.images?.find(image => image.image_type?.name === 'screenshot')
+      if (screenshotImage?.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${screenshotImage.cf_path}`
+      }
+      return screenshotImage?.path ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}` : ''
+    },
+    getScreenshotPlaceholderUrl (serie) {
+      const screenshotImage = serie.images?.find(image => image.image_type?.name === 'screenshot')
+      if (screenshotImage?.cf_placeholder) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${screenshotImage.cf_placeholder}`
+      }
+      if (screenshotImage?.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${screenshotImage.cf_path}`
+      }
+      const placeholderPath = screenshotImage?.placeholder || screenshotImage?.path
+      return placeholderPath ? `${this.$config.SCREENSHOT_ENDPOINT}${placeholderPath}` : ''
     }
   }
 }

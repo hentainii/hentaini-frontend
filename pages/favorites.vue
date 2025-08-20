@@ -27,8 +27,10 @@
             :componentgenres="favorite.serie.genreList"
             :status="favorite.serie.status.name"
             :url="favorite.serie.url"
-            :screenshot="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
-            :placeholder="`${$config.COVER_ENDPOINT}${favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder ? favorite.serie.images.find(image => image.image_type.name === 'cover').placeholder : favorite.serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :screenshot="getCoverImageUrl(favorite.serie)"
+            :placeholder="getCoverPlaceholderUrl(favorite.serie)"
+            :cf_screenshot="getCfCoverImageUrl(favorite.serie)"
+            :cf_placeholder="getCfCoverPlaceholderUrl(favorite.serie)"
             :favoriteid="favorite.id"
             :removeTagF="true"
             @refreshf="getFavorites"
@@ -112,6 +114,24 @@ export default {
           })
           this.favorites = favorites.data
         })
+    },
+    getCoverImageUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      return coverImage?.path ? `${this.$config.COVER_ENDPOINT}${coverImage.path}` : ''
+    },
+    getCoverPlaceholderUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      const placeholderPath = coverImage?.placeholder || coverImage?.path
+      return placeholderPath ? `${this.$config.COVER_ENDPOINT}${placeholderPath}` : ''
+    },
+    getCfCoverImageUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      return coverImage?.cf_path ? `${this.$config.CLOUDFLARE_ENDPOINT}${coverImage.cf_path}` : ''
+    },
+    getCfCoverPlaceholderUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      const cfPlaceholderPath = coverImage?.cf_placeholder || coverImage?.cf_path
+      return cfPlaceholderPath ? `${this.$config.CLOUDFLARE_ENDPOINT}${cfPlaceholderPath}` : ''
     }
   }
 }

@@ -5,8 +5,8 @@
         <div class="card-container">
           <v-img
             :aspect-ratio="9/14"
-            :src="screenshot"
-            :lazy-src="placeholder"
+            :src="finalScreenshot"
+            :lazy-src="finalPlaceholder"
             class="card-image"
           >
             <div v-if="visits" class="visits-chip">
@@ -114,13 +114,14 @@ export default {
       type: String,
       default: ''
     },
-    screenshot: {
-      type: String,
-      default: ''
-    },
-    placeholder: {
-      type: String,
-      default: ''
+    image: {
+      type: Object,
+      default: () => ({
+        path: '',
+        placeholder: '',
+        cf_path: null,
+        cf_placeholder: null
+      })
     },
     visits: {
       type: Number,
@@ -161,6 +162,22 @@ export default {
       } else {
         return 'status-default'
       }
+    },
+    finalScreenshot () {
+      if (this.image.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+      }
+      return `${this.$config.COVER_ENDPOINT}${this.image.path}`
+    },
+    finalPlaceholder () {
+      if (this.image.cf_placeholder) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_placeholder}`
+      }
+      if (this.image.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+      }
+      const placeholderPath = this.image.placeholder || this.image.path
+      return `${this.$config.COVER_ENDPOINT}${placeholderPath}`
     }
   },
   methods: {

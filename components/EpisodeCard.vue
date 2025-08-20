@@ -6,8 +6,8 @@
           <v-img
             class="episode-image"
             :aspect-ratio="16/9"
-            :src="screenshot"
-            :lazy-src="placeholder"
+            :src="finalScreenshot"
+            :lazy-src="finalPlaceholder"
           >
             <!-- Badge para "new" -->
             <div v-if="isNew && lessThan7Days(created)" class="new-badge">
@@ -101,13 +101,14 @@ export default {
       type: String,
       default: ''
     },
-    screenshot: {
-      type: String,
-      default: 'default.jpg'
-    },
-    placeholder: {
-      type: String,
-      default: 'default_placeholder.jpg'
+    image: {
+      type: Object,
+      default: () => ({
+        path: 'default.jpg',
+        placeholder: 'default_placeholder.jpg',
+        cf_path: null,
+        cf_placeholder: null
+      })
     },
     created: {
       type: String,
@@ -141,6 +142,22 @@ export default {
     },
     isLogin () {
       return this.$store.state.auth
+    },
+    finalScreenshot () {
+      if (this.image.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+      }
+      return `${this.$config.SCREENSHOT_ENDPOINT}${this.image.path}`
+    },
+    finalPlaceholder () {
+      if (this.image.cf_placeholder) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_placeholder}`
+      }
+      if (this.image.cf_path) {
+        return `${this.$config.CLOUDFLARE_ENDPOINT}${this.image.cf_path}`
+      }
+      const placeholderPath = this.image.placeholder || this.image.path
+      return `${this.$config.SCREENSHOT_ENDPOINT}${placeholderPath}`
     }
   },
   methods: {

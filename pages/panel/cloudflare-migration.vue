@@ -294,6 +294,7 @@
 
 <script>
 export default {
+  layout: 'panel',
   data () {
     return {
       stats: {

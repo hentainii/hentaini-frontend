@@ -27,8 +27,10 @@
             :componentgenres="watchlater.serie.genreList"
             :status="watchlater.serie.status.name"
             :url="watchlater.serie.url"
-            :screenshot="`${$config.COVER_ENDPOINT}${watchlater.serie.images.find(image => image.image_type.name === 'cover').path}`"
-            :placeholder="`${$config.COVER_ENDPOINT}${watchlater.serie.images.find(image => image.image_type.name === 'cover').placeholder ? watchlater.serie.images.find(image => image.image_type.name === 'cover').placeholder : watchlater.serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :screenshot="getCoverImageUrl(watchlater.serie)"
+            :placeholder="getCoverPlaceholderUrl(watchlater.serie)"
+            :cf_screenshot="getCfCoverImageUrl(watchlater.serie)"
+            :cf_placeholder="getCfCoverPlaceholderUrl(watchlater.serie)"
             :watchlaterid="watchlater.id"
             :removeTagWl="true"
             @refreshwl="getWatchLaterSeries"
@@ -112,6 +114,24 @@ export default {
           })
           this.watchlaters = watchlaters.data
         })
+    },
+    getCoverImageUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      return coverImage?.path ? `${this.$config.COVER_ENDPOINT}${coverImage.path}` : ''
+    },
+    getCoverPlaceholderUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      const placeholderPath = coverImage?.placeholder || coverImage?.path
+      return placeholderPath ? `${this.$config.COVER_ENDPOINT}${placeholderPath}` : ''
+    },
+    getCfCoverImageUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      return coverImage?.cf_path ? `${this.$config.CLOUDFLARE_ENDPOINT}${coverImage.cf_path}` : ''
+    },
+    getCfCoverPlaceholderUrl (serie) {
+      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
+      const cfPlaceholderPath = coverImage?.cf_placeholder || coverImage?.cf_path
+      return cfPlaceholderPath ? `${this.$config.CLOUDFLARE_ENDPOINT}${cfPlaceholderPath}` : ''
     }
   }
 }
