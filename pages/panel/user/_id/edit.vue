@@ -2,6 +2,28 @@
   <v-container>
     <v-row>
       <v-col>
+        <!-- Alert for success message -->
+        <v-alert
+          v-if="successMessage"
+          type="success"
+          dismissible
+          class="mb-4"
+          @input="successMessage = ''"
+        >
+          {{ successMessage }}
+        </v-alert>
+
+        <!-- Alert for error message -->
+        <v-alert
+          v-if="errorMessage"
+          type="error"
+          dismissible
+          class="mb-4"
+          @input="errorMessage = ''"
+        >
+          {{ errorMessage }}
+        </v-alert>
+
         <v-card>
           <v-card-title>
             Modify user password
@@ -16,6 +38,7 @@
                 type="password"
                 hide-details="auto"
                 class="mb-5"
+                :disabled="loading"
               />
               <v-text-field
                 v-model="passwordConfirm"
@@ -24,16 +47,25 @@
                 required
                 type="password"
                 hide-details="auto"
+                :disabled="loading"
               />
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-btn
               color="primary"
-              :disabled="!valid"
+              :disabled="!valid || loading"
+              :loading="loading"
               @click="submit"
             >
               Confirm
+            </v-btn>
+            <v-btn
+              text
+              :disabled="loading"
+              @click="$router.push('/panel/user')"
+            >
+              Cancel
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -48,8 +80,11 @@ export default {
   data () {
     return {
       valid: false,
+      loading: false,
       password: '',
       passwordConfirm: '',
+      successMessage: '',
+      errorMessage: '',
       passwordRules: [
         v => !!v || 'Password is required',
         v => (v && v.length >= 8) || 'Password must be more than 8 characters'
@@ -68,14 +103,47 @@ export default {
   },
   methods: {
     submit () {
+      // Clear previous messages
+      this.successMessage = ''
+      this.errorMessage = ''
+
+      // Validate form before submitting
+      if (!this.$refs.form.validate()) {
+        this.errorMessage = 'Please fix the form errors before submitting'
+        return
+      }
+
+      this.loading = true
+
       this.$store.dispatch('user/updatePassword', {
         token: this.$store.state.auth.token,
         id: this.$route.params.id,
         password: this.password
-      }).then((_) => {
-        // this.$router.push('/panel/user')
+      }).then((response) => {
+        this.loading = false
+        this.successMessage = 'Password updated successfully!'
+
+        // Clear form
+        this.password = ''
+        this.passwordConfirm = ''
+        this.$refs.form.resetValidation()
+
+        // Redirect after showing success message
+        setTimeout(() => {
+          this.$router.push('/panel/user')
+        }, 2000)
       }).catch((err) => {
-        console.log(err)
+        this.loading = false
+        console.error('Error updating password:', err)
+
+        // Show user-friendly error message
+        if (err.response && err.response.data && err.response.data.error) {
+          this.errorMessage = err.response.data.error.message || 'Failed to update password'
+        } else if (err.message) {
+          this.errorMessage = err.message
+        } else {
+          this.errorMessage = 'An error occurred while updating the password. Please try again.'
+        }
       })
     }
   }

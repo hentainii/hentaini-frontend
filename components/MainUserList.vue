@@ -18,12 +18,10 @@
           :headers="headers"
           :items="users"
           :search="search"
-          :options="pagination"
           :page.sync="page"
-          :items-per-page="itemsPerPage"
+          :items-per-page.sync="itemsPerPage"
           hide-default-footer
           class="elevation-1"
-          @page-count="pageCount = $event"
         >
           <template #[`item.actions`]="{ item }">
             <v-btn
@@ -65,23 +63,47 @@ export default {
         { text: 'Email', value: 'email' },
         { text: 'Actions', value: 'actions' }
       ],
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 10
+      pagination: {
+        page: 1,
+        itemsPerPage: 10
+      }
     }
   },
   computed: {
     users () {
-      return this.$store.state.auth.users
+      return this.$store.state.user.users
+    },
+    page: {
+      get () {
+        return this.pagination.page
+      },
+      set (value) {
+        this.pagination.page = value
+      }
+    },
+    itemsPerPage: {
+      get () {
+        return this.pagination.itemsPerPage
+      },
+      set (value) {
+        this.pagination.itemsPerPage = value
+      }
+    },
+    pageCount () {
+      return this.$store.state.user.usersListPagination.pageCount || 0
     }
   },
   watch: {
-    '$store.state.auth.userListPagination' (val) {
-      Object.assign(this.pagination, val)
-    },
     'pagination.page': {
       handler () {
-        this.getSeries()
+        this.getUsers()
+      },
+      deep: false
+    },
+    'pagination.itemsPerPage': {
+      handler () {
+        this.pagination.page = 1
+        this.getUsers()
       },
       deep: false
     }

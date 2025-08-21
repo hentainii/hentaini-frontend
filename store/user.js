@@ -5,14 +5,15 @@ export const state = () => {
   }
 }
 export const mutations = {
-  getUsers (state, users) {
-    state.users = users.users
+  getUsers (state, payload) {
+    state.users = payload.users
+    state.usersListPagination = payload.pagination
   }
 }
 export const actions = {
   updatePassword ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}auth/change-password/${payload.id}`, {
+      fetch(`${this.$config.API_STRAPI_ENDPOINT}users/${payload.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +37,10 @@ export const actions = {
   async getUsers ({ commit }, payload) {
     const qs = require('qs')
     const query = qs.stringify({
-      pagination: payload.pagination
+      pagination: {
+        page: payload.pagination.page,
+        pageSize: payload.pagination.itemsPerPage
+      }
     },
     {
       encodeValuesOnly: true
@@ -49,9 +53,15 @@ export const actions = {
       }
     })
       .then(res => res.json())
-      .then((users) => {
+      .then((response) => {
         commit('getUsers', {
-          users
+          users: response.data || response,
+          pagination: {
+            page: response.meta?.pagination?.page || payload.pagination.page,
+            pageSize: response.meta?.pagination?.pageSize || payload.pagination.itemsPerPage,
+            pageCount: response.meta?.pagination?.pageCount || Math.ceil((response.meta?.pagination?.total || response.length) / payload.pagination.itemsPerPage),
+            total: response.meta?.pagination?.total || response.length
+          }
         })
       })
   }
