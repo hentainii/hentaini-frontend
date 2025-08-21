@@ -1,5 +1,14 @@
 <template>
   <v-container class="pa-6" fluid>
+    <v-alert
+      v-model="alert.show"
+      :type="alert.type"
+      dense
+      dismissible
+      class="mt-4"
+    >
+      {{ alert.message }}
+    </v-alert>
     <v-card class="glass-card pa-6" elevation="10">
       <v-row>
         <v-col cols="12">
@@ -221,15 +230,6 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-alert
-      v-model="alert.show"
-      :type="alert.type"
-      dense
-      dismissible
-      class="mt-4"
-    >
-      {{ alert.message }}
-    </v-alert>
   </v-container>
 </template>
 
@@ -270,6 +270,7 @@ export default {
       availableEpisodes: [],
       loadingApplyPlayer: null,
       deletingSessionId: null,
+      newEpisodePending: false,
       alert: {
         show: false,
         type: 'info',
@@ -282,6 +283,14 @@ export default {
       return this.players.filter(p => p.up_available && p.accounts && p.accounts.length > 0)
     }
   },
+  watch: {
+    episodeNumber (newVal, oldVal) {
+      // Reset upload state when episode number changes
+      if (oldVal !== null && newVal !== oldVal) {
+        this.resetUploadState()
+      }
+    }
+  },
   async mounted () {
     await this.fetchAccounts()
     await this.fetchSessions()
@@ -291,9 +300,61 @@ export default {
     onSerieChange (serieObj) {
       this.selectedSerieObj = serieObj
       // Reset for a new upload flow
-      this.lastUploadResults = null
-      this.selectedFile = null
+      this.resetUploadState()
       this.episodeNumber = null
+    },
+    resetUploadState () {
+      // Only reset if there's no active upload in progress
+      if (!this.isUploading && !this.isCreatingEpisode) {
+        // Reset all upload-related state variables
+        this.lastUploadResults = null
+        this.selectedFile = null
+        this.currentSession = null
+        this.fetchingEpisodeForSessionId = null
+        this.availableEpisodes = []
+        this.loadingApplyPlayer = null
+        this.deletingSessionId = null
+        this.newEpisodePending = false
+
+        // Clear any alerts
+        this.alert = {
+          show: false,
+          type: 'info',
+          message: ''
+        }
+      } else {
+        // If there's an active upload, reset file input and prepare for new upload
+        this.selectedFile = null
+        this.availableEpisodes = []
+        this.loadingApplyPlayer = null
+        this.deletingSessionId = null
+        // Mark that user wants to start a new episode after current upload finishes
+        this.newEpisodePending = true
+      }
+    },
+    checkNewEpisodePending () {
+      // If user requested a new episode while upload was in progress
+      if (this.newEpisodePending) {
+        this.newEpisodePending = false
+
+        // Reset upload state completely now that upload is finished
+        this.lastUploadResults = null
+        this.currentSession = null
+        this.fetchingEpisodeForSessionId = null
+        this.availableEpisodes = []
+        this.loadingApplyPlayer = null
+        this.deletingSessionId = null
+
+        // Clear any alerts
+        this.alert = {
+          show: false,
+          type: 'info',
+          message: ''
+        }
+
+        // Show notification that user can now start new upload
+        this.showAlert('success', 'Upload completed. You can now start a new upload.')
+      }
     },
     onFileSelected (file) {
       if (file && this.validateFile(file)) {
@@ -664,10 +725,16 @@ export default {
         this.lastUploadResults = results
         await this.$store.dispatch('uploader/finishUploadSession', sessionId)
         this.isUploading = false
+
+        // Check if user requested a new episode while upload was in progress
+        this.checkNewEpisodePending()
       } catch (error) {
         console.error('Upload error:', error)
         this.showAlert('error', `Upload error: ${error.message}`)
         this.isUploading = false
+
+        // Check if user requested a new episode while upload was in progress
+        this.checkNewEpisodePending()
       }
     },
     async updateUploadProgress (service, progress) {

@@ -1,55 +1,5 @@
 <template>
   <nav>
-    <v-app-bar
-      app
-      dark
-      dense
-      flat
-    >
-      <div class="v-toolbar-title">
-        <v-toolbar-title class="font-weight-light text-general">
-          <v-btn
-            v-if="responsive"
-            class="default v-btn--simple"
-            icon
-            @click.stop="onClickBtn"
-          >
-            <v-icon>mdi-view-list</v-icon>
-          </v-btn>
-          {{ header }}
-          {{ serie }}
-        </v-toolbar-title>
-      </div>
-
-      <v-spacer />
-      <v-toolbar-items>
-        <v-flex
-          align-center
-          layout
-          py-2
-        >
-          <v-btn
-            to="/"
-            text
-            class="mr-2"
-          >
-            <v-icon
-              class="toolbar-items"
-              color
-              to="/"
-            >
-              mdi-home
-            </v-icon>
-          </v-btn>
-          <v-icon
-            class="toolbar-items"
-            color
-          >
-            mdi-power
-          </v-icon>
-        </v-flex>
-      </v-toolbar-items>
-    </v-app-bar>
     <v-navigation-drawer
       v-model="nav"
       app
@@ -61,7 +11,7 @@
         tag="v-list"
         column
       >
-        <v-list-item link>
+        <v-list-item link to="/">
           <v-list-item-content>
             <v-list-item-title class="title">
               {{ $store.state.auth.username }}
@@ -120,8 +70,7 @@ export default {
       { id: 10, name: 'Users', url: '/panel/user', icon: 'mdi-account' },
       { id: 11, name: 'Comentarios', url: '/panel/comments', icon: 'mdi-comment' },
       { id: 12, name: 'Sitemap', url: '/panel/sitemap', icon: 'mdi-sitemap' },
-      { id: 13, name: 'Uploader', url: '/panel/uploader', icon: 'mdi-cloud-upload' },
-      { id: 14, name: 'Cloudflare Migration', url: '/panel/cloudflare-migration', icon: 'mdi-cloud-sync' }
+      { id: 13, name: 'Uploader', url: '/panel/uploader', icon: 'mdi-cloud-upload' }
     ]
   })
 }
