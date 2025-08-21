@@ -270,6 +270,9 @@ export default {
     await this.getPlayers()
     await this.getPlayersWithAccounts()
     await this.getSerie()
+    setTimeout(() => {
+      this.getSerie()
+    }, 2000)
     this.populateFromQuery()
   },
   methods: {

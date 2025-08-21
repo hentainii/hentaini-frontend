@@ -1,30 +1,38 @@
 <template>
   <v-card class="glass-card pa-6 ma-4" elevation="10">
     <v-row>
+      <v-card-title class="headline font-weight-bold mb-4">
+        <v-icon left color="primary">
+          mdi-plus-box
+        </v-icon>
+        Create New Hentai Serie
+      </v-card-title>
+    </v-row>
+    <v-row>
       <v-col cols="12" md="6">
-        <v-card-title class="headline font-weight-bold mb-4">
-          <v-icon left color="primary">
-            mdi-plus-box
-          </v-icon>
-          Create New Hentai Serie
-        </v-card-title>
         <v-form>
-          <v-text-field
-            v-model="serie.title"
-            label="Title"
-            prepend-inner-icon="mdi-format-title"
-            outlined
-            dense
-            class="mb-3"
-          />
-          <v-text-field
-            v-model="serie.title_english"
-            label="English Title"
-            prepend-inner-icon="mdi-translate"
-            outlined
-            dense
-            class="mb-3"
-          />
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="serie.title"
+                label="Title"
+                prepend-inner-icon="mdi-format-title"
+                outlined
+                dense
+                class="mb-3"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="serie.title_english"
+                label="English Title"
+                prepend-inner-icon="mdi-translate"
+                outlined
+                dense
+                class="mb-3"
+              />
+            </v-col>
+          </v-row>
           <v-textarea
             v-model="serie.synopsis"
             label="Synopsis"
@@ -48,10 +56,16 @@
             class="mb-3"
             :return-object="false"
           />
-          <StudioAutocomplete v-model="serie.studio" class="mb-3" />
-          <ProducerAutocomplete v-model="serie.producer" class="mb-3" />
           <v-row>
-            <v-col cols="6">
+            <v-col>
+              <StudioAutocomplete v-model="serie.studio" class="mb-3" />
+            </v-col>
+            <v-col>
+              <ProducerAutocomplete v-model="serie.producer" class="mb-3" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-select
                 v-model="serie.serie_type"
                 :items="serie_typeList"
@@ -63,7 +77,7 @@
                 prepend-inner-icon="mdi-shape"
               />
             </v-col>
-            <v-col cols="6">
+            <v-col>
               <v-select
                 v-model="serie.status"
                 :items="statusList"
@@ -75,9 +89,7 @@
                 prepend-inner-icon="mdi-check-circle"
               />
             </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
+            <v-col>
               <v-select
                 v-model="serie.language"
                 :items="languageList"
@@ -89,7 +101,7 @@
                 prepend-inner-icon="mdi-earth"
               />
             </v-col>
-            <v-col cols="6" class="d-flex align-center">
+            <v-col class="d-flex align-center">
               <v-switch
                 v-model="serie.censorship"
                 label="Censorship"
@@ -214,7 +226,7 @@ export default {
       hasEpisodes: false,
       h_id: null,
       genreList: [],
-      status: null,
+      status: 1,
       language: 1,
       serie_type: 1,
       studio: null,
@@ -310,16 +322,26 @@ export default {
       ]
       this.isSubmitting = !this.isSubmitting
       if (!this.coverPreview || !this.screenshotPreview) {
-        this.alert = true
-        this.alertMessage = 'You must define an cover and screenshot image.'
-        this.alertType = 'error'
+        this.notification.show = true
+        this.notification.message = 'You must define an cover and screenshot image.'
+        this.notification.type = 'error'
+        this.notification.title = 'Error'
         this.isSubmitting = false
         return
       }
       if (this.serie.genreList.length < 1) {
-        this.alert = true
-        this.alertMessage = 'You must select one or more genres.'
-        this.alertType = 'error'
+        this.notification.show = true
+        this.notification.message = 'You must select one or more genres.'
+        this.notification.type = 'error'
+        this.notification.title = 'Error'
+        this.isSubmitting = false
+        return
+      }
+      if (this.serie.status === null || this.serie.title === '' || this.serie.synopsis === '') {
+        this.notification.show = true
+        this.notification.message = 'You must select a status, a title and a synopsis.'
+        this.notification.title = 'Error'
+        this.notification.type = 'error'
         this.isSubmitting = false
         return
       }
@@ -353,11 +375,12 @@ export default {
               images.forEach((image) => {
                 this.uploadImageToStrapi(image.blob, this.allowOnlyNumbersAndLetters(this.serie.title), image.type, res.data.id)
               })
+              const serieId = res.data.id
+              this.$router.replace(`/panel/serie/${serieId}/episode/create`)
             })
           this.alert = true
           this.alertType = 'info'
           this.alertMessage = 'Serie created successfully.'
-          this.$router.replace('/panel/serie')
         } else {
           throw new Error('Error creating serie')
         }

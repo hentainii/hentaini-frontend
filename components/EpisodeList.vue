@@ -19,7 +19,8 @@
             class="white--text align-end"
             height="50vh"
             width="auto"
-            :src="`${$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`"
+            :src="coverImageSrc"
+            :lazy-src="coverImagePlaceholder"
           >
             <v-card-title>{{ serie.title }}</v-card-title>
           </v-img>
@@ -135,6 +136,41 @@ export default {
     alertBoxColor: '',
     createdMessage: ''
   }),
+  computed: {
+    coverImage () {
+      if (!this.serie || !this.serie.images || !Array.isArray(this.serie.images)) {
+        return null
+      }
+      return this.serie.images.find(image =>
+        image && image.image_type && image.image_type.name === 'cover'
+      )
+    },
+    coverImageSrc () {
+      if (!this.coverImage || !this.coverImage.path) {
+        return '/img/placeholder-cover.jpg' // Fallback image
+      }
+      if (this.coverImage.cf_path) {
+        return this.coverImage.cf_path
+      }
+      return `${this.$config.COVER_ENDPOINT}${this.coverImage.path}`
+    },
+    coverImagePlaceholder () {
+      if (!this.coverImage) {
+        return '/img/placeholder-cover.jpg'
+      }
+      if (this.coverImage.cf_placeholder) {
+        return this.coverImage.cf_placeholder
+      }
+      if (this.coverImage.cf_path) {
+        return this.coverImage.cf_path
+      }
+      const placeholderPath = this.coverImage.placeholder || this.coverImage.path
+      if (!placeholderPath) {
+        return '/img/placeholder-cover.jpg'
+      }
+      return `${this.$config.COVER_ENDPOINT}${placeholderPath}`
+    }
+  },
   async mounted () {
     if (this.$route.query.created) {
       this.alertBox = true
