@@ -64,7 +64,8 @@ export default {
   'google-gtag': {
     id: 'G-CC7E5GXL8F',
     config: {
-      anonymize_ip: true
+      anonymize_ip: true,
+      disableAutoPageTrack: true
     }
   },
 
