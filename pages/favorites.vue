@@ -70,8 +70,22 @@ export default {
       favorites: []
     }
   },
+  head () {
+    return {
+      title: 'Favorites'
+    }
+  },
   mounted () {
     this.getFavorites()
+    /**
+     * Google Analytics
+     */
+    if (process.browser) {
+      this.$gtag('config', 'G-CC7E5GXL8F', {
+        page_title: this.$metaInfo?.title,
+        page_path: this.$route.fullPath
+      })
+    }
   },
   methods: {
     async getFavorites () {

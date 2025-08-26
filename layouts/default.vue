@@ -7,19 +7,6 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  mounted () {
-    if (process.browser) {
-      this.$gtag('config', 'G-CC7E5GXL8F', {
-        page_title: this.$metaInfo.title,
-        page_path: this.$route.fullPath
-      })
-    }
-  }
-}
-</script>
-
 <style>
 * {
   box-sizing: border-box;

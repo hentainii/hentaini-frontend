@@ -663,6 +663,15 @@ export default {
     }
     window.addEventListener('resize', this.isDesktopScreen)
     this.isDesktopScreen()
+    /**
+     * Google Analytics
+     */
+    if (process.browser) {
+      this.$gtag('config', 'G-CC7E5GXL8F', {
+        page_title: this.$metaInfo?.title,
+        page_path: this.$route.fullPath
+      })
+    }
   },
   methods: {
     ...mapActions('ratings', ['fetchSerieRating', 'submitRating']),

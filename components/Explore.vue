@@ -485,7 +485,13 @@ export default {
           text: 'Explore',
           disabled: true
         }
-      ]
+      ],
+      title: 'Explore'
+    }
+  },
+  head () {
+    return {
+      title: `Explore our ${this.prettyGenre ? this.prettyGenre : 'Hentai'} catalog`
     }
   },
   watch: {
@@ -521,6 +527,15 @@ export default {
     await this.getSeries()
     await this.prettyGenreName()
     this.loading = false
+    /**
+     * Google Analytics
+     */
+    if (process.browser) {
+      this.$gtag('config', 'G-CC7E5GXL8F', {
+        page_title: this.$metaInfo?.title,
+        page_path: this.$route.fullPath
+      })
+    }
   },
   beforeMount () {
     this.getSize()

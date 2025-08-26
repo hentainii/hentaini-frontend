@@ -89,7 +89,6 @@ export default {
         })
     },
     getCoverImage (serie) {
-      console.log(serie)
       if (!serie.images || !Array.isArray(serie.images)) {
         return {
           path: '',
