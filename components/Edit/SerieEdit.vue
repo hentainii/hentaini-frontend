@@ -167,6 +167,28 @@
         </v-btn>
       </v-col>
     </v-row>
+
+    <!-- Toast Notifications -->
+    <v-snackbar
+      v-model="notification.show"
+      :color="notification.type === 'success' ? 'success' : notification.type === 'error' ? 'error' : notification.type === 'warning' ? 'warning' : 'info'"
+      :timeout="5000"
+      top
+      right
+    >
+      <strong>{{ notification.title }}</strong><br>
+      {{ notification.message }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="hideNotification"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -186,7 +208,13 @@ export default {
     screenshot: {}, // objeto para la imagen screenshot seleccionada
     coverPreview: '', // preview local de cover
     screenshotPreview: '', // preview local de screenshot
-    loading: false
+    loading: false,
+    notification: {
+      show: false,
+      type: 'info',
+      title: '',
+      message: ''
+    }
   }),
   computed: {
     genreList () {
@@ -328,25 +356,64 @@ export default {
           console.error(error)
         })
     },
-    // Función para crear el componente de imagen en Strapi
+    // Función para modificar el componente de imagen con subida dual a Cloudflare y Strapi
     async modifyImageComponent (image, imageType, imageId) {
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/${imageId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.token}`
-        },
-        body: JSON.stringify({
-          data: {
-            path: `${image.hash}${image.ext}`,
-            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
-            image_type: imageType === 'cover' ? 1 : 2
-          }
+      try {
+        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-with-cloudflare/${imageId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: JSON.stringify({
+            data: {
+              path: `${image.hash}${image.ext}`,
+              placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+              image_type: imageType === 'cover' ? 1 : 2
+            }
+          })
         })
-      })
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Manejar la respuesta según el estado de subida a Cloudflare
+            if (result.data.cloudflare_uploaded === true) {
+              console.log(`Image ${imageType} updated successfully to Cloudflare:`, result.data.cf_path)
+              this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente y subida a Cloudflare correctamente`)
+            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
+              console.log(`Image ${imageType} updated locally (Cloudflare upload failed but image was updated)`)
+              this.showNotification('warning', 'Guardado Local', `Imagen ${imageType} actualizada localmente (fallback), pero falló la subida a Cloudflare`)
+            } else {
+              this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente correctamente`)
+            }
+          }
+        } else {
+          console.error(`Failed to update ${imageType} image:`, response.statusText)
+          this.showNotification('error', 'Error de Actualización', `Falló la actualización de la imagen ${imageType}`)
+        }
+      } catch (error) {
+        console.error(`Error updating ${imageType} image:`, error)
+        this.showNotification('error', 'Error de Actualización', `Error actualizando imagen ${imageType}: ${error.message}`)
+      }
     },
     allowOnlyNumbersAndLetters (str) {
       return str.replace(/[^a-zA-Z0-9]/g, '')
+    },
+    showNotification (type, title, message) {
+      this.notification = {
+        show: true,
+        type,
+        title,
+        message
+      }
+      setTimeout(() => {
+        this.hideNotification()
+      }, 5000)
+    },
+    hideNotification () {
+      this.notification.show = false
     }
   }
 }
