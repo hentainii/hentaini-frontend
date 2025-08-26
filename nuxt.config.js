@@ -24,9 +24,7 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    { src: '~/plugins/gtag.js' }
-  ],
+  plugins: [],
 
   publicRuntimeConfig: {
     COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
@@ -59,8 +57,16 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    '@nuxtjs/google-gtag'
   ],
+
+  'google-gtag': {
+    id: 'G-CC7E5GXL8F',
+    config: {
+      anonymize_ip: true
+    }
+  },
 
   strapi: {
     url: process.env.API_STRAPI_ENDPOINT,

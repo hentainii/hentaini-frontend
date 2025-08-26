@@ -11,6 +11,7 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/i18n": "7.3.1",
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/pwa": "^3.3.5",
@@ -25,7 +26,6 @@
     "url-parse": "^1.5.3",
     "uuid": "^11.1.0",
     "vue": "^2.7.1",
-    "vue-gtag": "^1.16.1",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
