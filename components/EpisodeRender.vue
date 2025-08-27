@@ -586,7 +586,7 @@ export default {
              (currentPlayer.url && currentPlayer.url.toLowerCase().includes('.m3u8'))
     },
     filteredPlayers () {
-      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA')
+      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA' && player.name !== 'TR' && player.name !== 'CW' && player.name !== 'F')
     },
     isInWatchLater () {
       return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
