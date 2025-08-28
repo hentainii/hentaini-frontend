@@ -388,8 +388,7 @@
                     :componentgenres="serie.genreList"
                     :status="serie.status.name"
                     :url="serie.url"
-                    :screenshot="resolveImages('screenshot', serie)"
-                    :placeholder="resolveImages('placeholder', serie)"
+                    :image="getCoverImage(serie)"
                   />
                 </article>
               </v-slide-item>
@@ -675,17 +674,30 @@ export default {
   },
   methods: {
     ...mapActions('ratings', ['fetchSerieRating', 'submitRating']),
-    resolveImages (type, serie) {
-      if (type === 'screenshot') {
-        return `${this.$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').path}`
-      } else if (type === 'placeholder') {
-        return `${this.$config.COVER_ENDPOINT}${serie.images.find(image => image.image_type.name === 'cover').placeholder
-          ? serie.images.find(image => image.image_type.name === 'cover').placeholder
-          : serie.images.find(image => image.image_type.name === 'cover').path}`
-      } else if (type === 'background') {
-        return `${this.$config.COVER_ENDPOINT}${serie.background_coverUrl}`
+    getCoverImage (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
       }
-      return ''
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      return {
+        path: coverImage.path || '',
+        placeholder: coverImage.placeholder || '',
+        cf_path: coverImage.cf_path || null,
+        cf_placeholder: coverImage.cf_placeholder || null
+      }
     },
     isDesktopScreen () {
       const res = document.body.clientWidth
