@@ -1,9 +1,9 @@
 <template>
   <v-bottom-navigation
-    v-if="windowWidth < 960"
     grow
     color="blue"
     fixed
+    class="sticky-bottom"
   >
     <v-btn :to="localePath('/')">
       <span>{{ $t('mobile.home') }}</span>
@@ -15,9 +15,13 @@
       <v-icon>mdi-plus-thick</v-icon>
     </v-btn>
 
-    <v-btn :to="localePath('/')">
-      <span>{{ $t('mobile.suggestions') }}</span>
-      <v-icon>mdi-format-list-bulleted-square</v-icon>
+    <v-btn v-if="$store.state.auth" :to="localePath('/favorites')">
+      <span>{{ $t('favorites.title') }}</span>
+      <v-icon>mdi-heart</v-icon>
+    </v-btn>
+    <v-btn v-else :to="localePath('/login')">
+      <span>{{ $t('mobile.login') }}</span>
+      <v-icon>mdi-login</v-icon>
     </v-btn>
   </v-bottom-navigation>
 </template>
@@ -36,6 +40,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.sticky-bottom {
+  position: sticky;
+  bottom: calc(0.25rem * 0);
+  z-index: 1000;
+}
 </style>

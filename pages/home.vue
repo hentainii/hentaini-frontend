@@ -6,7 +6,7 @@
     <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
     <LatestSeries />
     <LayoutPreFooter />
-    <!-- <MobileHeader /> -->
+    <MobileHeader class="d-md-none" />
   </section>
 </template>
 
