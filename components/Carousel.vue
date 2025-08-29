@@ -6,7 +6,7 @@
       v-model="model"
       :show-arrows="false"
       hide-delimiters
-      :height="500"
+      :height="450"
       cycle
       interval="5000"
       class="rounded-xl overflow-hidden"

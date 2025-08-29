@@ -1,11 +1,7 @@
 <template>
-  <v-card class="text-center my-0 text-header-card" elevation="0">
-    <v-card-text>
-      <h1 class="header-title">
-        <span class="gradient-text">Hentaini.</span> Watch and save your favorite Hentai online in HD for free.
-      </h1>
-    </v-card-text>
-  </v-card>
+  <h1 class="header-title py-10 text-center">
+    <span class="gradient-text">Hentaini.</span> Watch and save your favorite Hentai online in HD for free.
+  </h1>
 </template>
 
 <style scoped>
