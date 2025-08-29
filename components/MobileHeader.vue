@@ -5,21 +5,21 @@
     fixed
     class="sticky-bottom"
   >
-    <v-btn :to="localePath('/')">
+    <v-btn :to="localePath('/')" large style="height: inherit !important;">
       <span>{{ $t('mobile.home') }}</span>
       <v-icon>mdi-home</v-icon>
     </v-btn>
 
-    <v-btn :to="localePath('/explore?filter=airing')">
+    <v-btn :to="localePath('/explore?filter=airing')" large style="height: inherit !important;">
       <span>{{ $t('mobile.airing') }}</span>
       <v-icon>mdi-plus-thick</v-icon>
     </v-btn>
 
-    <v-btn v-if="$store.state.auth" :to="localePath('/favorites')">
+    <v-btn v-if="$store.state.auth" :to="localePath('/favorites')" large style="height: inherit !important;">
       <span>{{ $t('favorites.title') }}</span>
       <v-icon>mdi-heart</v-icon>
     </v-btn>
-    <v-btn v-else :to="localePath('/login')">
+    <v-btn v-else :to="localePath('/login')" large style="height: inherit !important;">
       <span>{{ $t('favorites.title') }}</span>
       <v-icon>mdi-login</v-icon>
     </v-btn>
