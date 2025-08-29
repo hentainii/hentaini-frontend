@@ -1,6 +1,6 @@
 <!-- eslint-disable import/no-named-as-default-member -->
 <template>
-  <v-container v-if="episode.id" class="episode-container pa-2 pa-lg-4">
+  <v-container v-if="episode.id" class="episode-container">
     <!-- Breadcrumbs -->
     <v-row v-if="$store.state.isDesktop">
       <v-col class="py-0">
@@ -185,48 +185,50 @@
         </v-card>
 
         <!-- Título y Navegación -->
-        <v-row align="center" class="mb-2 px-1">
-          <v-col cols="12" md="8" class="py-2">
-            <h1 class="text-h6 text-md-h5 font-weight-black text-truncate text-center text-md-left">
-              {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
-            </h1>
-          </v-col>
-          <v-col cols="12" md="4" class="d-flex justify-center justify-md-end py-2">
-            <v-btn-toggle class="episode-navigation elevation-2 rounded-lg">
-              <v-btn
-                v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
-                :to="localePath(`/h/${episode.serie.url}/${episode.episode_number - 1}`)"
-                color="primary"
-                text
-                class="px-3"
-              >
-                <v-icon left>
-                  mdi-arrow-left
-                </v-icon>
-              </v-btn>
-              <v-btn
-                :to="localePath(`/h/${episode.serie.url}`)"
-                color="white"
-                text
-                class="px-3"
-              >
-                <v-icon>mdi-view-list</v-icon>
-                {{ $t('episode.list') }}
-              </v-btn>
-              <v-btn
-                v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
-                :to="localePath(`/h/${episode.serie.url}/${episode.episode_number + 1}`)"
-                color="primary"
-                text
-                class="px-3"
-              >
-                <v-icon right>
-                  mdi-arrow-right
-                </v-icon>
-              </v-btn>
-            </v-btn-toggle>
-          </v-col>
-        </v-row>
+        <v-container>
+          <v-row align="center" class="mb-2 px-1">
+            <v-col cols="12" md="8" class="py-2">
+              <h1 class="text-h6 text-md-h5 font-weight-black text-truncate text-center text-md-left">
+                {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode.episode_number }}
+              </h1>
+            </v-col>
+            <v-col cols="12" md="4" class="d-flex justify-center justify-md-end py-2">
+              <v-btn-toggle class="episode-navigation elevation-2 rounded-lg">
+                <v-btn
+                  v-if="episode.serie.episodes[0].episode_number !== episode.episode_number"
+                  :to="localePath(`/h/${episode.serie.url}/${episode.episode_number - 1}`)"
+                  color="primary"
+                  text
+                  class="px-3"
+                >
+                  <v-icon left>
+                    mdi-arrow-left
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  :to="localePath(`/h/${episode.serie.url}`)"
+                  color="white"
+                  text
+                  class="px-3"
+                >
+                  <v-icon>mdi-view-list</v-icon>
+                  {{ $t('episode.list') }}
+                </v-btn>
+                <v-btn
+                  v-if="episode.serie.episodes.slice(-1)[0].episode_number !== episode.episode_number"
+                  :to="localePath(`/h/${episode.serie.url}/${episode.episode_number + 1}`)"
+                  color="primary"
+                  text
+                  class="px-3"
+                >
+                  <v-icon right>
+                    mdi-arrow-right
+                  </v-icon>
+                </v-btn>
+              </v-btn-toggle>
+            </v-col>
+          </v-row>
+        </v-container>
 
         <!-- Sección de comentarios -->
         <v-card class="mb-4 rounded-lg elevation-3">
@@ -1079,9 +1081,6 @@ export default {
 .serie-item:nth-child(4) { animation-delay: 0.4s; }
 
 @media (max-width: 600px) {
-  .episode-container {
-    padding: 8px !important;
-  }
 
   .v-card-title {
     word-break: break-word;
