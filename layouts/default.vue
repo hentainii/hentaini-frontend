@@ -4,6 +4,7 @@
       <nuxt />
     </v-main>
     <LayoutFooter />
+    <MobileHeader />
   </v-app>
 </template>
 

@@ -20,7 +20,7 @@
       <v-icon>mdi-heart</v-icon>
     </v-btn>
     <v-btn v-else :to="localePath('/login')">
-      <span>{{ $t('mobile.login') }}</span>
+      <span>{{ $t('favorites.title') }}</span>
       <v-icon>mdi-login</v-icon>
     </v-btn>
   </v-bottom-navigation>
