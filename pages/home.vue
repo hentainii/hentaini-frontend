@@ -15,7 +15,7 @@ export default {
   name: 'Index',
   data () {
     return {
-      title: 'Watch and download the best Hentai episodes',
+      title: 'Watch and download the best Hentai',
       isDesktop: false
     }
   },
