@@ -1,10 +1,9 @@
 <template>
-  <section>
+  <section style="max-width: 1400px; margin: 0 auto;">
     <Header />
     <Carousel />
     <TextHeader />
     <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
-    <v-container><v-divider /></v-container>
     <LatestSeries />
     <LayoutPreFooter />
     <!-- <MobileHeader /> -->

@@ -4,7 +4,6 @@
       <h1 class="header-title">
         <span class="gradient-text">Hentaini.</span> Watch and save your favorite Hentai online in HD for free.
       </h1>
-      <div class="animated-underline" />
     </v-card-text>
   </v-card>
 </template>

@@ -3,7 +3,7 @@
     <v-skeleton-loader
       class="carousel-skeleton rounded-xl elevation-10 overflow-hidden"
       type="image"
-      style="height: 400px;"
+      style="height: 500px;"
       dark
     >
       <div class="carousel-skeleton-gradient fill-height" />

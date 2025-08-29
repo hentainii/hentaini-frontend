@@ -6,10 +6,10 @@
       v-model="model"
       :show-arrows="false"
       hide-delimiters
-      :height="400"
+      :height="500"
       cycle
       interval="5000"
-      class="rounded-xl elevation-10 overflow-hidden"
+      class="rounded-xl overflow-hidden"
     >
       <v-carousel-item
         v-for="(serie) in featuredSeries"
@@ -20,16 +20,8 @@
       >
         <template #default>
           <div class="carousel-gradient fill-height" />
-          <v-row align="end" class="fill-height pa-0 ma-0">
+          <v-row align="end" class="fill-height pa-0 ma-0 align-center">
             <v-col cols="12" md="8" lg="6" class="carousel-content pa-6">
-              <!-- Featured badge -->
-              <div class="featured-badge">
-                <v-icon small class="mr-1 yellow--text">
-                  mdi-star
-                </v-icon>
-                <span>{{ $t('landpage.featured') || 'Featured' }}</span>
-              </div>
-
               <!-- Title with animation -->
               <h1 class="carousel-title mb-2">
                 {{ serie.title }}
@@ -175,14 +167,14 @@ export default {
   bottom: 0;
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.9) 0%,
+    #121212,
     rgba(0, 0, 0, 0.7) 30%,
     rgba(0, 0, 0, 0.4) 50%,
     rgba(0, 0, 0, 0.1) 80%,
     rgba(0, 0, 0, 0) 100%
   ), linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.9) 0%,
+    #121212,
     rgba(0, 0, 0, 0.7) 15%,
     rgba(0, 0, 0, 0.4) 30%,
     rgba(0, 0, 0, 0.1) 50%,
@@ -197,28 +189,13 @@ export default {
   animation: fadeInUp 0.5s ease-out;
 }
 
-.featured-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #FFEB3B;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
-}
-
 .carousel-title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 800;
   line-height: 1.2;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   color: white;
-  /* Gradient text effect */
-  background: linear-gradient(to right, #ffffff, #f0f882);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .carousel-synopsis {
@@ -303,7 +280,7 @@ export default {
 /* Responsive adjustments */
 @media (min-width: 960px) and (max-width: 1264px) {
   .carousel-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .carousel-synopsis {
@@ -313,7 +290,7 @@ export default {
 
 @media (min-width: 1264px) {
   .carousel-title {
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 
   .carousel-content {

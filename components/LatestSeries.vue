@@ -5,15 +5,14 @@
       <div class="section-header">
         <nuxt-link :to="localePath('/explore')" class="section-link">
           <div class="header-content">
-            <span class="subtitle">
-              {{ $t('landpage.latest_series_little') }}
-            </span>
             <h2 class="title">
               {{ $t('landpage.latest_series') }}
             </h2>
+            <span class="subtitle">
+              {{ $t('landpage.latest_series_little') }}
+            </span>
           </div>
         </nuxt-link>
-        <div class="animated-bar" />
       </div>
       <v-row class="series-grid">
         <v-col
@@ -67,7 +66,7 @@ export default {
         ],
         sort: ['createdAt:desc'],
         pagination: {
-          limit: 24
+          limit: 25
         }
       },
       {
@@ -140,7 +139,7 @@ export default {
 
 .subtitle {
   font-size: 0.8rem;
-  color: #fff;
+  color: #a4a578;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 600;
@@ -157,10 +156,7 @@ export default {
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 6px;
-  background: linear-gradient(90deg, #FFC107, #6B66FF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ffffff;
   opacity: 0;
   animation: fadeIn 0.4s 0.1s forwards;
   line-height: 1.1;
@@ -198,6 +194,13 @@ export default {
   opacity: 0;
   transform: translateY(15px);
   animation: fadeUp 0.3s forwards;
+}
+
+@media (min-width: 1264px) {
+    .col-lg-2 {
+        flex: 0 0 19.999999999% !important;
+        max-width: 19.999999999%;
+    }
 }
 
 @keyframes fadeUp {

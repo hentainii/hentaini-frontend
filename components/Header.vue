@@ -9,8 +9,8 @@
         <div class="d-flex align-center">
           <v-toolbar-title>
             <nuxt-link :to="localePath('/')">
-              <LogoMini v-if="$vuetify.breakpoint.smAndDown" />
-              <LayoutLogo v-else />
+              <LogoMini class="d-md-none" />
+              <LayoutLogo class="d-none d-md-block" />
             </nuxt-link>
           </v-toolbar-title>
         </div>

@@ -18,15 +18,14 @@
       <div class="section-header">
         <nuxt-link :to="localePath('/explore')" class="section-link">
           <div class="header-content">
-            <span class="subtitle">
-              {{ $t('landpage.latest_episodes_little') }}
-            </span>
             <h2 class="title">
               {{ $t('landpage.latest_episodes') }}
             </h2>
+            <span class="subtitle">
+              {{ $t('landpage.latest_episodes_little') }}
+            </span>
           </div>
         </nuxt-link>
-        <div class="animated-bar" />
       </div>
 
       <v-row class="episodes-grid">
@@ -34,8 +33,8 @@
           v-for="(episode) in episodes"
           :key="episode.id"
           cols="6"
-          xl="2"
-          lg="3"
+          xl="3"
+          lg="4"
           md="4"
           sm="6"
           xs="6"
@@ -145,7 +144,7 @@ export default {
 
 .subtitle {
   font-size: 0.8rem;
-  color: #fff;
+  color: #a4a578;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 600;
@@ -162,10 +161,7 @@ export default {
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 6px;
-  background: linear-gradient(90deg, #FFC107, #6B66FF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ffffff;
   opacity: 0;
   animation: fadeIn 0.4s 0.1s forwards;
   line-height: 1.1;
