@@ -175,6 +175,7 @@
           </div>
           <v-app-bar-nav-icon
             class="d-flex d-md-none d-lg-none d-lx-flex primary--text"
+            large
             @click="nav = !nav"
           />
         </div>

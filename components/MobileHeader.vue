@@ -43,7 +43,7 @@ export default {
 <style scoped>
 .sticky-bottom {
   position: sticky;
-  bottom: calc(0.25rem * 0);
+  bottom: 0;
   z-index: 1000;
 }
 </style>
