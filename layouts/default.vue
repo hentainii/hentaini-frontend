@@ -2,9 +2,9 @@
   <v-app dark>
     <v-main>
       <nuxt />
-      <LayoutFooter />
       <MobileHeader class="d-md-none" />
     </v-main>
+    <LayoutFooter />
   </v-app>
 </template>
 
