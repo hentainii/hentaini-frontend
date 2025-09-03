@@ -537,7 +537,7 @@ export default {
   },
   head () {
     return {
-      title: this.episode ? this.episode.serie.title : 'Hentaini',
+      title: `${this.episode ? this.episode.serie.title : 'Hentaini'} episode ${this.episode ? this.episode.episode_number : ''} free online`,
       meta: this.episode
         ? [
             { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality' },
