@@ -5,7 +5,7 @@
     color="grey darken-4"
     class="py-8 px-4 footer-container"
   >
-    <v-container>
+    <v-container fluid>
       <v-row>
         <!-- Left Column -->
         <v-col cols="12" md="6" class="content-col left-col">

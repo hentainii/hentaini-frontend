@@ -1,6 +1,6 @@
 <!-- eslint-disable import/no-named-as-default-member -->
 <template>
-  <v-container v-if="episode.id" class="episode-container">
+  <v-container v-if="episode.id" class="episode-container" fluid>
     <!-- Breadcrumbs -->
     <v-row v-if="$store.state.isDesktop">
       <v-col class="py-0">
