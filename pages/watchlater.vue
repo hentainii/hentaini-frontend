@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="max-width: 1400px; margin: 0 auto;">
     <Header />
     <v-container v-if="watchlaters.length > 0">
       <v-row>
@@ -20,7 +20,22 @@
           sm="4"
           xs="4"
         >
+          <!-- Mostrar EpisodeCard para episodios específicos -->
+          <EpisodeCard
+            v-if="watchlater.episode_number"
+            :title="watchlater.serie.title"
+            :episode-number="watchlater.episode_number"
+            :serie="watchlater.serie.id"
+            :url="watchlater.serie.url"
+            :image="getEpisodeImage(watchlater.serie, watchlater.episode_number)"
+            :watchlaters="[watchlater]"
+            :status="watchlater.serie.status.name"
+            :created="watchlater.createdAt"
+            @refresh="getWatchLaterSeries"
+          />
+          <!-- Mantener SerieCard para retrocompatibilidad (series sin episode_number) -->
           <SerieCard
+            v-else
             :title="watchlater.serie.title"
             :synopsis="watchlater.serie.synopsis"
             :genres="watchlater.serie.genres"
@@ -96,7 +111,10 @@ export default {
           'serie.status',
           'serie.images',
           'serie.images.image_type',
-          'serie.genreList'
+          'serie.genreList',
+          'serie.episodes',
+          'serie.episodes.images',
+          'serie.episodes.images.image_type'
         ],
         sort: ['createdAt:desc'],
         pagination: {
@@ -149,6 +167,33 @@ export default {
         placeholder: coverImage.placeholder || '',
         cf_path: coverImage.cf_path || null,
         cf_placeholder: coverImage.cf_placeholder || null
+      }
+    },
+    getEpisodeImage (serie, episodeNumber) {
+      // Buscar el episodio específico
+      if (!serie.episodes || !Array.isArray(serie.episodes)) {
+        return this.getCoverImage(serie) // Fallback a imagen de serie
+      }
+
+      const episode = serie.episodes.find(ep => ep.episode_number === episodeNumber)
+      if (!episode || !episode.images || !Array.isArray(episode.images)) {
+        return this.getCoverImage(serie) // Fallback a imagen de serie
+      }
+
+      // Buscar imagen de screenshot del episodio
+      const screenshotImage = episode.images.find(image =>
+        image.image_type && image.image_type.name === 'screenshot'
+      )
+
+      if (!screenshotImage) {
+        return this.getCoverImage(serie) // Fallback a imagen de serie
+      }
+
+      return {
+        path: screenshotImage.path || '',
+        placeholder: screenshotImage.placeholder || '',
+        cf_path: screenshotImage.cf_path || null,
+        cf_placeholder: screenshotImage.cf_placeholder || null
       }
     }
   }
