@@ -38,7 +38,7 @@
               class="pr-lg-6"
             >
               <div class="d-none d-lg-block sticky-sidebar">
-                <v-card class="mb-6 rounded-lg elevation-1">
+                <v-card class="mb-6 rounded-lg transparent">
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.filter.title') }}
                   </v-card-title>
@@ -62,7 +62,7 @@
                   </v-list>
                 </v-card>
 
-                <v-card class="mb-6 rounded-lg elevation-1">
+                <v-card class="mb-6 rounded-lg trasparent">
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.order_by.title') }}
                   </v-card-title>
@@ -86,7 +86,7 @@
                   </v-list>
                 </v-card>
 
-                <v-card class="rounded-lg elevation-1">
+                <v-card class="rounded-lg transparent">
                   <v-card-title class="subtitle-1 font-weight-bold">
                     {{ $t('explore.genres') }}
                   </v-card-title>
@@ -770,7 +770,7 @@ export default {
 }
 
 .genre-list {
-  max-height: 300px;
+  max-height: auto;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
