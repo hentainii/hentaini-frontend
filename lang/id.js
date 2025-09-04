@@ -36,7 +36,7 @@ export default {
   },
   mobile: {
     home: 'Beranda',
-    airing: 'Sedang Tayang',
+    explore: 'Jelajahi',
     suggestions: 'Daftar Saya'
   },
   episode: {

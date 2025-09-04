@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'হোম',
-    airing: 'প্রসারিত',
+    explore: 'অন্বেষণ করুন',
     suggestions: 'আমার তালিকা'
   },
   episode: {

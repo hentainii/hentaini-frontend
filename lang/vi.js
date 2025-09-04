@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'Trang chủ',
-    airing: 'Đang chiếu',
+    explore: 'Đang chiếu',
     suggestions: 'Danh sách của tôi'
   },
   episode: {

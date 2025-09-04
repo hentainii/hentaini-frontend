@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'Início',
-    airing: 'Em Exibição',
+    explore: 'Em Exibição',
     suggestions: 'Minha Lista'
   },
   episode: {

@@ -27,10 +27,7 @@
             :componentgenres="favorite.serie.genreList"
             :status="favorite.serie.status.name"
             :url="favorite.serie.url"
-            :screenshot="getCoverImageUrl(favorite.serie)"
-            :placeholder="getCoverPlaceholderUrl(favorite.serie)"
-            :cf_screenshot="getCfCoverImageUrl(favorite.serie)"
-            :cf_placeholder="getCfCoverPlaceholderUrl(favorite.serie)"
+            :image="getCoverImage(favorite.serie)"
             :favoriteid="favorite.id"
             :removeTagF="true"
             @refreshf="getFavorites"
@@ -129,23 +126,30 @@ export default {
           this.favorites = favorites.data
         })
     },
-    getCoverImageUrl (serie) {
-      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
-      return coverImage?.path ? `${this.$config.COVER_ENDPOINT}${coverImage.path}` : ''
-    },
-    getCoverPlaceholderUrl (serie) {
-      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
-      const placeholderPath = coverImage?.placeholder || coverImage?.path
-      return placeholderPath ? `${this.$config.COVER_ENDPOINT}${placeholderPath}` : ''
-    },
-    getCfCoverImageUrl (serie) {
-      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
-      return coverImage?.cf_path ? `${coverImage.cf_path}` : ''
-    },
-    getCfCoverPlaceholderUrl (serie) {
-      const coverImage = serie.images?.find(image => image.image_type?.name === 'cover')
-      const cfPlaceholderPath = coverImage?.cf_placeholder || coverImage?.cf_path
-      return cfPlaceholderPath ? `${cfPlaceholderPath}` : ''
+    getCoverImage (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      return {
+        path: coverImage.path || '',
+        placeholder: coverImage.placeholder || '',
+        cf_path: coverImage.cf_path || null,
+        cf_placeholder: coverImage.cf_placeholder || null
+      }
     }
   }
 }

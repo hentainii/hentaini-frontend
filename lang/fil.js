@@ -36,7 +36,7 @@ export default {
   },
   mobile: {
     home: 'Home',
-    airing: 'Napapalabas',
+    explore: 'Tuklasin',
     suggestions: 'Aking Listahan'
   },
   episode: {

@@ -36,7 +36,7 @@ export default {
   },
   mobile: {
     home: 'หน้าแรก',
-    airing: 'กำลังออกอากาศ',
+    explore: 'สำรวจ',
     suggestions: 'รายการของฉัน'
   },
   episode: {

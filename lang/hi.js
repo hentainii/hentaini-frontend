@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'घर',
-    airing: 'प्रसारण',
+    explore: 'अन्वेषण करें',
     suggestions: 'मेरी सूची'
   },
   episode: {

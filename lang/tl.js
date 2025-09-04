@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'Bahay',
-    airing: 'Nagpapalabas',
+    explore: 'Tuklasin',
     suggestions: 'Aking Listahan'
   },
   episode: {

@@ -11,7 +11,7 @@
     </v-btn>
 
     <v-btn :to="localePath('/explore?filter=airing')" large style="height: inherit !important;">
-      <span>{{ $t('mobile.airing') }}</span>
+      <span>{{ $t('mobile.explore') }}</span>
       <v-icon>mdi-plus-thick</v-icon>
     </v-btn>
 

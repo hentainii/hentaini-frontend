@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'मुख्यपृष्ठ',
-    airing: 'प्रसारित',
+    explore: 'शोधा',
     suggestions: 'माझी सूची'
   },
   episode: {

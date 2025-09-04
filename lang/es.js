@@ -23,7 +23,7 @@ export default {
   },
   mobile: {
     home: 'Inicio',
-    airing: 'Emisión',
+    explore: 'Explorar',
     suggestions: 'Mi Lista'
   },
   favorites: {

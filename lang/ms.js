@@ -37,7 +37,7 @@ export default {
   },
   mobile: {
     home: 'Laman Utama',
-    airing: 'Penayangan',
+    explore: 'Penayangan',
     suggestions: 'Senarai Saya'
   },
   episode: {
