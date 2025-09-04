@@ -1,5 +1,5 @@
 <template>
-  <v-container class="carousel-container pa-0 d-none d-md-block">
+  <v-container class="carousel-container pa-0 d-none d-md-block" fluid>
     <misc-carousel-skeleton v-if="loading" />
     <v-carousel
       v-else-if="$store.state.isDesktop && !loading"

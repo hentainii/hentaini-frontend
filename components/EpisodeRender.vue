@@ -1,6 +1,6 @@
 <!-- eslint-disable import/no-named-as-default-member -->
 <template>
-  <v-container v-if="episode.id" class="episode-container">
+  <v-container v-if="episode.id" class="episode-container" fluid>
     <!-- Breadcrumbs -->
     <v-row v-if="$store.state.isDesktop">
       <v-col class="py-0">
@@ -352,8 +352,9 @@
                   class="episode-list-item"
                 >
                   <v-list-item-content>
-                    <v-list-item-title :class="{'text-body-2': $vuetify.breakpoint.smAndDown}">
-                      {{ episode.serie.title }} {{ $t('episode.episode_number') }} {{ episode_item.episode_number }}
+                    <v-list-item-title :class="{'text-body-2': $vuetify.breakpoint.smAndDown}" class="d-flex">
+                      <span style="overflow-x: hidden; text-overflow: ellipsis; white-space: nowrap;margin-right: 3px;">{{ episode.serie.title }}</span>
+                      <span>{{ $t('episode.episode_number') }} {{ episode_item.episode_number }}</span>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
@@ -537,7 +538,7 @@ export default {
   },
   head () {
     return {
-      title: this.episode ? this.episode.serie.title : 'Hentaini',
+      title: `${this.episode ? this.episode.serie.title : 'Hentaini'} episode ${this.episode ? this.episode.episode_number ? this.episode.episode_number : '' : ''} free online`,
       meta: this.episode
         ? [
             { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality' },

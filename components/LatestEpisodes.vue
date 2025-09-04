@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/html-self-closing -->
 <!-- eslint-disable vue/html-quotes -->
 <template>
-  <v-container class="latest-episodes-container">
+  <v-container class="latest-episodes-container" fluid>
     <misc-latest-episodes-skeleton v-if="loading" />
     <template v-else>
       <v-row class="justify-center">

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="episode-container pa-4">
+  <v-container class="episode-container pa-4" fluid>
     <!-- Skeleton for Breadcrumbs -->
     <v-row class="d-none d-md-flex">
       <v-col style="padding-top:0">

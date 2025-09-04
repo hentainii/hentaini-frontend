@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main style="max-width: 1400px; margin: 0 auto;">
     <Header />
     <SerieRender />
   </main>

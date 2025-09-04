@@ -1,5 +1,5 @@
 <template>
-  <v-container class="latest-series-container">
+  <v-container class="latest-series-container" fluid>
     <misc-latest-series-skeleton v-if="loading" />
     <template v-else>
       <div class="section-header">
