@@ -228,6 +228,28 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <!-- Toast Notifications -->
+    <v-snackbar
+      v-model="notification.show"
+      :color="notification.type === 'success' ? 'success' : notification.type === 'error' ? 'error' : notification.type === 'warning' ? 'warning' : 'info'"
+      :timeout="5000"
+      top
+      right
+    >
+      <strong>{{ notification.title }}</strong><br>
+      {{ notification.message }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="hideNotification"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -259,7 +281,13 @@ export default {
     alertBox: false,
     alertBoxColor: '',
     errorMessage: '',
-    isSubmitting: false
+    isSubmitting: false,
+    notification: {
+      show: false,
+      type: 'info',
+      title: '',
+      message: ''
+    }
   }),
   computed: {
     players () {
@@ -451,7 +479,8 @@ export default {
     },
     async createImageComponent (image, createdEpisodeId) {
       try {
-        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
+        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-with-cloudflare`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -468,13 +497,28 @@ export default {
         })
 
         if (response.ok) {
-          const imageData = await response.json()
-          return imageData.data.id
+          const result = await response.json()
+          if (result.success) {
+            // Manejar la respuesta según el estado de subida a Cloudflare
+            if (result.data.cloudflare_uploaded === true) {
+              console.log('Episode screenshot uploaded successfully to Cloudflare:', result.data.cf_path)
+              this.showNotification('success', 'Éxito', 'Imagen del episodio guardada localmente y subida a Cloudflare correctamente')
+            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
+              console.log('Episode screenshot saved locally (Cloudflare upload failed but image was created)')
+              this.showNotification('warning', 'Guardado Local', 'Imagen del episodio guardada localmente (fallback), pero falló la subida a Cloudflare')
+            } else {
+              this.showNotification('success', 'Éxito', 'Imagen del episodio guardada localmente correctamente')
+            }
+            return result.data.id
+          }
         } else {
+          console.error('Failed to upload episode screenshot:', response.statusText)
+          this.showNotification('error', 'Error de Subida', 'Error al subir la imagen del episodio')
           throw new Error('Failed to create image component')
         }
       } catch (error) {
         console.error('Error creating image component:', error)
+        this.showNotification('error', 'Error de Subida', `Error al subir la imagen del episodio: ${error.message}`)
         throw error
       }
     },
@@ -483,6 +527,20 @@ export default {
       return screenshotImage && screenshotImage.path
         ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}`
         : 'placeholder.jpg' // Cambia esto a la imagen por defecto
+    },
+    showNotification (type, title, message) {
+      this.notification = {
+        show: true,
+        type,
+        title,
+        message
+      }
+      setTimeout(() => {
+        this.hideNotification()
+      }, 5000)
+    },
+    hideNotification () {
+      this.notification.show = false
     }
   }
 }

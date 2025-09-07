@@ -203,6 +203,28 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <!-- Toast Notifications -->
+    <v-snackbar
+      v-model="notification.show"
+      :color="notification.type === 'success' ? 'success' : notification.type === 'error' ? 'error' : notification.type === 'warning' ? 'warning' : 'info'"
+      :timeout="5000"
+      top
+      right
+    >
+      <strong>{{ notification.title }}</strong><br>
+      {{ notification.message }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="hideNotification"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -223,7 +245,13 @@ export default {
     screenshotPreview: '',
     CDN: process.env.CDN_URI,
     errorMessage: '',
-    error: false
+    error: false,
+    notification: {
+      show: false,
+      type: 'info',
+      title: '',
+      message: ''
+    }
   }),
   computed: {
     players () {
@@ -297,21 +325,75 @@ export default {
       })
     },
     async createImageComponent (image, episodeId) {
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}images`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.$store.state.auth.token}`
-        },
-        body: JSON.stringify({
-          data: {
-            path: `${image.hash}${image.ext}`,
-            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
-            image_type: 2,
-            episodes: [episodeId]
+      try {
+        // Primero verificar si el episodio ya tiene una imagen asociada
+        let imageId = null
+        if (this.episode.image && this.episode.image.id) {
+          imageId = this.episode.image.id
+        }
+
+        let response
+        if (imageId) {
+          // Usar el endpoint específico para actualizar con Cloudflare
+          response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-with-cloudflare/${imageId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$store.state.auth.token}`
+            },
+            body: JSON.stringify({
+              data: {
+                path: `${image.hash}${image.ext}`,
+                placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+                image_type: 2,
+                episodes: [episodeId]
+              }
+            })
+          })
+        } else {
+          // Si no hay imagen existente, crear una nueva
+          response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-with-cloudflare`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$store.state.auth.token}`
+            },
+            body: JSON.stringify({
+              data: {
+                path: `${image.hash}${image.ext}`,
+                placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+                image_type: 2,
+                episodes: [episodeId]
+              }
+            })
+          })
+        }
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Manejar la respuesta según el estado de subida a Cloudflare
+            if (result.data.cloudflare_uploaded === true) {
+              console.log('Episode screenshot uploaded successfully to Cloudflare:', result.data.cf_path)
+              this.showNotification('success', 'Éxito', 'Imagen del episodio actualizada y subida a Cloudflare correctamente')
+            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
+              console.log('Episode screenshot saved locally (Cloudflare upload failed but image was updated)')
+              this.showNotification('warning', 'Guardado Local', 'Imagen del episodio guardada localmente (fallback), pero falló la subida a Cloudflare')
+            } else {
+              this.showNotification('success', 'Éxito', 'Imagen del episodio actualizada correctamente')
+            }
+            return result.data.id
           }
-        })
-      })
+        } else {
+          console.error('Failed to upload episode screenshot:', response.statusText)
+          this.showNotification('error', 'Error de Subida', 'Error al actualizar la imagen del episodio')
+          throw new Error('Failed to update image component')
+        }
+      } catch (error) {
+        console.error('Error updating image component:', error)
+        this.showNotification('error', 'Error de Subida', `Error al actualizar la imagen del episodio: ${error.message}`)
+        throw error
+      }
     },
     detectNewImage () {
       this.screenshotPreview = ''
@@ -343,6 +425,20 @@ export default {
       }
       playerUrl = playerUrl.replaceAll('codigo', player.code)
       this.episode.players[index].url = playerUrl
+    },
+    showNotification (type, title, message) {
+      this.notification = {
+        show: true,
+        type,
+        title,
+        message
+      }
+      setTimeout(() => {
+        this.hideNotification()
+      }, 5000)
+    },
+    hideNotification () {
+      this.notification.show = false
     }
   }
 }
