@@ -359,6 +359,20 @@ export default {
     // Función para modificar el componente de imagen con subida dual a Cloudflare y Strapi
     async modifyImageComponent (image, imageType, imageId) {
       try {
+        // Preparar el payload base
+        const payload = {
+          data: {
+            path: `${image.hash}${image.ext}`,
+            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+            image_type: imageType === 'cover' ? 1 : 2
+          }
+        }
+
+        // Si es un screenshot, agregar el serieId para actualizar referencias en episodios
+        if (imageType === 'screenshot' && this.serieData && this.serieData.id) {
+          payload.serieId = this.serieData.id
+        }
+
         // Usar el nuevo endpoint que sube automáticamente a Cloudflare
         const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-with-cloudflare/${imageId}`, {
           method: 'PUT',
@@ -366,13 +380,7 @@ export default {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${this.$store.state.auth.token}`
           },
-          body: JSON.stringify({
-            data: {
-              path: `${image.hash}${image.ext}`,
-              placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
-              image_type: imageType === 'cover' ? 1 : 2
-            }
-          })
+          body: JSON.stringify(payload)
         })
 
         if (response.ok) {
