@@ -102,7 +102,7 @@
                   :componentgenres="serie.genreList"
                   :status="serie.status.name"
                   :url="serie.url"
-                  :screenshot="`${$config.COVER_ENDPOINT}${serie.images.path}`"
+                  :image="getCoverImage(serie)"
                   :visits="serie.visits"
                 />
               </v-col>
@@ -236,7 +236,6 @@ export default {
           .then((data) => {
             this.series = data.data.map((serie) => {
               serie.genres = JSON.parse(serie.genres || '[]')
-              serie.images = serie.images.filter(image => image.image_type.name === 'cover')[0]
               return serie
             })
           })
@@ -265,6 +264,31 @@ export default {
         }
       } catch (error) {
         console.error('Error loading studio data:', error)
+      }
+    },
+    getCoverImage (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      return {
+        path: coverImage.path || '',
+        placeholder: coverImage.placeholder || '',
+        cf_path: coverImage.cf_path || null,
+        cf_placeholder: coverImage.cf_placeholder || null
       }
     }
   }
