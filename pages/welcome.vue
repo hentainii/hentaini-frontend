@@ -25,7 +25,7 @@ export default {
       meta: [
         { hid: 'description', name: 'description', content: 'Watch and save your favorite Hentai in the interwebs, just the best quality for you. Download episodes airing and finalized.' },
         { hid: 'keywords', name: 'keywords', content: 'hentai, hentaini, anime' },
-        { hid: 'canonical', rel: 'canonical', href: 'https://hentaini.com' },
+        { hid: 'canonical', rel: 'canonical', href: this.$config.CANONICAL_URL },
         { hid: 'language', name: 'language', content: 'en' },
         { hid: 'audience', name: 'audience', content: 'all' },
         { hid: 'rating', name: 'rating', content: 'general' },
@@ -39,7 +39,6 @@ export default {
         { hid: 'msnbot', name: 'msnbot', content: 'index, follow' },
         { hid: 'googlebot-image', name: 'googlebot-image', content: 'all' },
         { hid: 'title', name: 'title', content: this.title },
-        { hid: 'canonical', rel: 'canonical', href: 'https://hentaini.com' },
         { hid: 'og:title', property: 'og:title', content: this.title },
         { hid: 'og:description', property: 'og:description', content: 'Its a Hentai site, what do you expect? a no-girlfriend-depression solution?' },
         { hid: 'og:url', property: 'og:url', content: 'https://hentaini.com' },

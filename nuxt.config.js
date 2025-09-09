@@ -16,6 +16,7 @@ export default {
     SCREENSHOT_ENDPOINT: process.env.CDN_SCREENSHOT_ENDPOINT || 'http://localhost:1337/uploads/',
     CDN_ENDPOINT: process.env.CDN_ENDPOINT || 'http://localhost:1337/uploads/',
     API_STRAPI_ENDPOINT: process.env.API_STRAPI_ENDPOINT || 'http://localhost:1337/',
+    CANONICAL_URL: process.env.CANONICAL_URL,
     // Cloudflare R2 Configuration
     R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID || '',
     R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID || '',

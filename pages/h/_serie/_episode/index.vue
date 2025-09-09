@@ -45,7 +45,7 @@ export default {
         ? [
             { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality' },
             { hid: 'keywords', name: 'keywords', content: 'Watch online' },
-            { hid: 'canonical', rel: 'canonical', href: `https://hentaini.com/h/${this.episode.serie.url}/${this.episode.episode_number}` },
+            { hid: 'canonical', rel: 'canonical', href: this.$config.CANONICAL_URL + '/h/' + this.episode.serie.url + '/' + this.episode.episode_number },
             { hid: 'language', name: 'language', content: 'en' },
             { hid: 'Revisit-After', name: 'Revisit-After', content: '3 days' },
             { hid: 'audience', name: 'audience', content: 'all' },
