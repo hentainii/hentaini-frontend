@@ -3,7 +3,6 @@
     class="NuxtLogo"
     width="85"
     height="30"
-    viewBox="10 0 292"
     style="margin-top:0.5rem"
     xmlns="http://www.w3.org/2000/svg"
   >

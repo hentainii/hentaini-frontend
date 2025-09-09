@@ -11,6 +11,7 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@nuxt/http": "^0.6.4",
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/i18n": "7.3.1",
     "@nuxtjs/moment": "^1.6.1",

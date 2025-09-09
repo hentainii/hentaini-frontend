@@ -4,27 +4,12 @@ export default {
   server: {
     port: 3001 // default: 3000
   },
-  // Global page headers: https://go.nuxtjs.dev/config-head
+
   head: {
-    titleTemplate: '%s - its hentai, that it.',
-    title: 'hentaini',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: 'https://hentaini.com/hni.ico' }
     ]
   },
-
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
 
   publicRuntimeConfig: {
     COVER_ENDPOINT: process.env.CDN_COVER_ENDPOINT || 'http://localhost:1337/uploads/',
@@ -39,10 +24,8 @@ export default {
     R2_ENDPOINT: process.env.R2_ENDPOINT || ''
   },
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
@@ -53,12 +36,12 @@ export default {
     timezone: true,
     locales: ['es']
   },
-  // Modules: https://go.nuxtjs.dev/config-modules
+
   modules: [
-    // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/i18n',
-    '@nuxtjs/google-gtag'
+    '@nuxtjs/google-gtag',
+    '@nuxt/http'
   ],
 
   'google-gtag': {
@@ -169,14 +152,12 @@ export default {
     }
   },
 
-  // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
       lang: 'en'
     }
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
@@ -193,9 +174,5 @@ export default {
         }
       }
     }
-  },
-
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
   }
 }

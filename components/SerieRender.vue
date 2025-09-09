@@ -53,7 +53,6 @@
                 color="'red accent-1'"
                 class="elevation-0 rounded-xl"
                 :to="localePath('/login')"
-                v-on="on"
               >
                 <v-icon class="mr-2">
                   mdi-heart
@@ -227,10 +226,14 @@ export default {
   components: {
     SerieRatingModal
   },
+  props: {
+    serie: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data () {
     return {
-      serie: null,
-      head: 'Loading you serie...',
       favorites: [],
       showRatingModal: false,
       serieRating: {
@@ -249,9 +252,6 @@ export default {
         }
       ]
     }
-  },
-  head () {
-    return this.head
   },
   computed: {
     ...mapGetters('ratings', ['isLoading']),
@@ -281,23 +281,10 @@ export default {
     const serie = this.$route.params.serie
     // is its a string of six numbers
     if (/^\d{6}$/.test(serie)) {
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          h_id: serie
-        }
-      },
-      {
-        encodeValuesOnly: true
-      })
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then(({ data: serie }) => {
-          this.$router.push(`/h/${serie[0].url}`)
-        })
+      this.$router.push('/')
     }
 
-    this.getSerie()
+    this.getSerieExtraInfo()
     /**
      * Google Analytics
      */
@@ -310,79 +297,10 @@ export default {
   },
   methods: {
     ...mapActions('ratings', ['fetchSerieRating']),
-    async getSerie () {
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          url: this.$route.params.serie
-        },
-        populate: [
-          'images',
-          'images.image_type',
-          'status',
-          'episodes',
-          'genreList',
-          'studio',
-          'producer'
-        ]
-      },
-      {
-        encodeValuesOnly: true
-      })
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then((serie) => {
-          this.serie = serie.data[0]
-          this.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
-          this.getFavorites()
-          this.loadSerieRating()
-          this.breadcrumb[1].text = serie.data[0].title
-          this.head = {
-            title: this.serie.title,
-            meta: [
-              { hid: 'charset', charset: 'utf-8' },
-              { hid: 'viewport', name: 'viewport', content: 'width=device-width, initial-scale=1' },
-              { hid: 'description', name: 'description', content: 'Watch online ' + this.serie.title + ' in best quality.' },
-              { hid: 'og:title', property: 'og:title', content: 'Watch ' + this.serie.title + ' free online HD' },
-              { hid: 'og:description', property: 'og:description', content: 'Watch online ' + this.serie.title + ' in best quality' },
-              { hid: 'og:image', property: 'og:image', content: `${this.$config.SCREENSHOT_ENDPOINT}${this.serie.images.find(image => image.image_type.name === 'screenshot').path}` },
-              { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: `${this.$config.SCREENSHOT_ENDPOINT}${this.serie.images.find(image => image.image_type.name === 'screenshot').path}` },
-              { hid: 'og:image:alt', property: 'og:image:alt', content: this.serie.title },
-              { hid: 'og:image:type', property: 'og:image:type', content: 'image/jpeg' },
-              { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
-              { hid: 'og:image:height', property: 'og:image:height', content: '630' },
-              { hid: 'og:url', property: 'og:url', content: `https://hentaini.com${this.$route.path}` },
-              { hid: 'og:type', property: 'og:type', content: 'video.tv_show' },
-              { hid: 'og:locale', property: 'og:locale', content: 'en_US' },
-              { hid: 'og:site_name', property: 'og:site_name', content: 'Hentaini' },
-              { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
-              { hid: 'twitter:site', name: 'twitter:site', content: '@hentaini' },
-              { hid: 'twitter:creator', name: 'twitter:creator', content: '@hentaini' },
-              { hid: 'twitter:title', name: 'twitter:title', content: 'Watch ' + this.serie.title + ' free online HD' },
-              { hid: 'twitter:description', name: 'twitter:description', content: 'Watch online ' + this.serie.title + ' in best quality.' },
-              { hid: 'twitter:image', name: 'twitter:image', content: `${this.$config.SCREENSHOT_ENDPOINT}${this.serie.images.find(image => image.image_type.name === 'screenshot').path}` },
-              { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: this.serie.title },
-              { hid: 'language', name: 'language', content: 'en' },
-              { hid: 'audience', name: 'audience', content: 'all' },
-              { hid: 'rating', name: 'rating', content: 'general' },
-              { hid: 'distribution', name: 'distribution', content: 'global' },
-              { hid: 'document-type', name: 'document-type', content: 'Public' },
-              { hid: 'MSSmartTagsPreventParsing', name: 'MSSmartTagsPreventParsing', content: 'true' },
-              { hid: 'robots', name: 'robots', content: 'all' },
-              { hid: 'robots', name: 'robots', content: 'all, index, follow' },
-              { hid: 'googlebot', name: 'googlebot', content: 'all, index, follow' },
-              { hid: 'yahoo-slurp', name: 'yahoo-slurp', content: 'all, index, follow' },
-              { hid: 'msnbot', name: 'msnbot', content: 'index, follow' },
-              { hid: 'googlebot-image', name: 'googlebot-image', content: 'all' },
-              { hid: 'title', name: 'title', content: 'Watch ' + this.serie.title + ' free online HD' },
-              { hid: 'description', name: 'description', content: 'Watch online ' + this.serie.title + ' in best quality. I mean, its Hentaini, the best place to watch your favourite series' },
-              { hid: 'keywords', name: 'keywords', content: 'Watch online hentai, best HD archive of the best of japanese culture for the world, hentaini, ahegao, yuri, yaoi, tentacle, maid, siscon, brocon' },
-              { hid: 'og:url', property: 'og:url', content: `https://hentaini.com${this.$route.path}` },
-              { hid: 'og:image', property: 'og:image', content: `${this.$config.SCREENSHOT_ENDPOINT}${this.serie.images.find(image => image.image_type.name === 'screenshot').path}` },
-              { hid: 'author', name: 'author', content: 'hentaini' }
-            ]
-          }
-        })
+    getSerieExtraInfo () {
+      this.getFavorites()
+      this.loadSerieRating()
+      this.breadcrumb[1].text = this.serie.title
     },
     async loadSerieRating () {
       try {

@@ -14,7 +14,7 @@ export default {
   name: 'Index',
   data () {
     return {
-      title: 'Watch and download the best Hentai',
+      title: 'Hentaini 🔥 - Watch and download the best Hentai for free',
       isDesktop: false,
       watchlaters: []
     }

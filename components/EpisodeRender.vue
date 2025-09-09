@@ -486,16 +486,15 @@ export default {
     SerieRatingModal,
     RatingDisplay
   },
+  props: {
+    episode: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data () {
     return {
       CDN: process.env.CDN_URI,
-      episode: {
-        id: null,
-        players: [],
-        serie: {
-          title: ''
-        }
-      },
       showVideo: false,
       downloadsName: [],
       areDownloadLinksGenerated: false,
@@ -536,39 +535,6 @@ export default {
       selectedPlayerIndex: 0
     }
   },
-  head () {
-    return {
-      title: `${this.episode ? this.episode.serie.title : 'Hentaini'} episode ${this.episode ? this.episode.episode_number ? this.episode.episode_number : '' : ''} free online`,
-      meta: this.episode
-        ? [
-            { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality' },
-            { hid: 'keywords', name: 'keywords', content: 'Watch online' },
-            { hid: 'canonical', rel: 'canonical', href: `https://hentaini.com/h/${this.episode.serie.url}/${this.episode.episode_number}` },
-            { hid: 'language', name: 'language', content: 'en' },
-            { hid: 'Revisit-After', name: 'Revisit-After', content: '3 days' },
-            { hid: 'audience', name: 'audience', content: 'all' },
-            { hid: 'rating', name: 'rating', content: 'general' },
-            { hid: 'distribution', name: 'distribution', content: 'global' },
-            { hid: 'document-type', name: 'document-type', content: 'Public' },
-            { hid: 'MSSmartTagsPreventParsing', name: 'MSSmartTagsPreventParsing', content: 'true' },
-            { hid: 'robots', name: 'robots', content: 'all' },
-            { hid: 'robots', name: 'robots', content: 'all, index, follow' },
-            { hid: 'googlebot', name: 'googlebot', content: 'all, index, follow' },
-            { hid: 'yahoo-slurp', name: 'yahoo-slurp', content: 'all, index, follow' },
-            { hid: 'msnbot', name: 'msnbot', content: 'index, follow' },
-            { hid: 'googlebot-image', name: 'googlebot-image', content: 'all' },
-            { hid: 'title', name: 'title', content: 'Watch ' + this.episode.serie.title + ' episode ' + this.episode.episode_number + ' free online HD' },
-            { hid: 'description', name: 'description', content: 'Watch online ' + this.episode.serie.title + ' in best quality. I mean, its Hentaini, the best place to watch your favourite series' },
-            { hid: 'keywords', name: 'keywords', content: 'Watch online hentai, best HD archive of the best of japanese culture for the world, hentaini, ahegao, yuri, yaoi, tentacle, maid, siscon, brocon' },
-            { hid: 'og:title', property: 'og:title', content: this.episode.serie.title },
-            { hid: 'og:description', property: 'og:description', content: 'Its a Hentai site, what do you expect? a no-girlfriend-depression solution?' },
-            { hid: 'og:url', property: 'og:url', content: `https://hentaini.com/h/${this.episode.serie.url}/${this.episode.episode_number}` },
-            { hid: 'og:image', property: 'og:image', content: 'https://hentaini.com/screenshot/' + this.episode.serie.background_coverUrl },
-            { hid: 'author', name: 'author', content: 'hentaini' }
-          ]
-        : []
-    }
-  },
   computed: {
     ...mapGetters('ratings', ['getSerieRating', 'getUserRating', 'isLoading']),
     serieId () {
@@ -588,7 +554,8 @@ export default {
              (currentPlayer.url && currentPlayer.url.toLowerCase().includes('.m3u8'))
     },
     filteredPlayers () {
-      return this.episode.players.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA' && player.name !== 'TR' && player.name !== 'CW' && player.name !== 'F')
+      const playersDecoded = JSON.parse(this.episode.players)
+      return playersDecoded.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA' && player.name !== 'TR' && player.name !== 'CW' && player.name !== 'F')
     },
     isInWatchLater () {
       return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
@@ -642,23 +609,10 @@ export default {
     const serie = this.$route.params.serie
     // is its a string of six numbers
     if (/^\d{6}$/.test(serie)) {
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          h_id: serie
-        }
-      },
-      {
-        encodeValuesOnly: true
-      })
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then(({ data: serie }) => {
-          this.$router.push(`/h/${serie[0].url}/${this.$route.params.episode}`)
-        })
+      this.$router.push('/')
     }
 
-    this.getEpisode()
+    this.getEpisodeExtraData()
     if (this.$store.state.auth) {
       this.getFavorites()
       this.getWatchLaters()
@@ -711,16 +665,16 @@ export default {
       }
       this.$store.commit('isDesktop', this.isDesktop)
     },
-    async getEpisode () {
-      const episode = await this.$store.dispatch('episodes/getEpisodePublic', {
-        serieId: this.serieId,
-        episode_number: this.episodeNumber
-      })
-      episode.players = JSON.parse(episode.players)
-      episode.downloads = JSON.parse(episode.downloads)
+    getEpisodeExtraData () {
+      // const episode = await this.$store.dispatch('episodes/getEpisodePublic', {
+      //   serieId: this.serieId,
+      //   episode_number: this.episodeNumber
+      // })
+      // episode.players = JSON.parse(episode.players)
+      // episode.downloads = JSON.parse(episode.downloads)
       // sort episode.series.episodes by episode number
-      episode.serie.episodes = episode.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
-      this.episode = episode
+      // episode.serie.episodes = episode.serie.episodes.sort((a, b) => a.episode_number - b.episode_number)
+      // this.episode = episode
       setTimeout(() => {
         this.genCurrentUrl()
         this.genBreadcrumb()
