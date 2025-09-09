@@ -23,7 +23,7 @@
           <!-- Mostrar EpisodeCard para episodios específicos -->
           <EpisodeCard
             v-if="watchlater.episode_number"
-            :episode="watchlater.serie.episodes.find(episode => episode.number === watchlater.episode_number)"
+            :episode="watchlater.serie.episodes.find(episode => episode.episode_number === watchlater.episode_number)"
             :watchlaters="[watchlater]"
             @refresh="getWatchLaterSeries"
           />
@@ -101,8 +101,9 @@ export default {
           'serie.images.image_type',
           'serie.genreList',
           'serie.episodes',
-          'serie.episodes.images',
-          'serie.episodes.images.image_type'
+          'serie.episodes.image',
+          'serie.episodes.serie',
+          'serie.episodes.image.image_type'
         ],
         sort: ['createdAt:desc'],
         pagination: {

@@ -1,7 +1,6 @@
 <template>
   <v-container class="carousel-container pa-0 d-none d-md-block" fluid>
     <v-carousel
-      v-model="model"
       :show-arrows="false"
       hide-delimiters
       :height="450"
@@ -59,17 +58,6 @@
               </v-btn>
             </v-col>
           </v-row>
-
-          <!-- Indicators dots -->
-          <div class="carousel-indicators">
-            <div
-              v-for="(_, i) in featuredSeries"
-              :key="i"
-              class="indicator-dot"
-              :class="{ 'active': i === model }"
-              @click="model = i"
-            />
-          </div>
         </template>
       </v-carousel-item>
     </v-carousel>
@@ -87,8 +75,6 @@ export default {
   },
   data () {
     return {
-      model: 0,
-      CDN: process.env.CDN_URI,
       loading: true
     }
   },
