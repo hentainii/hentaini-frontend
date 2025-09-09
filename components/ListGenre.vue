@@ -58,19 +58,14 @@
           </v-col>
           <v-col
             v-for="serie in Genre.series"
-            :key="serie._id"
+            :key="serie.id"
             cols="12"
             lg="2"
             md="6"
             sm="12"
           >
             <SerieCard
-              :title="serie.title"
-              :synopsis="serie.synopsis"
-              :genres="serie.genres"
-              :status="serie.status"
-              :url="serie.episodes[0].urlName"
-              :screenshot="serie.coverUrl"
+              :serie="serie"
             />
           </v-col>
         </v-row>

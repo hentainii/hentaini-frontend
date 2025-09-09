@@ -1,6 +1,6 @@
 <template>
-  <div class="episode-card">
-    <nuxt-link :to="localePath(`/h/${url}/${episodeNumber}`)" :title="`Watch ${title} Episode ${episodeNumber}`">
+  <div v-if="episode.serie" class="episode-card">
+    <nuxt-link :to="localePath(`/h/${episode.serie.url}/${episode.episode_number}`)" :title="`Watch ${episode.serie.title} Episode ${episode.episodeNumber}`">
       <v-hover v-slot="{ hover }">
         <div class="image-container">
           <v-img
@@ -10,13 +10,13 @@
             :lazy-src="finalPlaceholder"
           >
             <!-- Badge para "new" -->
-            <div v-if="isNew && lessThan7Days(created)" class="new-badge">
+            <div v-if="episode.isNew && lessThan7Days(episode.createdAt)" class="new-badge">
               <v-icon class="text-caption mr-1">
                 mdi-star
               </v-icon>{{ $t('episode.new_badge') }}
             </div>
             <!-- Badge para "censorship" -->
-            <div v-if="!censorship" class="no-censor-badge">
+            <div v-if="!episode.serie.censorship" class="no-censor-badge">
               <v-icon class="text-caption mr-1">
                 mdi-eye
               </v-icon>{{ $t('episode.uncensored') }}
@@ -37,30 +37,12 @@
     <div class="card-content">
       <div class="card-details">
         <h2 class="episode-title">
-          {{ title }}
+          {{ episode.serie.title }}
         </h2>
         <p class="episode-number">
-          {{ $t('episode.episode_number') }} {{ episodeNumber }}
+          {{ $t('episode.episode_number') }} {{ episode.episodeNumber }}
         </p>
       </div>
-
-      <v-tooltip left>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            icon
-            small
-            class="watchlater-btn"
-            v-on="on"
-            @click="isLogin ? toggleWatchLater(serie) : $router.push('/login')"
-          >
-            <v-icon :color="isInWatchLater ? 'primary' : ''">
-              {{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ isInWatchLater ? $t('watch_later.remove') : $t('watch_later.add') }}</span>
-      </v-tooltip>
     </div>
   </div>
 </template>
@@ -70,61 +52,12 @@ export default {
   name: 'NiEpisodeCard',
   props: {
     episode: {
-      type: Number,
-      default: 0
-    },
-    serie: {
-      type: Number,
-      default: 0
+      type: Object,
+      default: () => {}
     },
     watchlaters: {
       type: Array,
       default: () => []
-    },
-    title: {
-      type: String,
-      default: 'No Title'
-    },
-    episodeNumber: {
-      type: Number,
-      default: 0
-    },
-    hid: {
-      type: String,
-      default: '0'
-    },
-    status: {
-      type: String,
-      default: 'No Status'
-    },
-    url: {
-      type: String,
-      default: ''
-    },
-    image: {
-      type: Object,
-      default: () => ({
-        path: 'default.jpg',
-        placeholder: 'default_placeholder.jpg',
-        cf_path: null,
-        cf_placeholder: null
-      })
-    },
-    created: {
-      type: String,
-      default: ''
-    },
-    isAd: {
-      type: Boolean,
-      default: false
-    },
-    isNew: {
-      type: Boolean,
-      default: false
-    },
-    censorship: {
-      type: Boolean,
-      default: false
     }
   },
   data () {
@@ -134,29 +67,23 @@ export default {
     }
   },
   computed: {
-    isInWatchLater () {
-      return this.watchlaters.some(watchlater => watchlater.serie.id === this.serie && watchlater.episode_number === this.episodeNumber)
-    },
-    thisWatchLater () {
-      return this.watchlaters.find(watchlater => watchlater.serie.id === this.serie && watchlater.episode_number === this.episodeNumber) || null
-    },
     isLogin () {
       return this.$store.state.auth
     },
     finalScreenshot () {
-      if (this.image.cf_path) {
-        return `${this.image.cf_path}`
+      if (this.episode.image.cf_path) {
+        return `${this.episode.image.cf_path}`
       }
-      return `${this.$config.SCREENSHOT_ENDPOINT}${this.image.path}`
+      return `${this.$config.SCREENSHOT_ENDPOINT}${this.episode.image.path}`
     },
     finalPlaceholder () {
-      if (this.image.cf_placeholder) {
-        return `${this.image.cf_placeholder}`
+      if (this.episode.image.cf_placeholder) {
+        return `${this.episode.image.cf_placeholder}`
       }
-      if (this.image.cf_path) {
-        return `${this.image.cf_path}`
+      if (this.episode.image.cf_path) {
+        return `${this.episode.image.cf_path}`
       }
-      const placeholderPath = this.image.placeholder || this.image.path
+      const placeholderPath = this.episode.image.placeholder || this.episode.image.path
       return `${this.$config.SCREENSHOT_ENDPOINT}${placeholderPath}`
     }
   },
@@ -166,47 +93,6 @@ export default {
       const created = new Date(date)
       const diff = now - created
       return diff < 7 * 24 * 60 * 60 * 1000
-    },
-    toggleWatchLater (serie) {
-      if (this.isInWatchLater) {
-        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters/${this.thisWatchLater.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.$store.state.auth.token}`
-          }
-        }).then((result) => {
-          if (result.status === 200) {
-            this.$emit('refresh')
-          }
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error)
-        })
-      } else {
-        const user = this.$store.state.auth.id
-        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.$store.state.auth.token}`
-          },
-          body: JSON.stringify({
-            data: {
-              user,
-              serie,
-              episode_number: this.episodeNumber
-            }
-          })
-        }).then((result) => {
-          if (result.status === 200) {
-            this.$emit('refresh')
-          }
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error)
-        })
-      }
     }
   }
 }

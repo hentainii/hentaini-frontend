@@ -2,64 +2,51 @@
 <!-- eslint-disable vue/html-quotes -->
 <template>
   <v-container class="latest-episodes-container" fluid>
-    <misc-latest-episodes-skeleton v-if="loading" />
-    <template v-else>
-      <v-row class="justify-center">
-        <client-only>
-          <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
-        </client-only>
-        <client-only>
-          <div id="bg-ssp-10357">
-          </div>
-          <UtilsVueScriptComponent script='<script data-cfasync="false" src="bg.js" type="text/javascript"></script>' />
-        </client-only>
-      </v-row>
+    <v-row class="justify-center">
+      <client-only>
+        <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
+      </client-only>
+      <client-only>
+        <div id="bg-ssp-10357">
+        </div>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" src="bg.js" type="text/javascript"></script>' />
+      </client-only>
+    </v-row>
 
-      <div class="section-header">
-        <nuxt-link :to="localePath('/explore')" class="section-link">
-          <div class="header-content">
-            <h2 class="title">
-              {{ $t('landpage.latest_episodes') }}
-            </h2>
-            <span class="subtitle">
-              {{ $t('landpage.latest_episodes_little') }}
-            </span>
-          </div>
-        </nuxt-link>
-      </div>
+    <div class="section-header">
+      <nuxt-link :to="localePath('/explore')" class="section-link">
+        <div class="header-content">
+          <h2 class="title">
+            {{ $t('landpage.latest_episodes') }}
+          </h2>
+          <span class="subtitle">
+            {{ $t('landpage.latest_episodes_little') }}
+          </span>
+        </div>
+      </nuxt-link>
+    </div>
 
-      <v-row class="episodes-grid">
-        <v-col
-          v-for="(episode) in episodes"
-          :key="episode.id"
-          cols="6"
-          xl="3"
-          lg="4"
-          md="4"
-          sm="6"
-          xs="6"
-          class="episode-item"
-        >
-          <article>
-            <EpisodeCard
-              :episode="episode.id"
-              :serie="episode.serie.id"
-              :title="episode.serie.title"
-              :episodeNumber="episode.episode_number"
-              :hid="episode.serie.h_id"
-              :image="episode.image"
-              :created="episode.createdAt"
-              :url="episode.serie.url"
-              :isAd="episode.isAd"
-              :isNew="episode.isNew"
-              :censorship="episode.serie.censorship"
-              :watchlaters="watchlaters"
-              @refresh="refresh"
-            />
-          </article>
-        </v-col>
-      </v-row>
-    </template>
+    <v-row class="episodes-grid">
+      <v-col
+        v-for="(episode) in episodes"
+        :key="episode.id"
+        cols="6"
+        xl="3"
+        lg="4"
+        md="4"
+        sm="6"
+        xs="6"
+        class="episode-item"
+      >
+        <article>
+          <EpisodeCard
+            :episode="episode"
+            :watchlaters="watchlaters"
+            @refresh="refresh"
+          />
+        </article>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -67,6 +54,10 @@
 export default {
   name: 'LatestEpisodes',
   props: {
+    episodes: {
+      type: Array,
+      default: () => []
+    },
     watchlaters: {
       type: Array,
       default: () => []
@@ -74,48 +65,12 @@ export default {
   },
   data () {
     return {
-      episodes: [],
       loading: true
     }
   },
-  mounted () {
-    this.getLatestEpisodes()
-  },
   methods: {
     refresh () {
-      this.getLatestEpisodes()
       this.$emit('refreshwatchlaters')
-    },
-    getLatestEpisodes () {
-      this.loading = true
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          visible: true
-        },
-        populate: [
-          'serie',
-          'image',
-          'serie.statuses'
-        ],
-        sort: ['createdAt:desc'],
-        pagination: {
-          limit: 24
-        }
-      },
-      {
-        encodeValuesOnly: true
-      })
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}episodes?${query}`)
-        .then(res => res.json())
-        .then((episodes) => {
-          this.episodes = episodes.data
-          this.loading = false
-        })
-        .catch((error) => {
-          console.error('Error loading latest episodes:', error)
-          this.loading = false
-        })
     }
   }
 }

@@ -1,41 +1,41 @@
 <template>
   <div class="serie-card">
-    <nuxt-link :to="localePath(`/h/${url}`)" :title="`Watch ${title}`">
+    <nuxt-link :to="localePath(`/h/${serie.url}`)" :title="`Watch ${serie.title}`">
       <v-hover v-slot="{ hover }">
         <div class="card-container">
           <v-img
             :aspect-ratio="9/14"
-            :src="finalScreenshot"
-            :lazy-src="finalPlaceholder"
+            :src="getCoverImage(serie).cf_path || getCoverImage(serie).path"
+            :lazy-src="getCoverImage(serie).cf_path || getCoverImage(serie).placeholder"
             class="card-image"
           >
             <div v-if="visits" class="visits-chip">
               <v-icon small>
                 mdi-eye
               </v-icon>
-              <span class="ml-1">{{ visits.toLocaleString() }}</span>
+              <span class="ml-1">{{ serie.visits.toLocaleString() }}</span>
             </div>
 
             <div class="card-gradient" />
 
             <div
-              v-if="synopsis"
+              v-if="serie.synopsis"
               :class="hover ? 'card-overlay card-overlay-hover' : 'card-overlay'"
             >
               <div class="synopsis-container">
                 <p class="synopsis-text">
-                  {{ synopsis.substr(0,180) + '...' }}
+                  {{ serie.synopsis.substr(0,180) + '...' }}
                 </p>
-                <div v-if="componentgenres && componentgenres.length > 0" class="genres-container">
+                <div v-if="serie.genreList && serie.genreList.length > 0" class="genres-container">
                   <v-chip
-                    v-for="(genre, index) in componentgenres.slice(0, 3)"
+                    v-for="(genre, index) in serie.genreList.slice(0, 3)"
                     :key="index"
                     x-small
                     class="genre-chip mr-1 mb-1"
                     color="rgba(255, 255, 255, 0.1)"
                     text-color="white"
                   >
-                    {{ genre.name }}
+                    uwu{{ genre.name }}
                   </v-chip>
                 </div>
               </div>
@@ -43,11 +43,11 @@
 
             <div class="card-title-container">
               <h3 class="card-title">
-                {{ title }}
+                {{ serie.title }}
               </h3>
-              <div v-if="status" class="status-indicator">
+              <div v-if="serie.status" class="status-indicator">
                 <span class="status-dot" :class="statusClass" />
-                <span class="status-text">{{ status }}</span>
+                <span class="status-text">{{ serie.status.name }}</span>
               </div>
             </div>
           </v-img>
@@ -82,50 +82,13 @@
 export default {
   name: 'NiSerieCard',
   props: {
-    title: {
-      type: String,
-      default: 'No Title'
-    },
-    synopsis: {
-      type: String,
-      default: ''
-    },
-    genres: {
-      type: Array,
-      default: () => [
-        {
-          text: ''
-        }
-      ]
-    },
-    componentgenres: {
-      type: Array,
-      default: () => [
-        {
-          name: ''
-        }
-      ]
-    },
-    status: {
-      type: String,
-      default: ''
-    },
-    url: {
-      type: String,
-      default: ''
-    },
-    image: {
+    serie: {
       type: Object,
-      default: () => ({
-        path: '',
-        placeholder: '',
-        cf_path: null,
-        cf_placeholder: null
-      })
+      default: () => ({})
     },
     visits: {
       type: Number,
-      default: null
+      default: 0
     },
     removeTagWl: {
       type: Boolean,
@@ -151,8 +114,8 @@ export default {
   },
   computed: {
     statusClass () {
-      if (!this.status) { return '' }
-      const statusLower = this.status.toLowerCase()
+      if (!this.serie.status) { return '' }
+      const statusLower = this.serie.status.name.toLowerCase()
       if (statusLower.includes('ongoing') || statusLower.includes('airing')) {
         return 'status-ongoing'
       } else if (statusLower.includes('completed') || statusLower.includes('finished')) {
@@ -162,25 +125,34 @@ export default {
       } else {
         return 'status-default'
       }
-    },
-    finalScreenshot () {
-      if (this.image.cf_path) {
-        return `${this.image.cf_path}`
-      }
-      return `${this.$config.COVER_ENDPOINT}${this.image.path}`
-    },
-    finalPlaceholder () {
-      if (this.image.cf_placeholder) {
-        return `${this.image.cf_placeholder}`
-      }
-      if (this.image.cf_path) {
-        return `${this.image.cf_path}`
-      }
-      const placeholderPath = this.image.placeholder || this.image.path
-      return `${this.$config.COVER_ENDPOINT}${placeholderPath}`
     }
   },
   methods: {
+    getCoverImage (serie) {
+      if (!serie.images || !Array.isArray(serie.images)) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
+      if (!coverImage) {
+        return {
+          path: '',
+          placeholder: '',
+          cf_path: null,
+          cf_placeholder: null
+        }
+      }
+      return {
+        path: `${this.$config.CDN_ENDPOINT}${coverImage.path || ''}`,
+        placeholder: `${this.$config.CDN_ENDPOINT}${coverImage.placeholder || ''}`,
+        cf_path: coverImage.cf_path || null,
+        cf_placeholder: coverImage.cf_placeholder || null
+      }
+    },
     removeWatchLaters () {
       fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters/${this.watchlaterid}`, {
         method: 'DELETE',

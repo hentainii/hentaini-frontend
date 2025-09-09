@@ -1,17 +1,25 @@
 <template>
   <section style="max-width: 1400px; margin: 0 auto;">
     <Header />
-    <Carousel />
+    <Carousel :featuredSeries="carouselSeries" />
     <TextHeader />
-    <LatestEpisodes :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
-    <LatestSeries />
+    <LatestEpisodes :episodes="episodes" :watchlaters="watchlaters" @refreshwatchlaters="getWatchLaters" />
+    <LatestSeries :series="series" />
     <LayoutPreFooter />
   </section>
 </template>
 
 <script>
 export default {
-  name: 'Index',
+  name: 'IndexWelcome',
+  async asyncData ({ $config, $http }) {
+    const landingData = await $http.$get(`${$config.API_STRAPI_ENDPOINT}landing-data?`)
+    return {
+      carouselSeries: landingData.carouselSeries,
+      episodes: landingData.episodes,
+      series: landingData.series
+    }
+  },
   data () {
     return {
       title: 'Hentaini 🔥 - Watch and download the best Hentai for free',

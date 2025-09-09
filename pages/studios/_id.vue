@@ -96,14 +96,7 @@
                 class="pa-2"
               >
                 <SerieCard
-                  :title="serie.title"
-                  :synopsis="serie.synopsis"
-                  :genres="serie.genres"
-                  :componentgenres="serie.genreList"
-                  :status="serie.status.name"
-                  :url="serie.url"
-                  :image="getCoverImage(serie)"
-                  :visits="serie.visits"
+                  :serie="serie"
                 />
               </v-col>
             </v-row>

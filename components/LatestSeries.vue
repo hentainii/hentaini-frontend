@@ -1,116 +1,50 @@
 <template>
   <v-container class="latest-series-container" fluid>
-    <misc-latest-series-skeleton v-if="loading" />
-    <template v-else>
-      <div class="section-header">
-        <nuxt-link :to="localePath('/explore')" class="section-link">
-          <div class="header-content">
-            <h2 class="title">
-              {{ $t('landpage.latest_series') }}
-            </h2>
-            <span class="subtitle">
-              {{ $t('landpage.latest_series_little') }}
-            </span>
-          </div>
-        </nuxt-link>
-      </div>
-      <v-row class="series-grid">
-        <v-col
-          v-for="(serie) in series"
-          :key="serie._id"
-          cols="6"
-          lg="2"
-          md="4"
-          sm="4"
-          xs="4"
-          class="serie-item"
-        >
-          <article>
-            <SerieCard
-              :title="serie.title"
-              :synopsis="serie.synopsis"
-              :genres="serie.genres"
-              :componentgenres="serie.genreList"
-              :status="serie.status.name"
-              :url="serie.url"
-              :image="getCoverImage(serie)"
-            />
-          </article>
-        </v-col>
-      </v-row>
-    </template>
+    <div class="section-header">
+      <nuxt-link :to="localePath('/explore')" class="section-link">
+        <div class="header-content">
+          <h2 class="title">
+            {{ $t('landpage.latest_series') }}
+          </h2>
+          <span class="subtitle">
+            {{ $t('landpage.latest_series_little') }}
+          </span>
+        </div>
+      </nuxt-link>
+    </div>
+    <v-row class="series-grid">
+      <v-col
+        v-for="(serie) in series"
+        :key="serie._id"
+        cols="6"
+        lg="2"
+        md="4"
+        sm="4"
+        xs="4"
+        class="serie-item"
+      >
+        <article>
+          <SerieCard
+            :serie="serie"
+          />
+        </article>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      series: [],
-      loading: true
+  name: 'LatestSeries',
+  props: {
+    series: {
+      type: Array,
+      default: () => []
     }
   },
-  mounted () {
-    this.getLatestSeries()
-  },
-  methods: {
-    getLatestSeries () {
-      this.loading = true
-      const qs = require('qs')
-      const query = qs.stringify({
-        populate: [
-          'status',
-          'images',
-          'images.image_type',
-          'genreList'
-        ],
-        sort: ['createdAt:desc'],
-        pagination: {
-          limit: 25
-        }
-      },
-      {
-        encodeValuesOnly: true
-      })
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then((series) => {
-          series.data.map((serie) => {
-            serie.genres = JSON.parse(serie.genres)
-            return serie
-          })
-          this.series = series.data
-          this.loading = false
-        })
-        .catch((error) => {
-          console.error('Error loading latest series:', error)
-          this.loading = false
-        })
-    },
-    getCoverImage (serie) {
-      if (!serie.images || !Array.isArray(serie.images)) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
-      if (!coverImage) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      return {
-        path: coverImage.path || '',
-        placeholder: coverImage.placeholder || '',
-        cf_path: coverImage.cf_path || null,
-        cf_placeholder: coverImage.cf_placeholder || null
-      }
+  data () {
+    return {
+      loading: true
     }
   }
 }

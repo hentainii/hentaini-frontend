@@ -385,13 +385,7 @@
                   style="width:150px;"
                 >
                   <SerieCard
-                    :title="serie.title"
-                    :synopsis="serie.synopsis"
-                    :genres="JSON.parse(serie.genres)"
-                    :componentgenres="serie.genreList"
-                    :status="serie.status.name"
-                    :url="serie.url"
-                    :image="getCoverImage(serie)"
+                    :serie="serie"
                   />
                 </article>
               </v-slide-item>

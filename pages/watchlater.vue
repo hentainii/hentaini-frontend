@@ -23,26 +23,14 @@
           <!-- Mostrar EpisodeCard para episodios específicos -->
           <EpisodeCard
             v-if="watchlater.episode_number"
-            :title="watchlater.serie.title"
-            :episode-number="watchlater.episode_number"
-            :serie="watchlater.serie.id"
-            :url="watchlater.serie.url"
-            :image="getEpisodeImage(watchlater.serie, watchlater.episode_number)"
+            :episode="watchlater.serie.episodes.find(episode => episode.number === watchlater.episode_number)"
             :watchlaters="[watchlater]"
-            :status="watchlater.serie.status.name"
-            :created="watchlater.createdAt"
             @refresh="getWatchLaterSeries"
           />
           <!-- Mantener SerieCard para retrocompatibilidad (series sin episode_number) -->
           <SerieCard
             v-else
-            :title="watchlater.serie.title"
-            :synopsis="watchlater.serie.synopsis"
-            :genres="watchlater.serie.genres"
-            :componentgenres="watchlater.serie.genreList"
-            :status="watchlater.serie.status.name"
-            :url="watchlater.serie.url"
-            :image="getCoverImage(watchlater.serie)"
+            :serie="watchlater.serie"
             :watchlaterid="watchlater.id"
             :removeTagWl="true"
             @refreshwl="getWatchLaterSeries"

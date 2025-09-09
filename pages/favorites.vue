@@ -21,16 +21,7 @@
           xs="4"
         >
           <SerieCard
-            :title="favorite.serie.title"
-            :synopsis="favorite.serie.synopsis"
-            :genres="favorite.serie.genres"
-            :componentgenres="favorite.serie.genreList"
-            :status="favorite.serie.status.name"
-            :url="favorite.serie.url"
-            :image="getCoverImage(favorite.serie)"
-            :favoriteid="favorite.id"
-            :removeTagF="true"
-            @refreshf="getFavorites"
+            :serie="favorite.serie"
           />
         </v-col>
       </v-row>

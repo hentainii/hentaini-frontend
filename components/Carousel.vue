@@ -1,8 +1,6 @@
 <template>
   <v-container class="carousel-container pa-0 d-none d-md-block" fluid>
-    <misc-carousel-skeleton v-if="loading" />
     <v-carousel
-      v-else-if="$store.state.isDesktop && !loading"
       v-model="model"
       :show-arrows="false"
       hide-delimiters
@@ -13,7 +11,7 @@
     >
       <v-carousel-item
         v-for="(serie) in featuredSeries"
-        :key="serie.title"
+        :key="serie.id"
         :src="getScreenshotUrl(serie)"
         :lazy-src="getScreenshotPlaceholderUrl(serie)"
         :to="localePath(`/h/${serie.url}`)"
@@ -80,51 +78,21 @@
 
 <script>
 export default {
+  name: 'Carousel',
+  props: {
+    featuredSeries: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
-      featuredSeries: [],
       model: 0,
       CDN: process.env.CDN_URI,
       loading: true
     }
   },
-  mounted () {
-    this.getFeaturedSeries()
-  },
   methods: {
-    getFeaturedSeries () {
-      this.loading = true
-      const qs = require('qs')
-      const query = qs.stringify({
-        filters: {
-          featured: true
-        },
-        populate: [
-          'images',
-          'images.image_type',
-          'status',
-          'genreList'
-        ],
-        sort: ['createdAt:desc']
-      },
-      {
-        encodeValuesOnly: true
-      })
-      fetch(`${this.$config.API_STRAPI_ENDPOINT}series?${query}`)
-        .then(res => res.json())
-        .then((series) => {
-          series.data.map((serie) => {
-            serie.genres = JSON.parse(serie.genres)
-            return serie
-          })
-          this.featuredSeries = series.data
-          this.loading = false
-        })
-        .catch((error) => {
-          console.error('Error loading featured series:', error)
-          this.loading = false
-        })
-    },
     trimTextToLength (text, length) {
       if (!text) { return '' }
       if (text.length > length) {
