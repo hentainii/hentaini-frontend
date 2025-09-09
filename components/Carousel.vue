@@ -4,16 +4,14 @@
       :show-arrows="false"
       hide-delimiters
       :height="450"
-      cycle
       interval="5000"
       class="rounded-xl overflow-hidden"
+      cycle
     >
       <v-carousel-item
-        v-for="(serie) in featuredSeries"
+        v-for="serie in featuredSeries"
         :key="serie.id"
         :src="getScreenshotUrl(serie)"
-        :lazy-src="getScreenshotPlaceholderUrl(serie)"
-        :to="localePath(`/h/${serie.url}`)"
       >
         <template #default>
           <div class="carousel-gradient fill-height" />
@@ -27,8 +25,8 @@
               <!-- Genres -->
               <div class="genre-chips mb-3">
                 <v-chip
-                  v-for="(genre, i) in serie.genreList"
-                  :key="i"
+                  v-for="(genre, index) in serie.genreList.slice(0, 5)"
+                  :key="index"
                   x-small
                   outlined
                   class="mr-1 genre-chip"
@@ -40,16 +38,16 @@
 
               <!-- Synopsis -->
               <p class="carousel-synopsis">
-                {{ trimTextToLength(serie.synopsis, 300) }}
+                {{ trimTextToLength(serie.synopsis, 180) }}
               </p>
 
               <!-- Watch button -->
               <v-btn
-                :to="localePath(`/h/${serie.url}`)"
                 color="primary"
                 class="mt-4 font-weight-bold"
                 rounded
                 elevation="2"
+                :to="localePath(`/h/${serie.url}`)"
               >
                 <v-icon left>
                   mdi-play-circle
@@ -65,6 +63,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Carousel',
   props: {
