@@ -12,8 +12,8 @@
 <script>
 export default {
   name: 'IndexWelcome',
-  async asyncData ({ $config, $http }) {
-    const landingData = await $http.$get(`${$config.API_STRAPI_ENDPOINT}landing-data?`)
+  async asyncData ({ $config, $axios }) {
+    const landingData = await $axios.$get(`${$config.API_STRAPI_ENDPOINT}landing-data?`)
     return {
       carouselSeries: landingData.carouselSeries,
       episodes: landingData.episodes,

@@ -42,7 +42,7 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/i18n',
     '@nuxtjs/google-gtag',
-    '@nuxt/http'
+    '@nuxtjs/axios'
   ],
 
   'google-gtag': {

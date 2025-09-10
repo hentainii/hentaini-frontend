@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-  async asyncData ({ params, $config, $http }) {
+  async asyncData ({ params, $config, $axios }) {
     const qs = require('qs')
     const query = qs.stringify({
       filters: {
@@ -25,7 +25,7 @@ export default {
     {
       encodeValuesOnly: true
     })
-    const { data: series } = await $http.$get(`${$config.API_STRAPI_ENDPOINT}series?${query}`)
+    const { data: series } = await $axios.$get(`${$config.API_STRAPI_ENDPOINT}series?${query}`)
     return { serie: series[0] }
   },
   head () {

@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  async asyncData ({ params, $config, $http }) {
+  async asyncData ({ params, $config, $axios }) {
     const qs = require('qs')
     const query = qs.stringify({
       filters: {
@@ -34,7 +34,7 @@ export default {
     {
       encodeValuesOnly: true
     })
-    const { data: episodes } = await $http.$get(`${$config.API_STRAPI_ENDPOINT}episodes?${query}`)
+    const { data: episodes } = await $axios.$get(`${$config.API_STRAPI_ENDPOINT}episodes?${query}`)
     episodes.players = JSON.parse
     return { episode: episodes[0] }
   },
