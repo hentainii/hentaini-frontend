@@ -1,6 +1,6 @@
 <template>
   <div v-if="episode.serie" class="episode-card">
-    <nuxt-link :to="localePath(`/h/${episode.serie.url}/${episode.episode_number}`)" :title="`Watch ${episode.serie.title} Episode ${episode.episodeNumber}`">
+    <nuxt-link :to="localePath(`/h/${episode.serie.url}/${episode.episode_number}`)" :title="`Watch ${episode.serie.title} Episode ${episode.episode_number}`">
       <v-hover v-slot="{ hover }">
         <div class="image-container">
           <v-img
@@ -40,7 +40,7 @@
           {{ episode.serie.title }}
         </h2>
         <p class="episode-number">
-          {{ $t('episode.episode_number') }} {{ episode.episodeNumber }}
+          {{ $t('episode.episode_number') }} {{ episode.episode_number }}
         </p>
       </div>
     </div>
