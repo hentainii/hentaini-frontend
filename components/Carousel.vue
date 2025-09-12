@@ -1,12 +1,14 @@
 <template>
   <v-container class="carousel-container pa-0 d-none d-md-block" fluid>
     <v-carousel
-      :show-arrows="false"
+      v-model="model"
+      :show-arrows="true"
       hide-delimiters
       :height="450"
       interval="5000"
       class="rounded-xl overflow-hidden"
       cycle
+      show-indicators
     >
       <v-carousel-item
         v-for="serie in featuredSeries"
@@ -15,7 +17,7 @@
       >
         <template #default>
           <div class="carousel-gradient fill-height" />
-          <v-row align="end" class="fill-height pa-0 ma-0 align-center">
+          <v-row align="end" class="fill-height px-8 ma-0 align-center">
             <v-col cols="12" md="8" lg="6" class="carousel-content pa-6">
               <!-- Title with animation -->
               <h1 class="carousel-title mb-2">
@@ -56,6 +58,15 @@
               </v-btn>
             </v-col>
           </v-row>
+          <div class="carousel-indicators">
+            <div
+              v-for="(_, i) in featuredSeries"
+              :key="i"
+              class="indicator-dot"
+              :class="{ 'active': i === model }"
+              @click="model = i"
+            />
+          </div>
         </template>
       </v-carousel-item>
     </v-carousel>
@@ -74,6 +85,7 @@ export default {
   },
   data () {
     return {
+      model: 0,
       loading: true
     }
   },
