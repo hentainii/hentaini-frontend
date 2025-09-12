@@ -35,6 +35,9 @@ export default {
       encodeValuesOnly: true
     })
     const { data: episodes } = await $axios.$get(`${$config.API_STRAPI_ENDPOINT}episodes?${query}`)
+    episodes[0].serie.episodes = episodes[0].serie.episodes.sort((a, b) => {
+      return a.episode_number - b.episode_number
+    })
     episodes[0].downloads = JSON.parse(episodes[0].downloads)
     return { episode: episodes[0] }
   },
