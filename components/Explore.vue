@@ -263,6 +263,7 @@
                 >
                   <SerieCard
                     :serie="serie"
+                    :visits="1"
                   />
                 </v-col>
               </v-row>
