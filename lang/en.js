@@ -14,7 +14,7 @@ export default {
     subtitle: 'You can save your favorite Hentai here.',
     no_favorites: 'No favorites yet',
     add: 'Add to Favorites',
-    remove: 'Remove from Favorites'
+    remove: 'Remove'
   },
   watch_later: {
     title: 'Watch Later',

@@ -36,6 +36,7 @@
                 block
                 color="red accent-1"
                 class="elevation-0 rounded-xl"
+                small
                 :outlined="!serieIsPresentInFavorites"
                 @click="serieIsPresentInFavorites ? removeFavorite(serie.id) : setFavorite(serie.id)"
               >

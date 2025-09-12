@@ -307,7 +307,7 @@
             </div>
             <v-chip-group>
               <v-chip
-                v-for="genre in JSON.parse(episode.serie.genres)"
+                v-for="genre in episode.serie.genreList"
                 :key="genre.text ? genre.text : genre"
                 :to="localePath(`/explore?genre=${genre.url}`)"
                 small

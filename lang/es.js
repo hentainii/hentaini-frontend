@@ -31,7 +31,7 @@ export default {
     subtitle: 'Puedes guardar tus Hentais favoritos aquí.',
     no_favorites: 'No hay favoritos aún',
     add: 'Agregar a Favoritos',
-    remove: 'Quitar de Favoritos'
+    remove: 'Quitar'
   },
   watch_later: {
     title: 'Ver Después',

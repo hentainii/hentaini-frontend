@@ -13,14 +13,14 @@ export default {
     subtitle: 'Vous pouvez enregistrer vos Hentai préférés ici.',
     no_favorites: 'Aucun favori pour le moment',
     add: 'Ajouter aux Favoris',
-    remove: 'Retirer des Favoris'
+    remove: 'Retirer'
   },
   watch_later: {
     title: 'À regarder plus tard',
     subtitle: 'Vous pouvez enregistrer votre Hentai pour le regarder plus tard ici.',
     no_watch_later: 'Aucun Hentai à regarder plus tard pour le moment',
     add: 'Ajouter à regarder plus tard',
-    remove: 'Retirer de regarder plus tard'
+    remove: 'Retirer'
   },
   menu: {
     explore: 'EXPLORER',
