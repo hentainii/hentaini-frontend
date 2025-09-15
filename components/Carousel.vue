@@ -99,19 +99,10 @@ export default {
     },
     getScreenshotUrl (serie) {
       const screenshotImage = serie.images?.find(image => image.image_type?.name === 'screenshot')
-      if (screenshotImage?.cf_path) {
-        return `${screenshotImage.cf_path}`
-      }
       return screenshotImage?.path ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}` : ''
     },
     getScreenshotPlaceholderUrl (serie) {
       const screenshotImage = serie.images?.find(image => image.image_type?.name === 'screenshot')
-      if (screenshotImage?.cf_placeholder) {
-        return `${screenshotImage.cf_placeholder}`
-      }
-      if (screenshotImage?.cf_path) {
-        return `${screenshotImage.cf_path}`
-      }
       const placeholderPath = screenshotImage?.placeholder || screenshotImage?.path
       return placeholderPath ? `${this.$config.SCREENSHOT_ENDPOINT}${placeholderPath}` : ''
     }

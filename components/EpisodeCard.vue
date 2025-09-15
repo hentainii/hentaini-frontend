@@ -71,19 +71,27 @@ export default {
       return this.$store.state.auth
     },
     finalScreenshot () {
-      if (this.episode.image.cf_path) {
-        return `${this.episode.image.cf_path}`
+      // Check if episode and image exist and have a path
+      if (!this.episode?.image?.path) {
+        // Return a default/fallback image path if no valid path exists
+        return `${this.$config.SCREENSHOT_ENDPOINT}/default-screenshot.jpg`
       }
       return `${this.$config.SCREENSHOT_ENDPOINT}${this.episode.image.path}`
     },
     finalPlaceholder () {
-      if (this.episode.image.cf_placeholder) {
-        return `${this.episode.image.cf_placeholder}`
+      // Check if episode and image exist
+      if (!this.episode?.image) {
+        return `${this.$config.SCREENSHOT_ENDPOINT}/default-screenshot.jpg`
       }
-      if (this.episode.image.cf_path) {
-        return `${this.episode.image.cf_path}`
-      }
+
+      // Get placeholder path with fallbacks
       const placeholderPath = this.episode.image.placeholder || this.episode.image.path
+
+      // If no valid path exists, return default
+      if (!placeholderPath) {
+        return `${this.$config.SCREENSHOT_ENDPOINT}/default-screenshot.jpg`
+      }
+
       return `${this.$config.SCREENSHOT_ENDPOINT}${placeholderPath}`
     }
   },

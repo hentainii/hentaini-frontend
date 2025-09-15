@@ -559,9 +559,6 @@ export default {
     },
     serieScreenshot () {
       const screenshotImage = this.episode.image || this.episode.serie.images?.find(image => image.image_type?.name === 'screenshot')
-      if (screenshotImage?.cf_path) {
-        return `${screenshotImage.cf_path}`
-      }
       return screenshotImage?.path ? `${this.$config.SCREENSHOT_ENDPOINT}${screenshotImage.path}` : ''
     }
   },
@@ -625,31 +622,6 @@ export default {
   },
   methods: {
     ...mapActions('ratings', ['fetchSerieRating', 'submitRating']),
-    getCoverImage (serie) {
-      if (!serie.images || !Array.isArray(serie.images)) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
-      if (!coverImage) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      return {
-        path: coverImage.path || '',
-        placeholder: coverImage.placeholder || '',
-        cf_path: coverImage.cf_path || null,
-        cf_placeholder: coverImage.cf_placeholder || null
-      }
-    },
     isDesktopScreen () {
       const res = document.body.clientWidth
       if (res < 960) {

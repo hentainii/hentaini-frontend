@@ -132,58 +132,6 @@ export default {
           })
           this.watchlaters = watchlaters.data
         })
-    },
-    getCoverImage (serie) {
-      if (!serie.images || !Array.isArray(serie.images)) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
-      if (!coverImage) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      return {
-        path: coverImage.path || '',
-        placeholder: coverImage.placeholder || '',
-        cf_path: coverImage.cf_path || null,
-        cf_placeholder: coverImage.cf_placeholder || null
-      }
-    },
-    getEpisodeImage (serie, episodeNumber) {
-      // Buscar el episodio específico
-      if (!serie.episodes || !Array.isArray(serie.episodes)) {
-        return this.getCoverImage(serie) // Fallback a imagen de serie
-      }
-
-      const episode = serie.episodes.find(ep => ep.episode_number === episodeNumber)
-      if (!episode || !episode.images || !Array.isArray(episode.images)) {
-        return this.getCoverImage(serie) // Fallback a imagen de serie
-      }
-
-      // Buscar imagen de screenshot del episodio
-      const screenshotImage = episode.images.find(image =>
-        image.image_type && image.image_type.name === 'screenshot'
-      )
-
-      if (!screenshotImage) {
-        return this.getCoverImage(serie) // Fallback a imagen de serie
-      }
-
-      return {
-        path: screenshotImage.path || '',
-        placeholder: screenshotImage.placeholder || '',
-        cf_path: screenshotImage.cf_path || null,
-        cf_placeholder: screenshotImage.cf_placeholder || null
-      }
     }
   }
 }

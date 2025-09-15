@@ -149,20 +149,11 @@ export default {
       if (!this.coverImage || !this.coverImage.path) {
         return '/img/placeholder-cover.jpg' // Fallback image
       }
-      if (this.coverImage.cf_path) {
-        return this.coverImage.cf_path
-      }
       return `${this.$config.COVER_ENDPOINT}${this.coverImage.path}`
     },
     coverImagePlaceholder () {
       if (!this.coverImage) {
         return '/img/placeholder-cover.jpg'
-      }
-      if (this.coverImage.cf_placeholder) {
-        return this.coverImage.cf_placeholder
-      }
-      if (this.coverImage.cf_path) {
-        return this.coverImage.cf_path
       }
       const placeholderPath = this.coverImage.placeholder || this.coverImage.path
       if (!placeholderPath) {

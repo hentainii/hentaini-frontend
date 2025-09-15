@@ -688,31 +688,6 @@ export default {
         this.$router.push({ path: '/explore', query: { genre: genre.url } })
       }
       this.showGenreSheet = false
-    },
-    getCoverImage (serie) {
-      if (!serie.images || !Array.isArray(serie.images)) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
-      if (!coverImage) {
-        return {
-          path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
-        }
-      }
-      return {
-        path: coverImage.path || '',
-        placeholder: coverImage.placeholder || '',
-        cf_path: coverImage.cf_path || null,
-        cf_placeholder: coverImage.cf_placeholder || null
-      }
     }
   }
 }

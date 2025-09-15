@@ -5,8 +5,8 @@
         <div class="card-container">
           <v-img
             :aspect-ratio="9/14"
-            :src="getCoverImage(serie).cf_path || getCoverImage(serie).path"
-            :lazy-src="getCoverImage(serie).cf_path || getCoverImage(serie).placeholder"
+            :src="getCoverImage(serie).path"
+            :lazy-src="getCoverImage(serie).placeholder"
             class="card-image"
           >
             <div v-if="visits" class="visits-chip">
@@ -132,25 +132,19 @@ export default {
       if (!serie.images || !Array.isArray(serie.images)) {
         return {
           path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
+          placeholder: ''
         }
       }
       const coverImage = serie.images.find(image => image.image_type && image.image_type.name === 'cover')
       if (!coverImage) {
         return {
           path: '',
-          placeholder: '',
-          cf_path: null,
-          cf_placeholder: null
+          placeholder: ''
         }
       }
       return {
         path: `${this.$config.CDN_ENDPOINT}${coverImage.path || ''}`,
-        placeholder: `${this.$config.CDN_ENDPOINT}${coverImage.placeholder || ''}`,
-        cf_path: coverImage.cf_path || null,
-        cf_placeholder: coverImage.cf_placeholder || null
+        placeholder: `${this.$config.CDN_ENDPOINT}${coverImage.placeholder || ''}`
       }
     },
     removeWatchLaters () {
