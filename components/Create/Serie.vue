@@ -129,6 +129,7 @@
             prepend-icon="mdi-image"
             outlined
             dense
+            accept="image/jpg, image/jpeg, image/png"
             class="mb-3"
             @change="coverSelected"
             @click="initialCoverClear"
@@ -139,6 +140,7 @@
             :error="error"
             label="Screenshot Image"
             prepend-icon="mdi-image-multiple"
+            accept="image/jpg, image/jpeg, image/png"
             outlined
             dense
             class="mb-3"
@@ -375,8 +377,7 @@ export default {
               images.forEach((image) => {
                 this.uploadImageToStrapi(image.blob, this.allowOnlyNumbersAndLetters(this.serie.title), image.type, res.data.id)
               })
-              const serieId = res.data.id
-              this.$router.replace(`/panel/serie/${serieId}/episode/create`)
+              this.$router.replace(`/panel/serie/${res.data.id}/episode/create`)
             })
           this.alert = true
           this.alertType = 'info'
@@ -417,8 +418,8 @@ export default {
     },
     async createImageComponent (image, imageType, serieId) {
       try {
-        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
-        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-with-cloudflare`, {
+        // Usar el endpoint local para subir imágenes
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-local`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -437,33 +438,16 @@ export default {
         if (response.ok) {
           const result = await response.json()
           if (result.success) {
-            // Manejar la respuesta según el estado de subida a Cloudflare
-            if (result.data.cloudflare_uploaded === true) {
-              console.log(`Image ${imageType} uploaded successfully to Cloudflare:`, result.data.cf_path)
-              // Mostrar notificación de éxito si está disponible
-              if (this.showNotification) {
-                this.showNotification('success', 'Éxito', `Imagen ${imageType} guardada localmente y subida a Cloudflare correctamente`)
-              }
-            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
-              console.log(`Image ${imageType} saved locally (Cloudflare upload failed but image was created)`)
-              if (this.showNotification) {
-                this.showNotification('warning', 'Guardado Local', `Imagen ${imageType} guardada localmente (fallback), pero falló la subida a Cloudflare`)
-              }
-            } else {
-              this.showNotification('success', 'Éxito', `Imagen ${imageType} guardada localmente correctamente`)
-            }
+            console.log(`Image ${imageType} saved locally successfully`)
+            this.showNotification('success', 'Éxito', `Imagen ${imageType} guardada localmente correctamente`)
           }
         } else {
-          console.error(`Failed to upload ${imageType} image:`, response.statusText)
-          if (this.showNotification) {
-            this.showNotification('error', 'Upload Error', `Failed to upload ${imageType} image`)
-          }
+          console.error(`Failed to save ${imageType} image:`, response.statusText)
+          this.showNotification('error', 'Error de Guardado', `Error al guardar la imagen ${imageType}`)
         }
       } catch (error) {
-        console.error(`Error uploading ${imageType} image:`, error)
-        if (this.showNotification) {
-          this.showNotification('error', 'Upload Error', `Error uploading ${imageType} image: ${error.message}`)
-        }
+        console.error(`Error saving ${imageType} image:`, error)
+        this.showNotification('error', 'Error de Guardado', `Error al guardar la imagen ${imageType}: ${error.message}`)
       }
     },
     async getGenres () {

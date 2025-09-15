@@ -65,9 +65,9 @@
             <v-file-input
               v-if="episode.hasCustomScreenshot"
               ref="screenshot"
-              accept="image/*"
               label="Select a Custom Image"
               prepend-icon="mdi-image"
+              accept="image/jpg, image/jpeg, image/png"
               outlined
               @change="screenshotSelected"
             />
@@ -479,8 +479,8 @@ export default {
     },
     async createImageComponent (image, createdEpisodeId) {
       try {
-        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
-        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-with-cloudflare`, {
+        // Usar el endpoint local para subir imágenes
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-local`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -499,26 +499,18 @@ export default {
         if (response.ok) {
           const result = await response.json()
           if (result.success) {
-            // Manejar la respuesta según el estado de subida a Cloudflare
-            if (result.data.cloudflare_uploaded === true) {
-              console.log('Episode screenshot uploaded successfully to Cloudflare:', result.data.cf_path)
-              this.showNotification('success', 'Éxito', 'Imagen del episodio guardada localmente y subida a Cloudflare correctamente')
-            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
-              console.log('Episode screenshot saved locally (Cloudflare upload failed but image was created)')
-              this.showNotification('warning', 'Guardado Local', 'Imagen del episodio guardada localmente (fallback), pero falló la subida a Cloudflare')
-            } else {
-              this.showNotification('success', 'Éxito', 'Imagen del episodio guardada localmente correctamente')
-            }
+            console.log('Episode screenshot saved locally successfully')
+            this.showNotification('success', 'Éxito', 'Imagen del episodio guardada localmente correctamente')
             return result.data.id
           }
         } else {
-          console.error('Failed to upload episode screenshot:', response.statusText)
-          this.showNotification('error', 'Error de Subida', 'Error al subir la imagen del episodio')
+          console.error('Failed to save episode screenshot:', response.statusText)
+          this.showNotification('error', 'Error de Guardado', 'Error al guardar la imagen del episodio')
           throw new Error('Failed to create image component')
         }
       } catch (error) {
         console.error('Error creating image component:', error)
-        this.showNotification('error', 'Error de Subida', `Error al subir la imagen del episodio: ${error.message}`)
+        this.showNotification('error', 'Error de Guardado', `Error al guardar la imagen del episodio: ${error.message}`)
         throw error
       }
     },

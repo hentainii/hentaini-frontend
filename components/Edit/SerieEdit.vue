@@ -116,6 +116,7 @@
             show-size
             label="Cover Image"
             prepend-icon="mdi-image"
+            accept="image/jpg, image/jpeg, image/png"
             outlined
             dense
             class="mb-3"
@@ -127,6 +128,7 @@
             show-size
             label="Screenshot Image"
             prepend-icon="mdi-image-multiple"
+            accept="image/jpg, image/jpeg, image/png"
             outlined
             dense
             class="mb-3"
@@ -356,7 +358,7 @@ export default {
           console.error(error)
         })
     },
-    // Función para modificar el componente de imagen con subida dual a Cloudflare y Strapi
+    // Función para modificar el componente de imagen con almacenamiento local
     async modifyImageComponent (image, imageType, imageId) {
       try {
         // Preparar el payload base
@@ -373,8 +375,8 @@ export default {
           payload.serieId = this.serieData.id
         }
 
-        // Usar el nuevo endpoint que sube automáticamente a Cloudflare
-        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-with-cloudflare/${imageId}`, {
+        // Usar el endpoint local para actualizar imágenes
+        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-local/${imageId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -386,24 +388,16 @@ export default {
         if (response.ok) {
           const result = await response.json()
           if (result.success) {
-            // Manejar la respuesta según el estado de subida a Cloudflare
-            if (result.data.cloudflare_uploaded === true) {
-              console.log(`Image ${imageType} updated successfully to Cloudflare:`, result.data.cf_path)
-              this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente y subida a Cloudflare correctamente`)
-            } else if (result.data.cloudflare_uploaded === false && result.data.cloudflare_error) {
-              console.log(`Image ${imageType} updated locally (Cloudflare upload failed but image was updated)`)
-              this.showNotification('warning', 'Guardado Local', `Imagen ${imageType} actualizada localmente (fallback), pero falló la subida a Cloudflare`)
-            } else {
-              this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente correctamente`)
-            }
+            console.log(`Image ${imageType} updated locally successfully`)
+            this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente correctamente`)
           }
         } else {
           console.error(`Failed to update ${imageType} image:`, response.statusText)
-          this.showNotification('error', 'Error de Actualización', `Falló la actualización de la imagen ${imageType}`)
+          this.showNotification('error', 'Error de Actualización', `Error al actualizar la imagen ${imageType}`)
         }
       } catch (error) {
         console.error(`Error updating ${imageType} image:`, error)
-        this.showNotification('error', 'Error de Actualización', `Error actualizando imagen ${imageType}: ${error.message}`)
+        this.showNotification('error', 'Error de Actualización', `Error al actualizar imagen ${imageType}: ${error.message}`)
       }
     },
     allowOnlyNumbersAndLetters (str) {
