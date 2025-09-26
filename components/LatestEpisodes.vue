@@ -47,6 +47,11 @@
         </article>
       </v-col>
     </v-row>
+    <v-row>
+      <client-only>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
+      </client-only>
+    </v-row>
   </v-container>
 </template>
 
