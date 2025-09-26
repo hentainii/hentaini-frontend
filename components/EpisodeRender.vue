@@ -400,6 +400,11 @@
             <UtilsVueScriptComponent script="<script data-cfasync='false' src='../../bg.js' type='text/javascript'></script>" />
           </client-only>
         </v-row>
+        <v-row class="mt-3 justify-center">
+          <client-only>
+            <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
+          </client-only>
+        </v-row>
       </v-col>
     </v-row>
 
