@@ -397,7 +397,7 @@
         <v-row class="mt-3 justify-center">
           <client-only>
             <div id="bg-ssp-10357" />
-            <UtilsVueScriptComponent script="<script data-cfasync='false' src='../../bg.js' type='text/javascript'></script>" />
+            <UtilsVueScriptComponent script="<script data-cfasync='false' src='https://hentaini.com/bg.js' type='text/javascript'></script>" />
           </client-only>
         </v-row>
         <v-row class="mt-3 justify-center">
