@@ -230,6 +230,21 @@
           </v-row>
         </v-container>
 
+        <!-- Anuncios -->
+        <v-container>
+          <v-row class="mt-3 justify-center">
+            <client-only>
+              <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
+            </client-only>
+          </v-row>
+          <v-row>
+            <client-only>
+              <div id="bg-ssp-10357" />
+              <UtilsVueScriptComponent script="<script data-cfasync='false' src='https://hentaini.com/bg.js' type='text/javascript'></script>" />
+            </client-only>
+          </v-row>
+        </v-container>
+
         <!-- Sección de comentarios -->
         <v-card class="mb-4 rounded-lg elevation-3">
           <v-card-text>
@@ -392,13 +407,6 @@
             </v-slide-group>
           </v-card-text>
         </v-card>
-
-        <!-- Anuncios -->
-        <v-row class="mt-3 justify-center">
-          <client-only>
-            <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
-          </client-only>
-        </v-row>
       </v-col>
     </v-row>
 
