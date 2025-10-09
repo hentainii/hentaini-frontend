@@ -162,10 +162,34 @@ export default {
         token: this.$store.state.auth.token
       })
     },
+    checkDuplicateGenre (name) {
+      const normalizedName = name.toLowerCase().trim()
+      return this.genres.some(genre =>
+        genre.name.toLowerCase().trim() === normalizedName
+      )
+    },
     async createOrEditGenre () {
+      // Validar que el campo no esté vacío
+      if (!this.text.trim()) {
+        this.createdMessage = 'Please enter a genre name.'
+        this.alertBoxColor = 'red darken-4'
+        this.alertBox = true
+        return
+      }
+
       this.isSubmitting = true
+
       if (this.selectedGenre) {
-        // Editar
+        // Editar - verificar duplicados solo si el nombre cambió
+        const nameChanged = this.selectedGenre.name.toLowerCase().trim() !== this.text.toLowerCase().trim()
+        if (nameChanged && this.checkDuplicateGenre(this.text)) {
+          this.createdMessage = 'A genre with this name already exists.'
+          this.alertBoxColor = 'red darken-4'
+          this.alertBox = true
+          this.isSubmitting = false
+          return
+        }
+
         await this.$store.dispatch('genres/editGenre', {
           token: this.$store.state.auth.token,
           id: this.selectedGenre.id,
@@ -177,7 +201,15 @@ export default {
         this.createdMessage = 'Genre Edited Successfully.'
         this.alertBoxColor = 'yellow darken-4'
       } else {
-        // Crear
+        // Crear - verificar duplicados
+        if (this.checkDuplicateGenre(this.text)) {
+          this.createdMessage = 'A genre with this name already exists.'
+          this.alertBoxColor = 'red darken-4'
+          this.alertBox = true
+          this.isSubmitting = false
+          return
+        }
+
         await this.$store.dispatch('genres/createGenre', {
           token: this.$store.state.auth.token,
           genre: {
