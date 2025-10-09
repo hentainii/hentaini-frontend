@@ -441,7 +441,6 @@ export default {
       this.episode.players = [
         { name: 'BR', url: '' },
         { name: 'Mega', url: '' },
-        { name: 'PXD', url: '' },
         { name: 'Yourupload', url: '' },
         { name: 'HNI', url: '' },
         { name: 'Stream2', url: '' },
