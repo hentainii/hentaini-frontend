@@ -24,7 +24,7 @@
             >
               <div class="synopsis-container">
                 <p class="synopsis-text">
-                  {{ serie.synopsis.substr(0,180) + '...' }}
+                  {{ serie.synopsis.substr(0,100) + '...' }}
                 </p>
                 <div v-if="serie.genreList && serie.genreList.length > 0" class="genres-container">
                   <v-chip
