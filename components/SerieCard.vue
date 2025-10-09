@@ -35,7 +35,7 @@
                     color="rgba(255, 255, 255, 0.1)"
                     text-color="white"
                   >
-                    uwu{{ genre.name }}
+                    {{ genre.name }}
                   </v-chip>
                 </div>
               </div>
