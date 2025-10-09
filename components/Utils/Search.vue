@@ -9,7 +9,7 @@
         :close-on-click="false"
         transition="fade-transition"
         content-class="search-menu-background"
-        style="z-index: 9999 !important;height:300px;"
+        :style="search.length > 0 ? 'z-index: 9999 !important;height:300px;' : ''"
       >
         <template #activator="{ on, attrs }">
           <v-text-field
@@ -31,6 +31,7 @@
         </template>
 
         <div
+          v-if="search && search.length > 0"
           class="search-menu-content"
         >
           <template v-if="search && search.length > 0 && search.length <= 2">
