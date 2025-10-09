@@ -76,7 +76,7 @@
                   >
                     <v-slide-item
                       v-for="player in filteredPlayers"
-                      :key="player.name"
+                      :key="player.id"
                       v-slot:="{ active, toggle }"
                     >
                       <v-btn
@@ -147,17 +147,17 @@
                   <v-tooltip v-if="$store.state.auth" bottom>
                     <template #activator="{ on }">
                       <v-btn
-                        :color="isInWatchLater ? 'green darken-1' : 'grey darken-1'"
+                        :color="serieIsPresentInWatchLaters ? 'green darken-1' : 'grey darken-1'"
                         fab
                         small
                         class="mr-2"
                         v-on="on"
-                        @click="toggleWatchLater(episode.serie)"
+                        @click="serieIsPresentInWatchLaters ? removeWatchLater() : setWatchLater()"
                       >
-                        <v-icon>{{ isInWatchLater ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}</v-icon>
+                        <v-icon>{{ serieIsPresentInWatchLaters ? 'mdi-eye-off-outline' : 'mdi-eye-plus-outline' }}</v-icon>
                       </v-btn>
                     </template>
-                    <span>{{ isInWatchLater ? $t('watch_later.remove') : $t('watch_later.add') }}</span>
+                    <span>{{ serieIsPresentInWatchLaters ? $t('watch_later.remove') : $t('watch_later.add') }}</span>
                   </v-tooltip>
                   <v-tooltip v-else bottom>
                     <template #activator="{ on }">
@@ -234,7 +234,7 @@
         <v-container>
           <v-row class="mt-3 justify-center">
             <client-only>
-              <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
+              <UtilsVueScriptComponent script="<script data-cfasync=&quot;false&quot; async type=&quot;text/javascript&quot; src=&quot;//tg.sikagaylies.com/tTx3MZK0mbso/129706&quot;></script>" />
             </client-only>
           </v-row>
           <v-row>
@@ -323,7 +323,7 @@
             <v-chip-group>
               <v-chip
                 v-for="genre in episode.serie.genreList"
-                :key="genre.text ? genre.text : genre"
+                :key="genre.id"
                 :to="localePath(`/explore?genre=${genre.url}`)"
                 small
                 class="mr-1 mb-1"
@@ -447,7 +447,7 @@
           <v-row class="justify-center mt-2">
             <v-btn
               v-for="link in downloadsName"
-              :key="link.name"
+              :key="link.id"
               :href="link.url.url"
               target="_blank"
               color="primary mr-2"
@@ -547,6 +547,9 @@ export default {
     serieIsPresentInFavorites () {
       return this.favorites.some(favorite => favorite.url === this.episode.serie.url)
     },
+    serieIsPresentInWatchLaters () {
+      return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId)
+    },
     isHLSPlayer () {
       const currentPlayer = this.filteredPlayers.find(player => player.url === this.currentUrl)
       if (!currentPlayer) { return false }
@@ -557,9 +560,6 @@ export default {
     filteredPlayers () {
       const playersDecoded = JSON.parse(this.episode.players)
       return playersDecoded.filter(player => player.name !== 'SSB' && player.name !== 'Cloud' && player.name !== 'C' && player.name !== 'TERA' && player.name !== 'TR' && player.name !== 'CW' && player.name !== 'F')
-    },
-    isInWatchLater () {
-      return this.watchlaters.some(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber))
     },
     thisWatchLater () {
       return this.watchlaters.find(watchlater => watchlater.serie.url === this.serieId && watchlater.episode_number === parseInt(this.episodeNumber)) || null
@@ -738,26 +738,23 @@ export default {
       })
       this.favorites = this.favorites.filter(favorite => favorite.url !== this.episode.serie.url)
     },
-    toggleWatchLater (serie) {
-      if (this.isInWatchLater) {
-        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters/${this.thisWatchLater.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.$store.state.auth.token}`
-          }
-        }).then((result) => {
-          if (result.status === 200) {
-            this.getEpisode()
-            this.getWatchLaters()
-          }
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error)
-        })
-      } else {
-        const user = this.$store.state.auth.id
-        fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters`, {
+    async setWatchLater () {
+      const user = this.$store.state.auth.id
+      const serie = this.episode.serie.id
+
+      // Crear objeto temporal para feedback inmediato
+      const tempWatchLater = {
+        id: `temp_${Date.now()}`,
+        user,
+        serie: this.episode.serie,
+        episode_number: this.episodeNumber
+      }
+
+      // Agregar inmediatamente al array local
+      this.watchlaters.push(tempWatchLater)
+
+      try {
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -770,15 +767,51 @@ export default {
               episode_number: this.episodeNumber
             }
           })
-        }).then((result) => {
-          if (result.status === 200) {
-            this.getEpisode()
-            this.getWatchLaters()
-          }
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error)
         })
+        console.log(res)
+        if (res.status === 200) {
+          // Refrescar desde el servidor para obtener el objeto real
+          this.getWatchLaters()
+        } else {
+          // En caso de error, revertir el cambio local
+          this.watchlaters = this.watchlaters.filter(watchlater => watchlater.id !== tempWatchLater.id)
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        // En caso de error, revertir el cambio local
+        this.watchlaters = this.watchlaters.filter(watchlater => watchlater.id !== tempWatchLater.id)
+      }
+    },
+    async removeWatchLater () {
+      const watchLaterToDelete = this.thisWatchLater
+
+      console.log(watchLaterToDelete)
+
+      // Remover inmediatamente del array local
+      this.watchlaters = this.watchlaters.filter(watchlater =>
+        watchlater.serie.url !== this.episode.serie.url &&
+          watchlater.episode_number !== this.episodeNumber
+      )
+
+      try {
+        const res = await fetch(`${this.$config.API_STRAPI_ENDPOINT}watchlaters/${watchLaterToDelete.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          }
+        })
+
+        if (res.status !== 200) {
+          // En caso de error, revertir agregando de nuevo el elemento
+          this.getWatchLaters()
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        // En caso de error, revertir agregando de nuevo el elemento
+        this.getWatchLaters()
       }
     },
     getWatchLaters () {
