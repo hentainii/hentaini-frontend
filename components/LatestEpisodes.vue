@@ -5,6 +5,7 @@
     <v-row class="justify-center">
       <v-row class="mt-3 justify-center">
         <client-only>
+          <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
           <div id="bg-ssp-10357" />
           <UtilsVueScriptComponent script="<script data-cfasync='false' src='https://hentaini.com/bg.js' type='text/javascript'></script>" />
         </client-only>
