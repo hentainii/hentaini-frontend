@@ -3,16 +3,16 @@
 <template>
   <v-container class="latest-episodes-container" fluid>
     <v-row class="justify-center">
-      <v-row class="mt-3 justify-center">
+      <!-- <v-row class="mt-3 justify-center">
         <client-only>
           <UtilsVueScriptComponent script='<script async data-cfasync="false" src="https://platform.pubadx.one/pubadx-ad.js" type="text/javascript"></script>' />
           <div id="bg-ssp-10357" />
           <UtilsVueScriptComponent script="<script data-cfasync='false' src='https://hentaini.com/bg.js' type='text/javascript'></script>" />
         </client-only>
-      </v-row>
-      <!-- <client-only>
+      </v-row> -->
+      <client-only>
         <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
-      </client-only> -->
+      </client-only>
     </v-row>
 
     <div class="section-header">

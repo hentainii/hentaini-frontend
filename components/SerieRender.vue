@@ -203,9 +203,9 @@
     </v-container>
     <v-container>
       <v-row class="mt-3 justify-center">
-        <!-- <client-only>
+        <client-only>
           <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
-        </client-only> -->
+        </client-only>
       </v-row>
       <v-row>
         <LayoutComments
