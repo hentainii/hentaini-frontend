@@ -233,16 +233,16 @@
         <!-- Anuncios -->
         <v-container>
           <v-row class="mt-3 justify-center">
-            <!-- <client-only>
+            <client-only>
               <UtilsVueScriptComponent script="<script data-cfasync=&quot;false&quot; async type=&quot;text/javascript&quot; src=&quot;//tg.sikagaylies.com/tTx3MZK0mbso/129706&quot;></script>" />
             </client-only>
-            <client-only>
+            <!-- <client-only>
               <div id="bg-ssp-10357" />
               <UtilsVueScriptComponent script="<script data-cfasync='false' src='https://hentaini.com/bg.js' type='text/javascript'></script>" />
             </client-only> -->
-            <client-only>
+            <!-- <client-only>
               <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//tg.sikagaylies.com/tTx3MZK0mbso/129706"></script>' />
-            </client-only>
+            </client-only> -->
           </v-row>
         </v-container>
 
