@@ -18,11 +18,11 @@
     </v-alert>
 
     <!-- Barra de reacciones -->
-    <ReactionsBar
+    <!-- <ReactionsBar
       :content-type="contentType"
       :content-id="contentId"
       @show-login="handleShowLogin"
-    />
+    /> -->
 
     <!-- Nuevo sistema de comentarios propio -->
     <CommentsSection
@@ -35,14 +35,12 @@
 
 <script>
 import CommentsSection from '~/components/Comments/CommentsSection.vue'
-import ReactionsBar from '~/components/Comments/ReactionsBar.vue'
 
 export default {
   name: 'Comments',
 
   components: {
-    CommentsSection,
-    ReactionsBar
+    CommentsSection
   },
 
   props: {
