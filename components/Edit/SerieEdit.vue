@@ -266,20 +266,22 @@ export default {
       })
       // Si se seleccionó una nueva imagen cover, se sube a Strapi
       if (this.cover && this.cover.blob) {
+        const existingCover = this.serieData.images?.find(image => image.image_type?.id === 1)
         await this.uploadImageToStrapi(
           this.cover.blob,
           this.allowOnlyNumbersAndLetters(this.serieData.title),
           this.cover.type,
-          this.serieData.images.find(image => image.image_type.id === 1).id
+          existingCover ? existingCover.id : null
         )
       }
       // Si se seleccionó una nueva imagen screenshot, se sube a Strapi
       if (this.screenshot && this.screenshot.blob) {
+        const existingScreenshot = this.serieData.images?.find(image => image.image_type?.id === 2)
         await this.uploadImageToStrapi(
           this.screenshot.blob,
           this.allowOnlyNumbersAndLetters(this.serieData.title),
           this.screenshot.type,
-          this.serieData.images.find(image => image.image_type.id === 2).id
+          existingScreenshot ? existingScreenshot.id : null
         )
       }
       this.loading = false
@@ -337,67 +339,117 @@ export default {
     async uploadImageToStrapi (imageBlob, imageName, imageType, imageId) {
       const formData = new FormData()
       formData.append('files', imageBlob, `${imageName}_${imageType}`)
-      await fetch(`${this.$config.API_STRAPI_ENDPOINT}upload`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.$store.state.auth.token}`
-        },
-        body: formData
-      })
-        .then((input) => {
-          if (input.status === 200) {
-            Promise.resolve(input.json())
-              .then((strapiRes) => {
-                this.modifyImageComponent(strapiRes[0], imageType, imageId)
-              })
-          } else {
-            throw new Error('Upload failed')
-          }
+      try {
+        const input = await fetch(`${this.$config.API_STRAPI_ENDPOINT}upload`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.$store.state.auth.token}`
+          },
+          body: formData
         })
-        .catch((error) => {
-          console.error(error)
-        })
+        if (!input.ok) {
+          throw new Error('Upload failed')
+        }
+        const strapiRes = await input.json()
+        await this.modifyImageComponent(strapiRes[0], imageType, imageId)
+      } catch (error) {
+        console.error(error)
+        this.showNotification('error', 'Error de Subida', `No se pudo subir la imagen ${imageType}`)
+      }
     },
     // Función para modificar el componente de imagen con almacenamiento local
     async modifyImageComponent (image, imageType, imageId) {
       try {
         // Preparar el payload base
-        const payload = {
-          data: {
-            path: `${image.hash}${image.ext}`,
-            placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
-            image_type: imageType === 'cover' ? 1 : 2
+        const payloadData = {
+          path: `${image.hash}${image.ext}`,
+          placeholder: `${image.formats.thumbnail.hash}${image.formats.thumbnail.ext}`,
+          image_type: imageType === 'cover' ? 1 : 2
+        }
+
+        const isScreenshot = imageType === 'screenshot'
+
+        // Si existe imageId, actualizar. Si no, crear nueva imagen local.
+        if (imageId) {
+          const payload = {
+            data: payloadData
           }
-        }
-
-        // Si es un screenshot, agregar el serieId para actualizar referencias en episodios
-        if (imageType === 'screenshot' && this.serieData && this.serieData.id) {
-          payload.serieId = this.serieData.id
-        }
-
-        // Usar el endpoint local para actualizar imágenes
-        const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-local/${imageId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.$store.state.auth.token}`
-          },
-          body: JSON.stringify(payload)
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          if (result.success) {
-            console.log(`Image ${imageType} updated locally successfully`)
-            this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente correctamente`)
+          if (isScreenshot && this.serieData && this.serieData.id) {
+            payload.serieId = this.serieData.id
+          }
+          const response = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-local/${imageId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$store.state.auth.token}`
+            },
+            body: JSON.stringify(payload)
+          })
+          if (response.ok) {
+            const result = await response.json()
+            if (result.success) {
+              console.log(`Image ${imageType} updated locally successfully`)
+              this.showNotification('success', 'Éxito', `Imagen ${imageType} actualizada localmente correctamente`)
+            }
+          } else {
+            console.error(`Failed to update ${imageType} image:`, response.statusText)
+            this.showNotification('error', 'Error de Actualización', `Error al actualizar la imagen ${imageType}`)
           }
         } else {
-          console.error(`Failed to update ${imageType} image:`, response.statusText)
-          this.showNotification('error', 'Error de Actualización', `Error al actualizar la imagen ${imageType}`)
+          // Crear nueva imagen local asociada a la serie
+          const createPayload = {
+            data: {
+              ...payloadData,
+              series: [this.serieData?.id]
+            }
+          }
+          const createRes = await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/create-local`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$store.state.auth.token}`
+            },
+            body: JSON.stringify(createPayload)
+          })
+          if (createRes.ok) {
+            const result = await createRes.json()
+            const newImage = result.data
+            // Actualizar estado local para coherencia en la sesión
+            if (!this.serieData.images) { this.serieData.images = [] }
+            const typeId = payloadData.image_type
+            const existingIndex = this.serieData.images.findIndex(img => (img.image_type?.id || img.image_type) === typeId)
+            const newImageStub = {
+              id: newImage.id,
+              path: payloadData.path,
+              placeholder: payloadData.placeholder,
+              image_type: { id: typeId }
+            }
+            if (existingIndex >= 0) {
+              this.serieData.images.splice(existingIndex, 1, newImageStub)
+            } else {
+              this.serieData.images.push(newImageStub)
+            }
+            this.showNotification('success', 'Éxito', `Imagen ${imageType} creada correctamente`)
+
+            // Si es screenshot, disparar actualización de referencias en episodios
+            if (isScreenshot && this.serieData && this.serieData.id) {
+              await fetch(`${this.$config.API_STRAPI_ENDPOINT}images/update-local/${newImage.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${this.$store.state.auth.token}`
+                },
+                body: JSON.stringify({ data: payloadData, serieId: this.serieData.id })
+              })
+            }
+          } else {
+            console.error(`Failed to create ${imageType} image`)
+            this.showNotification('error', 'Error de Creación', `Error al crear la imagen ${imageType}`)
+          }
         }
       } catch (error) {
-        console.error(`Error updating ${imageType} image:`, error)
-        this.showNotification('error', 'Error de Actualización', `Error al actualizar imagen ${imageType}: ${error.message}`)
+        console.error(`Error updating/creating ${imageType} image:`, error)
+        this.showNotification('error', 'Error de Imagen', `Error al procesar imagen ${imageType}: ${error.message}`)
       }
     },
     allowOnlyNumbersAndLetters (str) {
