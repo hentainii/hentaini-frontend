@@ -1,6 +1,9 @@
 <template>
   <v-app dark>
     <v-main>
+      <client-only>
+        <UtilsVueScriptComponent script='<script data-cfasync="false" async type="text/javascript" src="//um.rakistylets.com/r5RIiD8bTdlcB/BqwgE"></script>' />
+      </client-only>
       <nuxt />
       <MobileHeader class="d-md-none" />
     </v-main>
