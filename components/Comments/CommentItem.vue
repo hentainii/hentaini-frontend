@@ -484,6 +484,13 @@ export default {
         this.replyLoading = true
         this.replyError = null
 
+        // Limitador diario simple del lado cliente
+        if (process.browser && !this.canPostToday()) {
+          const message = 'Has alcanzado el límite de 15 comentarios por día'
+          this.replyError = message
+          return
+        }
+
         await this.createReply({
           parentId: this.comment.id,
           content: replyData.content
@@ -491,6 +498,11 @@ export default {
 
         this.showReplyForm = false
         this.repliesCount += 1
+
+        // Incrementar contador diario en cliente
+        if (process.browser) {
+          this.incrementDailyCount()
+        }
 
         // Mostrar las respuestas automáticamente después de crear una
         if (!this.showingReplies) {
@@ -611,6 +623,35 @@ export default {
       } finally {
         this.deleteLoading = false
       }
+    },
+    // --- Limitador diario simple en cliente (reutilizado) ---
+    getDateKey () {
+      const d = new Date()
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}${m}${day}`
+    },
+    getStorageKey () {
+      const userId = this.$store.state.auth?.id || 'anon'
+      return `hni_comment_count_${userId}_${this.getDateKey()}`
+    },
+    getDailyCount () {
+      try {
+        const key = this.getStorageKey()
+        const raw = window.localStorage.getItem(key)
+        return raw ? parseInt(raw, 10) || 0 : 0
+      } catch (e) { return 0 }
+    },
+    canPostToday () {
+      return this.getDailyCount() < 15
+    },
+    incrementDailyCount () {
+      try {
+        const key = this.getStorageKey()
+        const current = this.getDailyCount()
+        window.localStorage.setItem(key, String(current + 1))
+      } catch (e) {}
     }
   }
 }

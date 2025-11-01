@@ -233,6 +233,14 @@ export default {
         this.createLoading = true
         this.createError = null
 
+        // Guardado simple del lado cliente: límite de 10 por día
+        if (process.browser && !this.canPostToday()) {
+          const message = 'Has alcanzado el límite de 10 comentarios por día'
+          this.createError = message
+          this.showNotification(message, 'error')
+          return
+        }
+
         await this.createComment({
           content: commentData.content,
           contentType: this.contentType,
@@ -240,6 +248,11 @@ export default {
         })
 
         this.showNotification(this.$t('comments.comment_posted'), 'success')
+
+        // Incrementar contador diario en cliente
+        if (process.browser) {
+          this.incrementDailyCount()
+        }
 
         // Scroll al nuevo comentario
         this.$nextTick(() => {
@@ -315,6 +328,36 @@ export default {
       this.snackbarMessage = message
       this.snackbarColor = color
       this.showSnackbar = true
+    },
+
+    // --- Limitador diario simple en cliente (no sustituto del backend) ---
+    getDateKey () {
+      const d = new Date()
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}${m}${day}`
+    },
+    getStorageKey () {
+      const userId = this.auth?.id || 'anon'
+      return `hni_comment_count_${userId}_${this.getDateKey()}`
+    },
+    getDailyCount () {
+      try {
+        const key = this.getStorageKey()
+        const raw = window.localStorage.getItem(key)
+        return raw ? parseInt(raw, 10) || 0 : 0
+      } catch (e) { return 0 }
+    },
+    canPostToday () {
+      return this.getDailyCount() < 10
+    },
+    incrementDailyCount () {
+      try {
+        const key = this.getStorageKey()
+        const current = this.getDailyCount()
+        window.localStorage.setItem(key, String(current + 1))
+      } catch (e) {}
     }
   }
 }

@@ -144,7 +144,12 @@ export default {
       contentRules: [
         v => !!v || this.$t('validation.required'),
         v => (v && v.length >= 3) || this.$t('validation.min_length', { min: 3 }),
-        v => (v && v.length <= 1000) || this.$t('validation.max_length', { max: 1000 })
+        v => (v && v.length <= 1000) || this.$t('validation.max_length', { max: 1000 }),
+        (v) => {
+          if (!v) { return true }
+          const urlRegex = /(https?:\/\/|www\.)\S+|\b[a-z0-9.-]+\.[a-z]{2,}(?:\/\S*)?/i
+          return !urlRegex.test(v) || 'Urls are not allowed'
+        }
       ]
     }
   },
